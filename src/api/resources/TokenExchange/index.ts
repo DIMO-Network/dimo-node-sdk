@@ -15,8 +15,8 @@ export class TokenExchange extends Resource {
                     privileges: true,
                     tokenId: true
                 },
-                auth: 'web3',
-                return: 'privilege'
+                auth: 'access_token',
+                return: 'privilege_token'
             }
         })
     }

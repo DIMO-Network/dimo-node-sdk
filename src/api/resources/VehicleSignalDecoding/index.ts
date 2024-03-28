@@ -42,7 +42,7 @@ export class VehicleSignalDecoding extends Resource {
                 body: {
                     config: true
                 },
-                auth: 'privilege'
+                auth: 'privilege_token'
             },
             getJobsByAddress: {
                 method: 'GET',
@@ -55,7 +55,7 @@ export class VehicleSignalDecoding extends Resource {
             setJobStatusByAddress: {
                 method: 'PATCH',
                 path: '/v1/device-config/eth-addr/:address/jobs/:jobId/:status',
-                auth: 'privilege'
+                auth: 'privilege_token'
             },
         })
     }

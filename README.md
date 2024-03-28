@@ -156,9 +156,8 @@ await dimo.devicedata.getVehicleStatus({
 
 ### Querying the DIMO Identity GraphQL API
 
-`countDimoVehicles`
-`listVehicleDefinitionsPerAddress`
-`getVehicleDetailsByTokenId`
+The SDK accepts any type of valid custom GraphQL queries, but we've also included a few sample queries, namely `countDimoVehicles`, `listVehicleDefinitionsPerAddress`, and `getVehicleDetailsByTokenId` to help you understand the DIMO Identity API. 
+
 #### Send a custom GraphQL query
 To send a custom GraphQL query, you can simply call the `makeGraphqlRequest` function and pass in any valid GraphQL query. To check whether your GraphQL query is valid, please visit our [Identity API GraphQL Playground](https://identity-api.dimo.zone/).
 
@@ -174,47 +173,4 @@ const totalNetworkVehicles = await dimo.makeGraphqlRequest(query);
 ```
 
 ## How to Contribute to the SDK
-### Data Structure
-This is how API endpoints are structured. Each `functionName` maps to a specific path for an API endpoint, the `method` will be passed in the corresponding HTTP calls. The SDK supports CRUD operations for a REST API but also includes a `FUNCTION` method to call utility functions. Add `queryParams`, `body`, `headers`, `auth`, and `return` according to how the endpoint behaves.
-
-- `queryParams`: Sets the requirements for query parameters. Anything that is marked `true` will be validated, `false` will be optional. You can also pass in set strings for constants, this is typically used when there are constant query parameters.
-- `body`: Sets the requirements for body data. Anything that is marked `true` will be validated, `false` will be optional. You can also pass in set strings for constants, this is typically used when there are set body constants.
-- `headers`: Dynamically inserts header key-value pair, this is typically used when the endpoint accepts a specific header.
-- `auth`: This defines whether the endpoint requires a web3 `access_token` or a privilege `token`.
-- `return`: This defines what the endpoint returns for a more user-friendly experience. Only Auth endpoints will return `web3`, and Token Exchange endpoint will return `privilege`. You will likely not use this at all.
-
-```js
-<functionName>: {
-  method: '<GET|POST|PUT|PATCH|DELETE|FUNCTION>',
-  path: '/<path>/:pathParameters' || '<functionName>',
-  queryParams: {
-    'queryParam1': false,
-    'queryParam2': true,
-    'queryParam3': '<queryParamValue>'
-  },
-  body: {
-    'bodyParam1': false,
-    'bodyParam2': true,
-    'bodyParam3': '<bodyValue>'
-  },
-  headers: {
-    'headerKey': '<headerValue>'
-  },
-  auth: '<web3|privilege>',
-  return: '<web3|privilege>'
-}
-```
-
-### Updating API Endpoints
-1. Locate the endpoint under `/src/api/resources/<directory>/index.ts`
-2. Under the `constructor`, there will be a `this.setResource()` function call
-3. Update the endpoint of interest accordingly
-
-[Note] Some Vehicle Signal Decoding API endpoints uses `eth-addr` as one of the query parameters, for clarification and style purposes, please use `address` as the key when you pass a query parameter.
-
-### Updating SDK Functions
-1. Locate the functions under `/src/api/functions`
-2. Update existing functions or create new functions
-3. Export the modified function(s) in `/src/api/functions/index.ts`
-4. Locate the resource mapping under `/src/api/resources/<directory>/index.ts`
-5. Apply the new changes under `this.setResource()` function call
+Read more about contributing [here](https://github.com/DIMO-Network/dimo-node-sdk/blob/master/CONTRIBUTING.md).

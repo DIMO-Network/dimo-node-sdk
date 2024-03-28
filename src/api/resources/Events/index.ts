@@ -9,7 +9,7 @@ export class Events extends Resource {
             list: {
                 method: 'GET',
                 path: '/v1/events',
-                auth: 'web3'
+                auth: 'access_token'
             }
         })
     }

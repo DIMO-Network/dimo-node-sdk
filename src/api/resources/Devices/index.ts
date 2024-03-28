@@ -12,7 +12,7 @@ export class Devices extends Resource {
                 body: {
                     user_device: true,
                 },
-                auth: 'web3'
+                auth: 'access_token'
             },
             createVehicleFromSmartcar: {
                 method: 'POST',
@@ -20,7 +20,7 @@ export class Devices extends Resource {
                 body: {
                     user_device: true,
                 },
-                auth: 'web3'
+                auth: 'access_token'
             },
             createVehicleFromVin: {
                 method: 'POST',
@@ -28,17 +28,17 @@ export class Devices extends Resource {
                 body: {
                     user_device: true,
                 },
-                auth: 'web3'
+                auth: 'access_token'
             },
             updateVehicleVin: {
                 method: 'PATCH',
                 path: '/v1/user/devices/:userDeviceId/vin',
-                auth: 'web3'
+                auth: 'access_token'
             },
             getClaimingPayload: {
                 method: 'POST',
                 path: '/v1/aftermarket/device/by-serial/:serial/commands/claim',
-                auth: 'web3'
+                auth: 'access_token'
             },
             signClaimingPayload: {
                 method: 'POST',
@@ -46,12 +46,12 @@ export class Devices extends Resource {
                 body: {
                     claimRequest: true
                 },
-                auth: 'web3'
+                auth: 'access_token'
             },
             getMintingPayload: {
                 method: 'POST',
                 path: '/v1/user/devices/:userDeviceId/commands/mint',
-                auth: 'web3'
+                auth: 'access_token'
             },
             signMintingPayload: {
                 method: 'POST',
@@ -59,22 +59,22 @@ export class Devices extends Resource {
                 body: {
                     mintRequest: true
                 },
-                auth: 'web3'
+                auth: 'access_token'
             },
             optInShareData: {
                 method: 'POST',
                 path: '/v1/user/devices/:userDeviceId/commands/opt-in',
-                auth: 'web3'
+                auth: 'access_token'
             },
             refreshSmartcarData: {
                 method: 'POST',
                 path: '/v1/user/devices/:userDeviceId/commands/refresh',
-                auth: 'web3'
+                auth: 'access_token'
             },
             getPairingPayload: {
                 method: 'GET',
                 path: '/v1/user/devices/:userDeviceId/aftermarket/commands/pair',
-                auth: 'web3'
+                auth: 'access_token'
             },
             signPairingPayload: {
                 method: 'POST',
@@ -82,12 +82,12 @@ export class Devices extends Resource {
                 body: {
                     userSignature: true
                 },
-                auth: 'web3'
+                auth: 'access_token'
             },
             getUnpairingPayload: {
                 method: 'GET',
                 path: '/v1/user/devices/:userDeviceId/aftermarket/commands/unpair',
-                auth: 'web3'
+                auth: 'access_token'
             },
             signUnpairingPayload: {
                 method: 'POST',
@@ -95,32 +95,32 @@ export class Devices extends Resource {
                 body: {
                     userSignature: true
                 },
-                auth: 'web3'
+                auth: 'access_token'
             },
             lockDoors: {
                 method: 'POST',
                 path: '/v1/vehicle/:tokenId/commands/doors/lock',
-                auth: 'privilege'
+                auth: 'privilege_token'
             },
             unlockDoors: {
                 method: 'POST',
                 path: '/v1/vehicle/:tokenId/commands/doors/unlock',
-                auth: 'privilege'
+                auth: 'privilege_token'
             },
             openFrunk: {
                 method: 'POST',
                 path: '/v1/vehicle/:tokenId/commands/frunk/open',
-                auth: 'privilege'
+                auth: 'privilege_token'
             },
             openTrunk: {
                 method: 'POST',
                 path: '/v1/vehicle/:tokenId/commands/trunk/open',
-                auth: 'privilege'
+                auth: 'privilege_token'
             },
             listErrorCodes: {
                 method: 'GET',
                 path: '/v1/user/devices/:userDeviceId/error-codes',
-                auth: 'web3'
+                auth: 'access_token'
             },
             submitErrorCodes: {
                 method: 'POST',
@@ -128,12 +128,12 @@ export class Devices extends Resource {
                 body: {
                     queryDeviceErrorCodes: true
                 },
-                auth: 'web3'
+                auth: 'access_token'
             },
             clearErrorCodes: {
                 method: 'POST',
                 path: '/v1/user/devices/:userDeviceId/error-codes/clear',
-                auth: 'web3'
+                auth: 'access_token'
             },
             getAftermarketDevice: {
                 method: 'GET',

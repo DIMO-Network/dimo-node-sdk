@@ -12,7 +12,7 @@ export class Trips extends Resource {
                 queryParams: {
                     page: false
                 },
-                auth: 'privilege'
+                auth: 'privilege_token'
             }
         })
     }

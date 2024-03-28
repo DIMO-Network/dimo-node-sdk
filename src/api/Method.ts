@@ -10,7 +10,7 @@ export async function Method(resource: any, baseUrl: any, params: any = {}, env:
 
     let headers: Record<string, string> = {};
     
-    if (['web3', 'privilege'].includes(resource.auth)) {
+    if (['access_token', 'privilege_token'].includes(resource.auth)) {
         if (params.headers.Authorization) {
             headers = params.headers;
         } else {
@@ -114,9 +114,9 @@ export async function Method(resource: any, baseUrl: any, params: any = {}, env:
         // Special returns for access_token & privilege token
         let authHeader = {};
     
-        if (resource.return === 'web3') {
+        if (resource.return === 'access_token') {
             authHeader = { Authorization: `Bearer ${response.data.access_token}` };
-        } else if (resource.return === 'privilege') {
+        } else if (resource.return === 'privilege_token') {
             authHeader = { Authorization: `Bearer ${response.data.token}` };
         }
     

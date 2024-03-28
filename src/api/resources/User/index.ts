@@ -9,7 +9,7 @@ export class User extends Resource {
             get: {
                 method: 'GET',
                 path: '/v1/user',
-                auth: 'web3'
+                auth: 'access_token'
             },
             update: {
                 method: 'PUT',
@@ -17,17 +17,17 @@ export class User extends Resource {
                 body: {
                     'userUpdateRequest': true
                 },
-                auth: 'web3'
+                auth: 'access_token'
             },
             delete: {
                 method: 'DELETE',
                 path: '/v1/user',
-                auth: 'web3'
+                auth: 'access_token'
             },
             sendConfirmationEmail: {
                 method: 'POST',
                 path: '/v1/user/send-confirmation-email',
-                auth: 'web3'
+                auth: 'access_token'
             },
             confirmEmail: {
                 method: 'POST',
@@ -35,7 +35,7 @@ export class User extends Resource {
                 body: {
                     confirmEmailRequest: true
                 },
-                auth: 'web3'
+                auth: 'access_token'
             }
         })
     }

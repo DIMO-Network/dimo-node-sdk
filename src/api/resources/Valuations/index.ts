@@ -9,17 +9,17 @@ export class Valuations extends Resource {
             getValuations: {
                 method: 'GET',
                 path: '/v1/user/devices/:userDeviceId/valuations',
-                auth: 'web3'
+                auth: 'access_token'
             },
             getInstantOffers: {
                 method: 'GET',
                 path: '/v1/user/devices/:userDeviceId/instant-offer',
-                auth: 'web3'
+                auth: 'access_token'
             },
             getOffers: {
                 method: 'GET',
                 path: '/v1/user/devices/:userDeviceId/offers',
-                auth: 'web3'
+                auth: 'access_token'
             }
         })
     }
