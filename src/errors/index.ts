@@ -1,0 +1,1 @@
+export { DimoError } from './DimoError';

@@ -1,0 +1,31 @@
+{
+  "name": "@dimo-network/dimo-node-sdk",
+  "version": "1.0.0",
+  "description": "DIMO SDK for JavaScript",
+  "main": "index.js",
+  "author": "James Li",
+  "contributors": [],
+  "license": "ISC",
+  "type": "module",
+  "keywords": [
+    "dimo-node-sdk"
+  ],
+  "homepage": "https://dimo.zone/developers",
+  "scripts": {
+    "test": "test"
+  },
+  "dependencies": {
+    "axios": "^1.6.7",
+    "graphql-request": "^6.1.0",
+    "qs": "^6.11.2",
+    "web3": "^4.6.0"
+  },
+  "devDependencies": {
+    "@types/dotenv-safe": "^8.1.6",
+    "@types/node": "^20.11.25",
+    "eslint": "^8.56.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.29.1",
+    "typescript": "^5.4.2"
+  }
+}
