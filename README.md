@@ -28,14 +28,12 @@ or
 const dimo = new DIMO('Dev');
 ```
 
-To run your script, execute: `npx tsx <script>`;
-
 ### Authentication
 
 In order to authenticate and access private API data, you will need to [authenticate with the DIMO Auth Server](https://docs.dimo.zone/developer-platform/getting-started/authentication). The SDK provides you with all the steps needed in the [Wallet-based Authentication Flow](https://docs.dimo.zone/developer-platform/getting-started/authentication/wallet-based-authentication-flow) in case you need it to build a wallet integration around it. We also offer expedited functions to streamline the multiple calls needed. 
 
 #### Prerequisites for Authentication
-1. A set of `client_id` and `redirect_uri` registered with the DIMO Engineering Team. You can find us either in [Discord](https://chat.dimo.zone) or by filling out [this form](https://dimo.zone/contact) and choose `Developer` from the dropdown menu.
+1. A set of `client_id` and `redirect_uri` (aka `domain`) registered with the DIMO Engineering Team. You can find us either in [Discord](https://chat.dimo.zone) or by filling out [this form](https://dimo.zone/contact) and choose `Developer` from the dropdown menu.
 2. Access to a signer wallet and its private keys. Best practice is to rotate this frequently for security purposes.
 
 > At its core, a Web3 wallet is a software program that stores private keys, which are necessary for accessing blockchain networks and conducting transactions. Unlike traditional wallets, which store physical currency, Web3 wallets store digital assets such as Bitcoin, , and NFTs. 

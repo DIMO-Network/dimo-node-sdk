@@ -5,7 +5,7 @@ import {
     getVehicleDetailsByTokenId,
     listVehicleDefinitionsPerAddress 
 } from './graphql/graphqlQueries.js';
-import { DimoEnvironment } from 'environments';
+import { DimoEnvironment } from './environments';
 
 import { 
     Auth,
@@ -18,7 +18,7 @@ import {
     User, 
     Valuations, 
     VehicleSignalDecoding 
-} from 'api/resources/DimoRestResources';
+} from './api/resources/DimoRestResources';
 
 export class DIMO {
     private graphqlBaseUrl: string;

@@ -11,6 +11,13 @@
     "dimo-node-sdk"
   ],
   "homepage": "https://dimo.zone/developers",
+  "bugs": {
+    "url": "https://github.com/DIMO-Network/dimo-node-sdk/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DIMO-Network/dimo-node-sdk.git"
+  },
   "scripts": {
     "test": "test"
   },
