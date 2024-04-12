@@ -14,7 +14,7 @@ export class Auth extends Resource {
                     'domain': true,
                     'scope': 'openid email',
                     'response_type': 'code',
-                    'address': true
+                    'address': '$client_id'
                 }
             },
             signChallenge: {

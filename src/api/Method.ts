@@ -47,9 +47,16 @@ export async function Method(resource: any, baseUrl: any, params: any = {}, env:
             console.error(`Missing required query parameter: ${key}`);
             throw new Error(`Missing required query parameter: ${key}`);
         }
-        // Keep the constants if they are fed in as strings
-        if (typeof queryParams[key] === 'string') {
-            params[key] = queryParams[key]
+        if (queryParams[key][0] === '$') {
+            const variableKey = queryParams[key].substring(1); // Remove the leading $
+            if (params[variableKey]) {
+                params[key] = params[variableKey]; // Set the value based on the value of the variable key
+            } else {
+                console.error(`Variable key '${variableKey}' not found in params`);
+                throw new Error(`Variable key '${variableKey}' not found in params`);
+            }
+        } else if (typeof queryParams[key] === 'string') {
+            params[key] = queryParams[key];
         }
     }
 
