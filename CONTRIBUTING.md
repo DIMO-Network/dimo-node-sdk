@@ -4,7 +4,7 @@ Thank you for your interest in contributing to the DIMO Hello World repository! 
 ## API Resource Data Structure
 In the SDK, each `functionName` maps to a specific path for an API endpoint, the `method` will be passed in the corresponding HTTP calls. The SDK supports CRUD operations for a REST API but also includes a `FUNCTION` method to call utility functions. Add `queryParams`, `body`, `headers`, `auth`, and `return` according to how the endpoint behaves.
 
-- `body` and `queryParams`, : Sets the requirements for body or query parameters. Anything that is marked `true` will be required, whereas `false` marks it as optional. You can also pass in a fixed value for constants.
+- `body` and `queryParams`, : Sets the requirements for body or query parameters. Anything that is marked `true` will be required, whereas `false` marks it as optional. You can also pass in a fixed strings for constants. To source the value of one query parameter from another query parameter, you can simply prepend a `$` (i.e. `queryParam3: '$queryParam1'` fixes queryParam3 to whatever is passed in by the user in queryParam1).
 - `headers`: Dynamically inserts header key-value pair, this is typically used when the endpoint accepts a specific header.
 - `auth`: This defines whether the endpoint requires a `access_token` or a `privilege_token`.
 - `return`: This defines what the endpoint returns for a more user-friendly experience. Only Auth endpoints will return `access_token`, and Token Exchange endpoint will return `privilege_token`. **You will likely not use this at all**.
@@ -16,7 +16,7 @@ In the SDK, each `functionName` maps to a specific path for an API endpoint, the
   queryParams: {
     'queryParam1': false,
     'queryParam2': true,
-    'queryParam3': '<queryParamValue>'
+    'queryParam3': '<queryParamValue>' || '<$queryParam1>'
   },
   body: {
     'bodyParam1': false,
