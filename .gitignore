@@ -17,6 +17,8 @@ typings/
 .env.test.local
 .env.production.local
 
+.client_secrets.json*
+
 # Debug logs
 npm-debug.log*
 yarn-debug.log*

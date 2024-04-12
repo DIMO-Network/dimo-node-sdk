@@ -1,6 +1,6 @@
 
 # DIMO NodeJS Developer SDK
-This is an official DIMO Developer SDK written in NodeJS/TypeScript. The objective of this project is to make our API more accessible to the general public. DIMO offers a grants program for SDK contributions, please reach out to developers@dimo.zone to learn more.
+This is an official DIMO Developer SDK written in NodeJS/TypeScript. The objective of this project is to make our API more accessible to the general public. DIMO also offers a bounty program for SDK contributions, please fill [this form and select Developer](https://dimo.zone/contact) to contact us for more information.
 
 ## Installation
 ```bash
@@ -27,18 +27,25 @@ or
 ```js
 const dimo = new DIMO('Dev');
 ```
+### Developer License
+As part of the authentication process, you will need to register a set of `client_id` and `redirect_uri` (aka `domain`) on the DIMO Network. The [DIMO Developer License](https://docs.dimo.zone/developer-platform/getting-started/developer-license) is our approach and design to a more secured, decentralized access control. As a developer, you will need to perform the following steps:
+
+1. [Approving the Dev License to use of $DIMO](https://docs.dimo.zone/developer-platform/getting-started/developer-license/licensing-process#step-1-approving-the-dev-license-to-use-of-usddimo)
+2. [Issue the Dev License](https://docs.dimo.zone/developer-platform/getting-started/developer-license/licensing-process#step-2-issue-the-dev-license) (Get a `client_id` assigned to you)
+3. [Configuring the Dev License](https://docs.dimo.zone/developer-platform/getting-started/developer-license/licensing-process#step-3-configuring-the-dev-license) (Set `redirect_uri` aka `domain`)
+4. [Enable Signer(s)](https://docs.dimo.zone/developer-platform/getting-started/developer-license/licensing-process#step-4-enable-signer-s), the `private_key` of this signer will be required for API access
 
 ### Authentication
 
 In order to authenticate and access private API data, you will need to [authenticate with the DIMO Auth Server](https://docs.dimo.zone/developer-platform/getting-started/authentication). The SDK provides you with all the steps needed in the [Wallet-based Authentication Flow](https://docs.dimo.zone/developer-platform/getting-started/authentication/wallet-based-authentication-flow) in case you need it to build a wallet integration around it. We also offer expedited functions to streamline the multiple calls needed. 
 
 #### Prerequisites for Authentication
-1. A set of `client_id` and `redirect_uri` (aka `domain`) registered with the DIMO Engineering Team. You can find us either in [Discord](https://chat.dimo.zone) or by filling out [this form](https://dimo.zone/contact) and choose `Developer` from the dropdown menu.
+1. A valid Developer License.
 2. Access to a signer wallet and its private keys. Best practice is to rotate this frequently for security purposes.
 
 > At its core, a Web3 wallet is a software program that stores private keys, which are necessary for accessing blockchain networks and conducting transactions. Unlike traditional wallets, which store physical currency, Web3 wallets store digital assets such as Bitcoin, , and NFTs. 
 
-NOTE: The signer wallet here should be different from the wallet for your [DIMO Developer License](https://github.com/DIMO-Network/developer-license-donotus)
+NOTE: The signer wallet here is recommended to be different from the spender or holder wallet for your [DIMO Developer License](https://github.com/DIMO-Network/developer-license-donotus).
 
 #### REST API Authentication
 
@@ -48,7 +55,7 @@ The SDK offers 3 basic functions that maps to the steps listed in [Wallet-based 
   const challenge = await dimo.auth.generateChallenge({
     client_id: '<client_id>',
     domain: '<domain>',
-    address: '<0x_address>'
+    address: '<client_id>'
   });
 
   const signature = await dimo.auth.signChallenge({
@@ -64,14 +71,13 @@ The SDK offers 3 basic functions that maps to the steps listed in [Wallet-based 
   });
 ```
 
-As mentioned earlier, this is the streamlined function call to directly get the `access_token`:
+As mentioned earlier, this is the streamlined function call to directly get the `access_token`. The `address` field in challenge generation is omitted since it is essentially the `client_id` of your application per Developer License:
 
 ```js
 const authHeader = await dimo.auth.getToken({
   client_id: '<client_id>',
   domain: '<domain>',
   privateKey: '<private_key>',
-  address: '<0x_address>'
 });
 ```
 
@@ -135,7 +141,9 @@ dimo.devicedefinitions.getById({ id: '26G4j1YDKZhFeCsn12MAlyU3Y2H' })
 
 #### Privilege Tokens
 
-As the 2nd leg of the API authentication, applications may exchange for short-lived privilege tokens for specific vehicles that granted privileges to the app. This uses the [DIMO Token Exchange API](https://docs.dimo.zone/developer-platform/api-references/dimo-protocol/token-exchange-api/token-exchange-api-endpoints).
+As the 2nd leg of the API authentication, applications may exchange for short-lived privilege tokens for specific vehicles that granted privileges to the app. This uses the [DIMO Token Exchange API](https://docs.dimo.zone/developer-platform/api-references/dimo-protocol/token-exchange-api/token-exchange-api-endpoints). 
+
+For the end users of your application, they will need to share their vehicle permissions via the DIMO Mobile App or through your own implementation of privilege sharing functions - this should be built on the [`setPrivilege` function of the DIMO Vehicle Smart Contract](https://polygonscan.com/address/0xba5738a18d83d41847dffbdc6101d37c69c9b0cf#writeProxyContract).
 
 Typically, any endpoints that uses a NFT `tokenId` in path parameters will require privilege tokens. You can get the privilege token and pipe it through to corresponding endpoints like this:  
 

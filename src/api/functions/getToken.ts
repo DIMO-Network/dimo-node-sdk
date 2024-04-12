@@ -7,7 +7,7 @@ export async function getToken(input: { client_id: string, domain: string, priva
     const challenge = await sdk.auth.generateChallenge({
         client_id: input.client_id,
         domain: input.domain,
-        address: input.address
+        address: input.client_id
     });
 
     const sign = await sdk.auth.signChallenge({

@@ -10,7 +10,8 @@ export class Devices extends Resource {
                 method: 'POST',
                 path: '/v1/user/devices',
                 body: {
-                    user_device: true,
+                    countryCode: true,
+                    deviceDefinitionId: true
                 },
                 auth: 'access_token'
             },
@@ -18,7 +19,9 @@ export class Devices extends Resource {
                 method: 'POST',
                 path: '/v1/user/devices/fromsmartcar',
                 body: {
-                    user_device: true,
+                    code: true,
+                    countryCode: true,
+                    redirectURI: true
                 },
                 auth: 'access_token'
             },
@@ -26,7 +29,9 @@ export class Devices extends Resource {
                 method: 'POST',
                 path: '/v1/user/devices/fromvin',
                 body: {
-                    user_device: true,
+                    canProtocol: false,
+                    countryCode: true,
+                    vin: true
                 },
                 auth: 'access_token'
             },
