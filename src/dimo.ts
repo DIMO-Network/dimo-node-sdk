@@ -1,13 +1,8 @@
-import { request } from 'graphql-request';
-import fs from 'fs';
-
-import { 
-    countDimoVehicles, 
-    getVehicleDetailsByTokenId,
-    listVehicleDefinitionsPerAddress 
-} from './graphql/graphqlQueries.js';
 import { DimoEnvironment } from './environments';
 import { DimoError } from './errors';
+import axios, { AxiosResponse } from 'axios';
+import fs from 'fs';
+import * as graphqlQueries from './graphql/resources/index';
 
 import { 
     Auth,
@@ -66,7 +61,7 @@ export class DIMO {
 
     // GraphQL Queries
     async countDimoVehicles() {
-        const query = countDimoVehicles();
+        const query = graphqlQueries.countDimoVehicles();
         return this.makeGraphqlRequest(query);
     } 
 
@@ -81,7 +76,7 @@ export class DIMO {
         if (!limit) {
             limit = 10;
         };
-        const query = listVehicleDefinitionsPerAddress(address, limit);
+        const query = graphqlQueries.listVehicleDefinitionsPerAddress(address, limit);
         return this.makeGraphqlRequest(query);
     }
 
@@ -89,19 +84,23 @@ export class DIMO {
         if (!tokenId) {
             throw new Error('Missing token ID input, check again');
         }
-        const query = getVehicleDetailsByTokenId(tokenId);
+        const query = graphqlQueries.getVehicleDetailsByTokenId(tokenId);
         return this.makeGraphqlRequest(query);
     }
 
     // Generic GraphQL Methods
     async makeGraphqlRequest(queryOrMutation: string, variables: any = {}): Promise<any> {
         const headers = {
+            'Content-Type': 'application/json',
             'User-Agent': 'dimo-node-sdk'
         };
 
         try {
-            const data = await request(this.graphqlBaseUrl, queryOrMutation, variables, headers);
-            return data;
+            const response: AxiosResponse = await axios.post(this.graphqlBaseUrl, {
+                query: queryOrMutation,
+                variables: variables
+            }, { headers });
+            return response.data;
         } catch (error) {
             console.error('GraphQL request failed:', error);
             throw new DimoError({

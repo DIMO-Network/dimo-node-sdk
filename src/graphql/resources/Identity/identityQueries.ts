@@ -1,7 +1,4 @@
-import { gql } from 'graphql-request';
-
-
-export const countDimoVehicles = () => gql`
+export const countDimoVehicles = () => `
     { 
         vehicles (first:10) {
             totalCount,
@@ -9,7 +6,7 @@ export const countDimoVehicles = () => gql`
     }
 `;
 
-export const listVehicleDefinitionsPerAddress = (address: string, limit: number) => gql`
+export const listVehicleDefinitionsPerAddress = (address: string, limit: number) => `
 {
     vehicles(filterBy: {owner: "${address}"}, first: ${limit}) {
       nodes {
@@ -31,7 +28,7 @@ export const listVehicleDefinitionsPerAddress = (address: string, limit: number)
   }
 `;
 
-export const getVehicleDetailsByTokenId = (tokenId: number) => gql`
+export const getVehicleDetailsByTokenId = (tokenId: number) => `
 {
     vehicle (tokenId: ${tokenId}) {
       aftermarketDevice {
