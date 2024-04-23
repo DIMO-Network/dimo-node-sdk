@@ -98,12 +98,17 @@ await dimo.tokenexchange.exchange({
 ```
 
 ##### (Option 3) Credentials.json File
-By loading a valid `.credentials.json`, you can easily call `dimo.authenticate()` if you prefer to manage your credentials differently. Instead of calling the `Auth` endpoint, you would directly interact with the SDK main class:
+By loading a valid `.credentials.json`, you can easily call `dimo.authenticate()` if you prefer to manage your credentials differently. Instead of calling the `Auth` endpoint, you would directly interact with the SDK main class.
+
+Start by navigating to the SDK directory that was installed, if you used NPM, you can execute `npm list -g | dimo` to find the directory. In the root directory of the SDK, there will be `.credentials.json.example` - simply remove the `.example` extension to proceed with authentication:
 
 ```js
-dimo.authenticate();
+// After .credentials.json are provided
+const authHeader = await dimo.authenticate();
+// The rest would be the same as option 2
 ```
 
+(We're reserving this as a function in the near future, where Build on DIMO Developer Console users will be able to export their credentials directly from the UI and work with the SDK)
 
 ### Querying the DIMO REST API
 The SDK supports async await and your typical JS Promises. HTTP operations can be utilized in either ways:

@@ -7,6 +7,7 @@ import {
     listVehicleDefinitionsPerAddress 
 } from './graphql/graphqlQueries.js';
 import { DimoEnvironment } from './environments';
+import { DimoError } from './errors';
 
 import { 
     Auth,
@@ -71,7 +72,10 @@ export class DIMO {
 
     async listVehicleDefinitionsPerAddress(address: string, limit: number) {
         if (!address) {
-            throw new Error('Missing address input, check again'); 
+            throw new DimoError({
+                message: 'Missing address input, check again',
+                statusCode: 400
+            }); 
         }
         // Set default value for limit
         if (!limit) {
@@ -100,7 +104,10 @@ export class DIMO {
             return data;
         } catch (error) {
             console.error('GraphQL request failed:', error);
-            throw error;
+            throw new DimoError({
+                message: 'GraphQL request failed, check your query again',
+                statusCode: 400
+            });
         }
     }
 

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as functionIndex from '../api/functions/';
 import { DimoEnvironment } from 'environments';
+import { DimoError } from 'errors';
 
 export async function Method(resource: any, baseUrl: any, params: any = {}, env: keyof typeof DimoEnvironment) {
 
@@ -14,7 +15,10 @@ export async function Method(resource: any, baseUrl: any, params: any = {}, env:
         if (params.headers.Authorization) {
             headers = params.headers;
         } else {
-            throw new Error(`Access token not provided for ${resource.auth} authentication`);
+            throw new DimoError({
+                message: `Access token not provided for ${resource.auth} authentication`,
+                statusCode: 401
+            });
         }
     }
 
@@ -30,7 +34,10 @@ export async function Method(resource: any, baseUrl: any, params: any = {}, env:
             // Call the dynamic function with params and pass the necessary arguments
             return dynamicFunction(params, env);
         } else {
-            throw new Error(`Function in ${resource.path} is not a valid function.`);
+            throw new DimoError({
+                message: `Function in ${resource.path} is not a valid function.`,
+                statusCode: 400
+            });
         }
     }
     
@@ -45,7 +52,10 @@ export async function Method(resource: any, baseUrl: any, params: any = {}, env:
         // We'll fail early if there's a missing required query param from the user
         if (queryParams[key] === true && !params[key]) {
             console.error(`Missing required query parameter: ${key}`);
-            throw new Error(`Missing required query parameter: ${key}`);
+            throw new DimoError({
+                message: `Missing required query parameter: ${key}`,
+                statusCode: 400
+            });
         }
         if (queryParams[key][0] === '$') {
             const variableKey = queryParams[key].substring(1); // Remove the leading $
@@ -53,7 +63,10 @@ export async function Method(resource: any, baseUrl: any, params: any = {}, env:
                 params[key] = params[variableKey]; // Set the value based on the value of the variable key
             } else {
                 console.error(`Variable key '${variableKey}' not found in params`);
-                throw new Error(`Variable key '${variableKey}' not found in params`);
+                throw new DimoError({
+                    message: `Variable key '${variableKey}' not found in params`,
+                    statusCode: 400
+                });
             }
         } else if (typeof queryParams[key] === 'string') {
             params[key] = queryParams[key];
@@ -88,7 +101,9 @@ export async function Method(resource: any, baseUrl: any, params: any = {}, env:
             if (typeof resource.body[key] === 'boolean') {
                 if (!params[key]) {
                     console.error(`Missing required body parameter: ${key}`);
-                    throw new Error(`Missing required body parameter: ${key}`);
+                    throw new DimoError({
+                        message: `Missing required body parameter: ${key}`
+                    });
                 } else {
                     body[key] = params[key];
                 }
@@ -97,12 +112,6 @@ export async function Method(resource: any, baseUrl: any, params: any = {}, env:
             }
         }
     }
-
-    // console.log('Body: ', body);
-    // console.log('Headers: ', headers);
-    // console.log('User Defined Params: ', params);
-    // console.log('URL: ', url);
-    // console.log('============================')
 
     try {
         const response = await axios({
@@ -130,6 +139,10 @@ export async function Method(resource: any, baseUrl: any, params: any = {}, env:
         return { headers: authHeader };
     } catch (error: any) {
         console.error('API call error:', error.response.data);
-        // throw error;
+        throw new DimoError({
+            message: `API call error: ${error.response.data.message}`,
+            statusCode: error.response.data.code,
+            body: error.response.data
+        });
     }
 }
