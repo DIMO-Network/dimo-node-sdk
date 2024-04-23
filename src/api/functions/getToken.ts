@@ -1,7 +1,7 @@
 import { DIMO } from '../../dimo';
 import { DimoEnvironment } from 'environments';
 
-export async function getToken(input: { client_id: string, domain: string, privateKey: string, address: string }, env: keyof typeof DimoEnvironment) {
+export async function getToken(input: { client_id: string, domain: string, private_key: string, address: string }, env: keyof typeof DimoEnvironment) {
     const sdk = new DIMO(env);
 
     const challenge = await sdk.auth.generateChallenge({
@@ -12,7 +12,7 @@ export async function getToken(input: { client_id: string, domain: string, priva
 
     const sign = await sdk.auth.signChallenge({
         message: challenge.challenge, 
-        privateKey: input.privateKey
+        private_key: input.private_key
     });
 
     const submit = await sdk.auth.submitChallenge({

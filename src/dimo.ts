@@ -1,4 +1,5 @@
 import { request } from 'graphql-request';
+import fs from 'fs';
 
 import { 
     countDimoVehicles, 
@@ -48,6 +49,18 @@ export class DIMO {
         this.user = new User(DimoEnvironment[env], env);
         this.valuations = new Valuations(DimoEnvironment[env], env);
         this.vehiclesignaldecoding = new VehicleSignalDecoding(DimoEnvironment[env], env);
+    }
+
+    // Helper Function
+    async authenticate() {
+        const credentials = JSON.parse(fs.readFileSync('.credentials.json', 'utf8'));
+        // Call getToken with credentials
+        const authHeader = await this.auth.getToken({
+            client_id: credentials.client_id,
+            domain: credentials.redirect_uri,
+            private_key: credentials.private_key,
+        });
+        return authHeader;
     }
 
     // GraphQL Queries

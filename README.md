@@ -49,7 +49,8 @@ NOTE: The signer wallet here is recommended to be different from the spender or 
 
 #### REST API Authentication
 
-The SDK offers 3 basic functions that maps to the steps listed in [Wallet-based Authentication Flow](https://docs.dimo.zone/developer-platform/getting-started/authentication/wallet-based-authentication-flow): `generateChallenge`, `signChallenge`, and `submitChallenge`. You can use these accordingly depending on how you build your application.
+##### (Option 1) 3-Step Function Calls
+The SDK offers 3 basic functions that maps to the steps listed in [Wallet-based Authentication Flow](https://docs.dimo.zone/developer-platform/getting-started/authentication/wallet-based-authentication-flow): `generateChallenge`, `signChallenge`, and `submitChallenge`. You can use them accordingly depending on how you build your application.
 
 ```js
   const challenge = await dimo.auth.generateChallenge({
@@ -60,7 +61,7 @@ The SDK offers 3 basic functions that maps to the steps listed in [Wallet-based 
 
   const signature = await dimo.auth.signChallenge({
     message: challenge.challenge, 
-    privateKey: '<private_key>'
+    private_key: '<private_key>'
   });
 
   const tokens = await dimo.auth.submitChallenge({
@@ -70,14 +71,14 @@ The SDK offers 3 basic functions that maps to the steps listed in [Wallet-based 
     signature: signature
   });
 ```
-
+##### (Option 2) Auth Endpoint Shortcut Function
 As mentioned earlier, this is the streamlined function call to directly get the `access_token`. The `address` field in challenge generation is omitted since it is essentially the `client_id` of your application per Developer License:
 
 ```js
 const authHeader = await dimo.auth.getToken({
   client_id: '<client_id>',
   domain: '<domain>',
-  privateKey: '<private_key>',
+  private_key: '<private_key>',
 });
 ```
 
@@ -95,6 +96,14 @@ await dimo.tokenexchange.exchange({
 });
 
 ```
+
+##### (Option 3) Credentials.json File
+By loading a valid `.credentials.json`, you can easily call `dimo.authenticate()` if you prefer to manage your credentials differently. Instead of calling the `Auth` endpoint, you would directly interact with the SDK main class:
+
+```js
+dimo.authenticate();
+```
+
 
 ### Querying the DIMO REST API
 The SDK supports async await and your typical JS Promises. HTTP operations can be utilized in either ways:
