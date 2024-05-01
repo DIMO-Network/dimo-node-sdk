@@ -3,7 +3,7 @@ import * as functionIndex from '../api/functions/';
 import { DimoEnvironment } from 'environments';
 import { DimoError } from 'errors';
 
-export async function Method(resource: any, baseUrl: any, params: any = {}, env: keyof typeof DimoEnvironment) {
+export const Method = async(resource: any, baseUrl: any, params: any = {}, env: keyof typeof DimoEnvironment) => {
 
     /**
      * Headers
