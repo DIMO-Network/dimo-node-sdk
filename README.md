@@ -47,7 +47,7 @@ In order to authenticate and access private API data, you will need to [authenti
 
 NOTE: The signer wallet here is recommended to be different from the spender or holder wallet for your [DIMO Developer License](https://github.com/DIMO-Network/developer-license-donotus).
 
-#### REST API Authentication
+#### API Authentication
 
 ##### (Option 1) 3-Step Function Calls
 The SDK offers 3 basic functions that maps to the steps listed in [Wallet-based Authentication Flow](https://docs.dimo.zone/developer-platform/getting-started/authentication/wallet-based-authentication-flow): `generateChallenge`, `signChallenge`, and `submitChallenge`. You can use them accordingly depending on how you build your application.
@@ -174,23 +174,47 @@ await dimo.devicedata.getVehicleStatus({
 });
 ```
 
-### Querying the DIMO Identity GraphQL API
+### Querying the DIMO GraphQL API
 
-The SDK accepts any type of valid custom GraphQL queries, but we've also included a few sample queries, namely `countDimoVehicles`, `listVehicleDefinitionsPerAddress`, and `getVehicleDetailsByTokenId` to help you understand the DIMO Identity API. 
+The SDK accepts any type of valid custom GraphQL queries, but we've also included a few sample queries to help you understand the DIMO GraphQL APIs. 
 
-#### Send a custom GraphQL query
-To send a custom GraphQL query, you can simply call the `makeGraphqlRequest` function and pass in any valid GraphQL query. To check whether your GraphQL query is valid, please visit our [Identity API GraphQL Playground](https://identity-api.dimo.zone/).
+#### Authentication for GraphQL API
+The GraphQL entry points are designed almost identical to the REST API entry points. For any GraphQL API that requires auth headers (Telemetry API for example), you can use the same pattern as you would in the REST protected endpoints.
 
 ```js
-const query = `{ 
+const privToken = await dimo.tokenexchange.exchange({
+    ...auth,
+    privileges: [1, 3, 4],
+    tokenId: <vehicle_token_id>
+});
+
+const tele = await dimo.telemetry.query({
+  ...privToken,
+  query: `
+    query {
+      some_valid_GraphQL_query
+    }
+  `
+});
+```
+
+#### Send a custom GraphQL query
+To send a custom GraphQL query, you can simply call the `query` function on any GraphQL API Endpoints and pass in any valid GraphQL query. To check whether your GraphQL query is valid, please visit our [Identity API GraphQL Playground](https://identity-api.dimo.zone/) or [Telemetry API GraphQL Playground](https://telemetry-api.dimo.zone/).
+
+```js
+const yourQuery = `{ 
     vehicles (first:10) {
       totalCount
     }
 }`;
 
-const totalNetworkVehicles = await dimo.makeGraphqlRequest(query);
+const totalNetworkVehicles = await dimo.identity.query({
+  query: yourQuery
+});
 
 ```
+
+This GraphQL API query is equivalent to calling `dimo.identity.countDimoVehicles()`.
 
 ## How to Contribute to the SDK
 Read more about contributing [here](https://github.com/DIMO-Network/dimo-node-sdk/blob/master/CONTRIBUTING.md).
