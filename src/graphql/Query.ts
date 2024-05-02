@@ -4,7 +4,6 @@ import { DimoError } from 'errors';
 
 // GraphQL query factory function
 export const Query = async(resource: any, baseUrl: any, params: any = {}, env: keyof typeof DimoEnvironment) => {
-
     /**
      * Headers
      */
@@ -67,8 +66,6 @@ export const Query = async(resource: any, baseUrl: any, params: any = {}, env: k
 };
 
 export const CustomQuery = async (resource: any, baseUrl: string, params: any = {}, env: keyof typeof DimoEnvironment) => {
-    // console.log(resource.query, params, baseUrl, env);
-
     /**
      * Headers
      */
@@ -93,7 +90,6 @@ export const CustomQuery = async (resource: any, baseUrl: string, params: any = 
     }
 
     const query = params.query || {};
-    console.log(headers)
     try {
         const response = await axios({
             method: 'POST',
