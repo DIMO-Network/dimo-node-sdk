@@ -9,15 +9,32 @@ export class Telemetry extends Resource {
             query: true,
         }), 
         this.setQueries({
-            doSomethingElse: {
+            getLatestSignals: {
                 auth: 'privilege_token',
+                params: {
+                    tokenId: true
+                },
                 query: `
-                { 
-                    vehicles (first:10) {
-                        totalCount,
+                query {
+                    SignalsLatest(tokenID: $tokenId){
+                        powertrainTransmissionTravelledDistance {
+                            timestamp
+                            value
+                        }
+                        exteriorAirTemperature {
+                            timestamp
+                            value
+                        }
+                        speed{
+                            timestamp
+                            value
+                        }
+                        powertrainType{
+                            timestamp
+                            value
+                        }
                     }
-                }
-                `
+                }`
             }
         })
     }
