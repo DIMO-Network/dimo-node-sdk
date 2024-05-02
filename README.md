@@ -43,7 +43,7 @@ In order to authenticate and access private API data, you will need to [authenti
 1. A valid Developer License.
 2. Access to a signer wallet and its private keys. Best practice is to rotate this frequently for security purposes.
 
-> At its core, a Web3 wallet is a software program that stores private keys, which are necessary for accessing blockchain networks and conducting transactions. Unlike traditional wallets, which store physical currency, Web3 wallets store digital assets such as Bitcoin, , and NFTs. 
+> At its core, a Web3 wallet is a software program that stores private keys, which are necessary for accessing blockchain networks and conducting transactions. Unlike traditional wallets, which store physical currency, Web3 wallets store digital assets such as Bitcoin, Ethereum, and NFTs. 
 
 NOTE: The signer wallet here is recommended to be different from the spender or holder wallet for your [DIMO Developer License](https://github.com/DIMO-Network/developer-license-donotus).
 
