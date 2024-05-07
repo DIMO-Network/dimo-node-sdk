@@ -1,6 +1,6 @@
 import { Resource } from '../../Resource';
 import { DimoConstants } from '../../../constants';
-import { DimoEnvironment } from 'environments';
+import { DimoEnvironment } from '../../../environments';
 
 export class TokenExchange extends Resource {
 

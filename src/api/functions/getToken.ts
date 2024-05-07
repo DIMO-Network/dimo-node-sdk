@@ -1,5 +1,5 @@
 import { DIMO } from '../../dimo';
-import { DimoEnvironment } from 'environments';
+import { DimoEnvironment } from '../../environments';
 
 export const getToken = async(input: { client_id: string, domain: string, private_key: string, address: string }, env: keyof typeof DimoEnvironment) => {
     const sdk = new DIMO(env);

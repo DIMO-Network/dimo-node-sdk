@@ -1,6 +1,4 @@
 import { DimoEnvironment } from './environments';
-import { DimoError } from './errors';
-import axios, { AxiosResponse } from 'axios';
 import fs from 'fs';
 
 import {

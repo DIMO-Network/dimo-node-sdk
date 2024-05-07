@@ -1,5 +1,5 @@
 import { CustomQuery, Query } from './Query';
-import { DimoEnvironment } from 'environments';
+import { DimoEnvironment } from '../environments';
 
 export interface Resource {
     [key: string]: (...args: any) => any;
@@ -22,7 +22,6 @@ export class Resource {
                 resources[key], // Setup the endpoint resources
                 this.api[this.resourceName], // Setup the base URL
                 params, // Pass through the params
-                this.env // Identiy the environment
             );
         });
     }
@@ -37,7 +36,6 @@ export class Resource {
                 resources, // Setup the endpoint resources
                 this.api[this.resourceName], // Setup the base URL
                 params, // Pass through the params
-                this.env // Identiy the environment
             );
         });
 

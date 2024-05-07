@@ -1,6 +1,6 @@
 import { Web3 } from 'web3';
 import { DimoConstants } from '../../constants';
-import { DimoEnvironment } from 'environments';
+import { DimoEnvironment } from '../../environments';
 
 export const signChallenge = async(input: { message: string, private_key: string }, env: keyof typeof DimoEnvironment) => {
     const web3 = new Web3(DimoConstants[env].RPC_provider);

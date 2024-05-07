@@ -1,9 +1,8 @@
 import axios from 'axios';
-import { DimoEnvironment } from 'environments';
-import { DimoError } from 'errors';
+import { DimoError } from '../errors';
 
 // GraphQL query factory function
-export const Query = async(resource: any, baseUrl: any, params: any = {}, env: keyof typeof DimoEnvironment) => {
+export const Query = async(resource: any, baseUrl: any, params: any = {}) => {
     /**
      * Headers
      */
@@ -65,7 +64,7 @@ export const Query = async(resource: any, baseUrl: any, params: any = {}, env: k
     }
 };
 
-export const CustomQuery = async (resource: any, baseUrl: string, params: any = {}, env: keyof typeof DimoEnvironment) => {
+export const CustomQuery = async (resource: any, baseUrl: string, params: any = {}) => {
     /**
      * Headers
      */

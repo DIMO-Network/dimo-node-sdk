@@ -1,5 +1,5 @@
 import { Resource } from '../../Resource';
-import { DimoEnvironment } from 'environments';
+import { DimoEnvironment } from '../../../environments';
 
 export class Telemetry extends Resource {
     constructor(api: any, env: keyof typeof DimoEnvironment) {

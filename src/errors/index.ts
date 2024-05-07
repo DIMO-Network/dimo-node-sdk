@@ -1,1 +1,1 @@
-export { DimoError } from './DimoError';
+export * from './DimoError';
