@@ -1,3 +1,9 @@
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/dimo-network/dimo-node-sdk/npm-publish.yml?style=flat-square)
+![GitHub top language](https://img.shields.io/github/languages/top/dimo-network/dimo-node-sdk?style=flat-square)
+![GitHub License](https://img.shields.io/github/license/dimo-network/dimo-node-sdk?style=flat-square)
+[![Downloads](https://img.shields.io/npm/d18m/@dimo-network/dimo-node-sdk.svg?style=flat-square)](https://www.npmjs.com/package/@dimo-network/dimo-node-sdk)
+[![Discord](https://img.shields.io/discord/892438668453740634)](https://chat.dimo.zone/)
+![X (formerly Twitter) URL](https://img.shields.io/twitter/url?url=https%3A%2F%2Ftwitter.com%2FDIMO_Network&style=social)
 
 # DIMO NodeJS Developer SDK
 This is an official DIMO Developer SDK written in NodeJS/TypeScript. The objective of this project is to make our API more accessible to the general public. DIMO also offers a bounty program for SDK contributions, please fill [this form and select Developer](https://dimo.zone/contact) to contact us for more information.
