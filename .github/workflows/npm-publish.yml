@@ -31,6 +31,10 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org/
       - run: npm ci
+      - name: Run build
+        run: npm run build
+      - name: Check dist directory
+        run: ls dist/
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
