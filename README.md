@@ -9,8 +9,15 @@
 This is an official DIMO Developer SDK written in NodeJS/TypeScript. The objective of this project is to make our API more accessible to the general public. DIMO also offers a bounty program for SDK contributions, please fill [this form and select Developer](https://dimo.zone/contact) to contact us for more information.
 
 ## Installation
+Use [npm](https://www.npmjs.com/package/@dimo-network/dimo-node-sdk):
 ```bash
 npm install @dimo-network/dimo-node-sdk
+```
+
+or use [yarn](https://classic.yarnpkg.com/en/package/@dimo-network/dimo-node-sdk) instead:
+
+```bash
+yarn add @dimo-network/dimo-node-sdk
 ```
 
 ## API Documentation
