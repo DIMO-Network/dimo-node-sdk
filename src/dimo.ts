@@ -1,5 +1,4 @@
 import { DimoEnvironment } from './environments';
-import fs from 'fs';
 
 import {
     Identity,
@@ -54,13 +53,37 @@ export class DIMO {
 
     // Helper Function
     async authenticate() {
-        const credentials = JSON.parse(fs.readFileSync('.credentials.json', 'utf8'));
-        // Call getToken with credentials
-        const authHeader = await this.auth.getToken({
-            client_id: credentials.client_id,
-            domain: credentials.redirect_uri,
-            private_key: credentials.private_key,
-        });
-        return authHeader;
+        let fs;
+        try {
+            // Dynamically import fs
+            if (typeof process !== 'undefined' && process.versions && process.versions.node) {
+                fs = await import('fs');
+            } else {
+                // Optionally handle the case where 'fs' is not available, returns null
+                console.log('Not in Node.js environment; `fs` module is not available.');
+                return null;
+            }
+
+            if (!fs.existsSync('.credentials.json')) {
+                throw new Error('Credentials file does not exist');
+            }
+    
+            const data = fs.readFileSync('.credentials.json', 'utf8');
+            const credentials = JSON.parse(data);
+    
+            const authHeader = await this.auth.getToken({
+                client_id: credentials.client_id,
+                domain: credentials.redirect_uri,
+                private_key: credentials.private_key,
+            });
+            
+            return authHeader;
+
+        } catch (error: any) {
+            // Handle file not existing and other errors
+            console.error('Failed to authenticate:', error.message);
+            // Decide whether to throw the error or handle it differently
+            throw new Error('Authentication failed');
+        }
     }
 }

@@ -11,10 +11,11 @@
     "forceConsistentCasingInFileNames": true,            /* Ensure that casing is correct in imports. */
     "strict": true,                                      /* Enable all strict type-checking options. */
     "noUnusedParameters": true,                       /* Raise an error when a function parameter isn't read. */
-    "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
+    "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
+    "types": ["node"]
   },
   "include": [
-    "src"
+    "src", "node"
   ],
   "exclude": [],
   "ts-node": {
