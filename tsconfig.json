@@ -12,12 +12,12 @@
     "strict": true,                                      /* Enable all strict type-checking options. */
     "noUnusedParameters": true,                       /* Raise an error when a function parameter isn't read. */
     "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
-    "types": ["node"]
+    "types": ["node", "jest"]
   },
   "include": [
     "src", "node"
   ],
-  "exclude": [],
+  "exclude": ["node_modules", "**/*.spec.ts"],
   "ts-node": {
     "esm": true
   },

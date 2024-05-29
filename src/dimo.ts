@@ -33,22 +33,22 @@ export class DIMO {
     public vehiclesignaldecoding: VehicleSignalDecoding;
 
     constructor(env: keyof typeof DimoEnvironment) {
-        this.identity = new Identity(DimoEnvironment[env], env);
-        this.telemetry = new Telemetry(DimoEnvironment[env], env);
+        this.identity = new Identity(DimoEnvironment[env].Identity, env);
+        this.telemetry = new Telemetry(DimoEnvironment[env].Telemetry, env);
 
         /**
          * Set up all REST Endpoints
          */
-        this.auth = new Auth(DimoEnvironment[env], env);
-        this.devicedata = new DeviceData(DimoEnvironment[env], env);
-        this.devicedefinitions = new DeviceDefinitions(DimoEnvironment[env], env);
-        this.devices = new Devices(DimoEnvironment[env], env);
-        this.events = new Events(DimoEnvironment[env], env);
-        this.tokenexchange = new TokenExchange(DimoEnvironment[env], env);
-        this.trips = new Trips(DimoEnvironment[env], env);
-        this.user = new User(DimoEnvironment[env], env);
-        this.valuations = new Valuations(DimoEnvironment[env], env);
-        this.vehiclesignaldecoding = new VehicleSignalDecoding(DimoEnvironment[env], env);
+        this.auth = new Auth(DimoEnvironment[env].Auth, env);
+        this.devicedata = new DeviceData(DimoEnvironment[env].DeviceData, env);
+        this.devicedefinitions = new DeviceDefinitions(DimoEnvironment[env].DeviceDefinitions, env);
+        this.devices = new Devices(DimoEnvironment[env].Devices, env);
+        this.events = new Events(DimoEnvironment[env].Events, env);
+        this.tokenexchange = new TokenExchange(DimoEnvironment[env].TokenExchange, env);
+        this.trips = new Trips(DimoEnvironment[env].Trips, env);
+        this.user = new User(DimoEnvironment[env].User, env);
+        this.valuations = new Valuations(DimoEnvironment[env].Valuations, env);
+        this.vehiclesignaldecoding = new VehicleSignalDecoding(DimoEnvironment[env].VehicleSignalDecoding, env);
     }
 
     // Helper Function

@@ -20,6 +20,9 @@ or use [yarn](https://classic.yarnpkg.com/en/package/@dimo-network/dimo-node-sdk
 yarn add @dimo-network/dimo-node-sdk
 ```
 
+## Unit Testing
+Run `npm test` or `npm run test` to execute the Jest tests.
+
 ## API Documentation
 Please visit the DIMO [Developer Documentation](https://docs.dimo.zone/developer-platform) to learn more about building on DIMO and detailed information on the API.
 

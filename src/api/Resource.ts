@@ -6,9 +6,9 @@ export interface Resource {
 }
 
 export class Resource {
-    protected api: any;
-    protected resourceName: any;
-    protected env: any;
+    public api: any;
+    public resourceName: any;
+    public env: any;
 
     constructor(api: any, resourceName: string, env: keyof typeof DimoEnvironment ) {
         this.api = api;
@@ -20,7 +20,7 @@ export class Resource {
         Object.keys(resources).forEach(key => {
             this[key] = (params: any = {}) => Method(
                 resources[key], // Setup the endpoint resources
-                this.api[this.resourceName], // Setup the base URL
+                this.api, // Setup the base URL
                 params, // Pass through the params
                 this.env // Identiy the environment
             );
