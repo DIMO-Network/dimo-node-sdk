@@ -34,7 +34,7 @@ export class Resource {
         Object.keys(resources).forEach(key => {
             this[key] = (params: any = {}) => CustomQuery(
                 resources, // Setup the endpoint resources
-                this.api[this.resourceName], // Setup the base URL
+                this.api, // Setup the base URL
                 params, // Pass through the params
             );
         });
