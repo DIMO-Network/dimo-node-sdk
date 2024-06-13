@@ -1,4 +1,5 @@
 import { DimoEnvironment } from './environments';
+import { DimoError } from './errors';
 
 import {
     Identity,
@@ -17,6 +18,8 @@ import {
     Valuations, 
     VehicleSignalDecoding 
 } from './api/resources/DimoRestResources';
+
+import { Stream } from './streamr';
 
 export class DIMO {
     public auth: Auth;
@@ -65,7 +68,9 @@ export class DIMO {
             }
 
             if (!fs.existsSync('.credentials.json')) {
-                throw new Error('Credentials file does not exist');
+                throw new DimoError({
+                    message: 'Credentials file does not exist'
+                });
             }
     
             const data = fs.readFileSync('.credentials.json', 'utf8');
@@ -83,7 +88,20 @@ export class DIMO {
             // Handle file not existing and other errors
             console.error('Failed to authenticate:', error.message);
             // Decide whether to throw the error or handle it differently
-            throw new Error('Authentication failed');
+            throw new DimoError({
+                message: 'Authentication failed'
+            });
+        }
+    }
+
+    async stream(streamId: string, clientId: string, privateKey: string, log?: string) {
+        try {
+            return Stream({ streamId, clientId, privateKey, log });
+        } catch (error: any) {
+            console.error('Streaming failed:', error.type);
+            throw new DimoError({
+                message: 'Subscribe to stream failed'
+            });
         }
     }
 }

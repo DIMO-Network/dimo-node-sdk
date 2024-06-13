@@ -51,6 +51,39 @@ As part of the authentication process, you will need to register a set of `clien
 3. [Configuring the Dev License](https://docs.dimo.zone/developer-platform/getting-started/developer-license/licensing-process#step-3-configuring-the-dev-license) (Set `redirect_uri` aka `domain`)
 4. [Enable Signer(s)](https://docs.dimo.zone/developer-platform/getting-started/developer-license/licensing-process#step-4-enable-signer-s), the `private_key` of this signer will be required for API access
 
+### DIMO Streams
+DIMO offers a pub/sub data stream through the [Streamr Network](https://streamr.network/). You can now subscribe to any data stream that has granted privileges to your via the Developer License ([ERC-1271](https://eips.ethereum.org/EIPS/eip-1271) aka Smart Contract Signature Verification).
+
+The SDK utilizes [RxJs Observables](https://rxjs-dev.firebaseapp.com/api/index/class/Observable#constructor()) for developers to handle asynchronous streams. It allows sophisticated operations like transformations, filtering, and combination of multiple streams.
+
+To get started, first create a stream `Observable` by calling `stream()`. Note that the `stream` function takes the following variables: `streamId`, `clientId`, `privateKey`, and `log` (optional).
+
+```js
+const streamObservable = async() => {
+    return await dimo.stream(
+        streamId, // The Streamr Identifier, i.e. `streams.dimo.eth/vehicles/123`
+        clientId, // The clientId of your Developer License
+        privateKey, // The private key of the approved signer
+        log // [Optional] The level of log, defaults to 'info' if not provided. Supports 'silent' | 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace'
+    );
+} 
+```
+The returned `Observable` can be handled by simply subscribing:
+
+```js
+streamObservable.subscribe({
+        next: (msg) => {
+          // handle the msg;
+        },
+        error: (error) => {
+          // error handling
+        },
+        complete: () => {
+          // completing actions
+        }
+    });
+```
+
 ### Authentication
 
 In order to authenticate and access private API data, you will need to [authenticate with the DIMO Auth Server](https://docs.dimo.zone/developer-platform/getting-started/authentication). The SDK provides you with all the steps needed in the [Wallet-based Authentication Flow](https://docs.dimo.zone/developer-platform/getting-started/authentication/wallet-based-authentication-flow) in case you need it to build a wallet integration around it. We also offer expedited functions to streamline the multiple calls needed. 
