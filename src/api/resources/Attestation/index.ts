@@ -7,7 +7,7 @@ export class Attestation extends Resource {
         super(api, 'Attestation', env);
         this.setResource({
             createVinVC: {
-                method: 'GET',
+                method: 'POST',
                 path: '/v1/vc/vin/:tokenId',
                 auth: 'privilege_token'
             }
