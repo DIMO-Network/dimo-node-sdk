@@ -1,3 +1,4 @@
+import { Attestation } from './Attestation';
 import { Auth } from './Auth';
 import { DeviceData } from './DeviceData';
 import { DeviceDefinitions } from './DeviceDefinitions';
@@ -9,4 +10,4 @@ import { User } from './User';
 import { Valuations } from './Valuations';
 import { VehicleSignalDecoding } from './VehicleSignalDecoding';
 
-export { Auth, DeviceData, DeviceDefinitions, Devices, Events, TokenExchange, Trips, User, Valuations, VehicleSignalDecoding };
+export { Attestation, Auth, DeviceData, DeviceDefinitions, Devices, Events, TokenExchange, Trips, User, Valuations, VehicleSignalDecoding };

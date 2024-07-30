@@ -23,7 +23,6 @@ export const Stream = async ({ streamId, clientId, privateKey, log }: StreamOpti
         const setupStream = async () => {
             try {
                 const stream = await client.getStream(streamId);
-
                 await client.subscribe({
                     streamId,
                     erc1271Contract: clientId,
@@ -41,8 +40,8 @@ export const Stream = async ({ streamId, clientId, privateKey, log }: StreamOpti
         };
         setupStream();
 
-        return () => {
-            client.unsubscribe(streamId);
+        return async () => {
+            await client.unsubscribe(streamId);
         }
     }).pipe(
         catchError(error => {
