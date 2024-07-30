@@ -23,7 +23,7 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@streamr/sdk": "^100.2.4",
+    "@streamr/sdk": "^101.0.1",
     "axios": "^1.6.7",
     "fs": "^0.0.1-security",
     "rxjs": "^7.8.1",
