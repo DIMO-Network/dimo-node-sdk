@@ -7,7 +7,8 @@ const dimo = new DIMO(PROD);
 const devDimo = new DIMO(DEV);
 
 describe('Production Environment', () => {
-    test('Production resources are initialized with the correct environment', () => {    
+    test('Production resources are initialized with the correct environment', () => {   
+        expect(dimo.attestation.env).toBe(PROD); 
         expect(dimo.auth.env).toBe(PROD);
         expect(dimo.devicedata.env).toBe(PROD);
         expect(dimo.devicedefinitions.env).toBe(PROD);
@@ -23,6 +24,7 @@ describe('Production Environment', () => {
     });
     
     test('Production API endpoints are defined', () => {
+        expect(dimo.attestation.api).toBeDefined;
         expect(dimo.auth.api).toBeDefined;
         expect(dimo.devicedata.api).toBeDefined;
         expect(dimo.devicedefinitions.api).toBeDefined;
@@ -40,6 +42,7 @@ describe('Production Environment', () => {
 
 describe('Dev Environment', () => {
     test('Dev resources are initialized with the correct environment', () => {    
+        expect(devDimo.attestation.env).toBe(DEV);
         expect(devDimo.auth.env).toBe(DEV);
         expect(devDimo.devicedata.env).toBe(DEV);
         expect(devDimo.devicedefinitions.env).toBe(DEV);
@@ -55,6 +58,7 @@ describe('Dev Environment', () => {
     });
     
     test('Dev API endpoints are defined', () => {
+        expect(devDimo.attestation.api).toBeDefined;
         expect(devDimo.auth.api).toBeDefined;
         expect(devDimo.devicedata.api).toBeDefined;
         expect(devDimo.devicedefinitions.api).toBeDefined;

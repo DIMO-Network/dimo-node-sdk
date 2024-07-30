@@ -139,9 +139,9 @@ await dimo.user.get(auth);
 
 // Pass the auth object to a protected endpoint with body parameters
 await dimo.tokenexchange.exchange({
-    ...auth,
-    privileges: [4],
-    tokenId: <vehicle_token_id>
+  ...auth,
+  privileges: [4],
+  tokenId: <vehicle_token_id>
 });
 
 ```
@@ -162,7 +162,7 @@ const authHeader = await dimo.authenticate();
 ### Querying the DIMO REST API
 The SDK supports async await and your typical JS Promises. HTTP operations can be utilized in either ways:
 
-```js
+```ts
 // Async Await
 async function getAllDeviceMakes() {
   try {
@@ -186,17 +186,17 @@ dimo.devicedefinitions.listDeviceMakes().then((result) => {
 #### Query Parameters
 
 For query parameters, simply feed in an input that matches with the expected query parameters:
-```js
+```ts
 dimo.devicedefinitions.getByMMY({
-    make: '<vehicle_make>',
-    model: '<vehicle_model',
-    year: 2021
+  make: '<vehicle_make>',
+  model: '<vehicle_model',
+  year: 2021
 });
 ```
 #### Path Parameters
 
 For path parameters, simply feed in an input that matches with the expected path parameters:
-```js
+```ts
 dimo.devicedefinitions.getById({ id: '26G4j1YDKZhFeCsn12MAlyU3Y2H' })
 ```
 
@@ -210,16 +210,23 @@ For the end users of your application, they will need to share their vehicle per
 
 Typically, any endpoints that uses a NFT `tokenId` in path parameters will require privilege tokens. You can get the privilege token and pipe it through to corresponding endpoints like this:  
 
-```js
+```ts
 const privToken = await dimo.tokenexchange.exchange({
-    ...auth,
-    privileges: [1],
-    tokenId: <vehicle_token_id>
+  ...auth,
+  privileges: [1, 5],
+  tokenId: <vehicle_token_id>
 });
 
+// Vehicle Status uses privId 1
 await dimo.devicedata.getVehicleStatus({
-    ...privToken,
-    tokenId: <vehicle_token_id>
+  ...privToken,
+  tokenId: <vehicle_token_id>
+});
+
+// VIN Vehicle Credentials uses privId 5
+await dimo.attestation.createVinVC({
+  ...privToken,
+  tokenId: <vehicle_token_id>
 });
 ```
 
@@ -230,11 +237,11 @@ The SDK accepts any type of valid custom GraphQL queries, but we've also include
 #### Authentication for GraphQL API
 The GraphQL entry points are designed almost identical to the REST API entry points. For any GraphQL API that requires auth headers (Telemetry API for example), you can use the same pattern as you would in the REST protected endpoints.
 
-```js
+```ts
 const privToken = await dimo.tokenexchange.exchange({
-    ...auth,
-    privileges: [1, 3, 4],
-    tokenId: <vehicle_token_id>
+  ...auth,
+  privileges: [1, 3, 4],
+  tokenId: <vehicle_token_id>
 });
 
 const tele = await dimo.telemetry.query({

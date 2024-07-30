@@ -6,7 +6,8 @@ import {
     Telemetry
 } from './graphql/resources/DimoGraphqlResources';
 
-import { 
+import {
+    Attestation,
     Auth,
     DeviceData, 
     DeviceDefinitions, 
@@ -22,6 +23,7 @@ import {
 import { Stream } from './streamr';
 
 export class DIMO {
+    public attestation: Attestation;
     public auth: Auth;
     public devicedata: DeviceData;
     public devicedefinitions: DeviceDefinitions;
@@ -42,6 +44,7 @@ export class DIMO {
         /**
          * Set up all REST Endpoints
          */
+        this.attestation = new Attestation(DimoEnvironment[env].Attestation, env);
         this.auth = new Auth(DimoEnvironment[env].Auth, env);
         this.devicedata = new DeviceData(DimoEnvironment[env].DeviceData, env);
         this.devicedefinitions = new DeviceDefinitions(DimoEnvironment[env].DeviceDefinitions, env);
