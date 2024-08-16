@@ -43,58 +43,24 @@ or
 ```js
 const dimo = new DIMO('Dev');
 ```
-### Developer License
-As part of the authentication process, you will need to register a set of `client_id` and `redirect_uri` (aka `domain`) on the DIMO Network. The [DIMO Developer License](https://docs.dimo.zone/developer-platform/getting-started/developer-license) is our approach and design to a more secured, decentralized access control. As a developer, you will need to perform the following steps:
-
-1. [Approving the Dev License to use of $DIMO](https://docs.dimo.zone/developer-platform/getting-started/developer-license/licensing-process#step-1-approving-the-dev-license-to-use-of-usddimo)
-2. [Issue the Dev License](https://docs.dimo.zone/developer-platform/getting-started/developer-license/licensing-process#step-2-issue-the-dev-license) (Get a `client_id` assigned to you)
-3. [Configuring the Dev License](https://docs.dimo.zone/developer-platform/getting-started/developer-license/licensing-process#step-3-configuring-the-dev-license) (Set `redirect_uri` aka `domain`)
-4. [Enable Signer(s)](https://docs.dimo.zone/developer-platform/getting-started/developer-license/licensing-process#step-4-enable-signer-s), the `private_key` of this signer will be required for API access
-
-### DIMO Streams
-DIMO offers a pub/sub data stream through the [Streamr Network](https://streamr.network/). You can now subscribe to any data stream that has granted privileges to your via the Developer License ([ERC-1271](https://eips.ethereum.org/EIPS/eip-1271) aka Smart Contract Signature Verification).
-
-The SDK utilizes [RxJs Observables](https://rxjs-dev.firebaseapp.com/api/index/class/Observable#constructor()) for developers to handle asynchronous streams. It allows sophisticated operations like transformations, filtering, and combination of multiple streams.
-
-To get started, first create a stream `Observable` by calling `stream()`. Note that the `stream` function takes the following variables: `streamId`, `clientId`, `privateKey`, and `log` (optional).
-
-```js
-const streamObservable = async() => {
-    return await dimo.stream(
-        streamId, // The Streamr Identifier, i.e. `streams.dimo.eth/vehicles/123`
-        clientId, // The clientId of your Developer License
-        privateKey, // The private key of the approved signer
-        log // [Optional] The level of log, defaults to 'info' if not provided. Supports 'silent' | 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace'
-    );
-} 
-```
-The returned `Observable` can be handled by simply subscribing:
-
-```js
-streamObservable.subscribe({
-        next: (msg) => {
-          // handle the msg;
-        },
-        error: (error) => {
-          // error handling
-        },
-        complete: () => {
-          // completing actions
-        }
-    });
-```
+### Developer Registration
+As part of the authentication process, you will need to obtain a Developer License via the [DIMO Developer Console](https://console.dimo.xyz/). To get started with registration, follow the steps below:
+1. Sign up on the [DIMO Developer Console](https://console.dimo.xyz/).
+2. Connect a web3 wallet (if you didn't sign up with one)
+3. Click on `Create app` and fill out the details about your project namespace (external-facing, e.g. `Drive2Survive LLC.`) and your application name (internal, e.g. `app-prod`)
+4. Generate an API key and add in your preferred redirect URI
 
 ### Authentication
 
 In order to authenticate and access private API data, you will need to [authenticate with the DIMO Auth Server](https://docs.dimo.zone/developer-platform/getting-started/authentication). The SDK provides you with all the steps needed in the [Wallet-based Authentication Flow](https://docs.dimo.zone/developer-platform/getting-started/authentication/wallet-based-authentication-flow) in case you need it to build a wallet integration around it. We also offer expedited functions to streamline the multiple calls needed. 
 
 #### Prerequisites for Authentication
-1. A valid Developer License.
-2. Access to a signer wallet and its private keys. Best practice is to rotate this frequently for security purposes.
+1. A valid Developer License
+2. A valid API key
 
-> At its core, a Web3 wallet is a software program that stores private keys, which are necessary for accessing blockchain networks and conducting transactions. Unlike traditional wallets, which store physical currency, Web3 wallets store digital assets such as Bitcoin, Ethereum, and NFTs. 
+> At its core, the API key is the private key to a Web3 wallet. Unlike traditional wallets, which store physical currency, Web3 wallets store digital assets such as Bitcoin, Ethereum, and NFTs. In DIMO's Developer Console, we provision a randomly-generated Web3 wallet for you as the enabled signer of your Developer License, decoupling the operations from wallets that may have assets in them for extra safety.
 
-NOTE: The signer wallet here is recommended to be different from the spender or holder wallet for your [DIMO Developer License](https://github.com/DIMO-Network/developer-license-donotus).
+NOTE: The wallet related to the API key is different from the spender or holder wallet for your [DIMO Developer License](https://github.com/DIMO-Network/developer-license-donotus). This gives users peace of mind that their assets are safely in their spender wallet, and the Developer License NFT is in their holder wallet.
 
 #### API Authentication
 
@@ -120,7 +86,7 @@ The SDK offers 3 basic functions that maps to the steps listed in [Wallet-based 
     signature: signature
   });
 ```
-##### (Option 2) Auth Endpoint Shortcut Function
+##### (Option 2 - PREFERRED) Auth Endpoint Shortcut Function
 As mentioned earlier, this is the streamlined function call to directly get the `access_token`. The `address` field in challenge generation is omitted since it is essentially the `client_id` of your application per Developer License:
 
 ```js
@@ -271,6 +237,39 @@ const totalNetworkVehicles = await dimo.identity.query({
 ```
 
 This GraphQL API query is equivalent to calling `dimo.identity.countDimoVehicles()`.
+
+### DIMO Streams
+DIMO offers a pub/sub data stream through the [Streamr Network](https://streamr.network/). You can now subscribe to any data stream that has granted privileges to your via the Developer License ([ERC-1271](https://eips.ethereum.org/EIPS/eip-1271) aka Smart Contract Signature Verification).
+
+The SDK utilizes [RxJs Observables](https://rxjs-dev.firebaseapp.com/api/index/class/Observable#constructor()) for developers to handle asynchronous streams. It allows sophisticated operations like transformations, filtering, and combination of multiple streams.
+
+To get started, first create a stream `Observable` by calling `stream()`. Note that the `stream` function takes the following variables: `streamId`, `clientId`, `privateKey`, and `log` (optional).
+
+```js
+const streamObservable = async() => {
+    return await dimo.stream(
+        streamId, // The Streamr Identifier, i.e. `streams.dimo.eth/vehicles/123`
+        clientId, // The clientId of your Developer License
+        privateKey, // The private key of the approved signer
+        log // [Optional] The level of log, defaults to 'info' if not provided. Supports 'silent' | 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace'
+    );
+} 
+```
+The returned `Observable` can be handled by simply subscribing:
+
+```js
+streamObservable.subscribe({
+        next: (msg) => {
+          // handle the msg;
+        },
+        error: (error) => {
+          // error handling
+        },
+        complete: () => {
+          // completing actions
+        }
+    });
+```
 
 ## How to Contribute to the SDK
 Read more about contributing [here](https://github.com/DIMO-Network/dimo-node-sdk/blob/master/CONTRIBUTING.md).
