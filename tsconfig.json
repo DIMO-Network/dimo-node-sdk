@@ -12,7 +12,8 @@
     "strict": true,                                      /* Enable all strict type-checking options. */
     "noUnusedParameters": true,                       /* Raise an error when a function parameter isn't read. */
     "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
-    "types": ["node", "jest"]
+    "types": ["node", "jest"],
+    "resolveJsonModule": true,
   },
   "include": [
     "src", "node"
