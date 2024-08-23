@@ -189,7 +189,13 @@ await dimo.devicedata.getVehicleStatus({
   tokenId: <vehicle_token_id>
 });
 
-// VIN Vehicle Credentials uses privId 5
+// Proof of Movement Verifiable Credentials uses privId 4
+await dimo.attestation.createPomVC({
+  ...privToken,
+  tokenId: <vehicle_token_id>
+})
+
+// VIN Verifiable Credentials uses privId 5
 await dimo.attestation.createVinVC({
   ...privToken,
   tokenId: <vehicle_token_id>
