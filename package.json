@@ -24,9 +24,13 @@
   },
   "dependencies": {
     "@streamr/sdk": "^101.0.1",
+    "@zerodev/ecdsa-validator": "^5.3.1",
+    "@zerodev/sdk": "^5.3.10",
     "axios": "^1.6.7",
     "fs": "^0.0.1-security",
+    "permissionless": "^0.1.45",
     "rxjs": "^7.8.1",
+    "viem": "^2.20.0",
     "web3": "^4.6.0"
   },
   "devDependencies": {
