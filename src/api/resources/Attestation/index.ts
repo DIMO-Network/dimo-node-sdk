@@ -10,6 +10,11 @@ export class Attestation extends Resource {
                 method: 'POST',
                 path: '/v1/vc/vin/:tokenId',
                 auth: 'privilege_token'
+            },
+            createPomVC: {
+                method: 'POST',
+                path: '/v1/vc/pom/:tokenId',
+                auth: 'privilege_token'
             }
         })
     }
