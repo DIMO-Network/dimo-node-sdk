@@ -3,29 +3,30 @@ import { polygonAmoy } from "viem/chains";
 import { KERNEL_V3_1 } from "@zerodev/sdk/constants";
 import { ENTRYPOINT_ADDRESS_V07 } from "permissionless";
 import { signerToEcdsaValidator } from "@zerodev/ecdsa-validator";
-import { http, encodeFunctionData, createPublicClient } from "viem";
+import { http, encodeFunctionData, createPublicClient, Chain } from "viem";
 import { AMOY_DIMO_REGISTRY_ADDRESS, MINT_VEHICLE_WITH_DEVICE_DEFINITION } from "../utils/constants";
 import { createZeroDevPaymasterClient, createKernelAccountClient, createKernelAccount } from "@zerodev/sdk";
-import { Client, MintVehicleWithDeviceDefinition } from "../utils/types";
+import { ClientConfig, MintVehicleWithDeviceDefinition } from "../utils/types";
 
 export async function mintVehicleWithDeviceDefinition(
-  client: Client,
-  args: MintVehicleWithDeviceDefinition
+  args: MintVehicleWithDeviceDefinition,
+  client: ClientConfig,
+  chain: Chain
 ): Promise<`0x${string}`> {
   const publicClient = createPublicClient({
-    transport: http(process.env.RPC_AMOY),
-    chain: polygonAmoy,
+    transport: http(client.rpcUrl),
+    chain: chain,
   });
 
   const ecdsaValidator = await signerToEcdsaValidator(publicClient, {
-    entryPoint: ENTRYPOINT_ADDRESS_V07,
-    kernelVersion: KERNEL_V3_1,
+    entryPoint: client.entrypointAddress,
+    kernelVersion: client.kernelVersion,
     signer: client.signer,
   });
 
   const account = await createKernelAccount(publicClient, {
-    entryPoint: ENTRYPOINT_ADDRESS_V07,
-    kernelVersion: KERNEL_V3_1,
+    entryPoint: client.entrypointAddress,
+    kernelVersion: client.kernelVersion,
     plugins: {
       sudo: ecdsaValidator,
     },
@@ -33,19 +34,19 @@ export async function mintVehicleWithDeviceDefinition(
 
   const zerodevPaymaster = createZeroDevPaymasterClient({
     account: account,
-    entryPoint: ENTRYPOINT_ADDRESS_V07,
-    chain: polygonAmoy,
-    transport: http(process.env.ZERODEV_PAYMASTER_URL),
+    entryPoint: client.entrypointAddress,
+    signer: client.signer,
+    transport: http(client.paymasterUrl),
   });
 
   const kernelClient = createKernelAccountClient({
-    entryPoint: ENTRYPOINT_ADDRESS_V07,
+    entryPoint: client.entrypointAddress,
     account: account,
-    chain: polygonAmoy,
-    bundlerTransport: http(process.env.ZERODEV_BUNDLER_URL),
+    chain: chain,
+    bundlerTransport: http(client.bundlerUrl),
     middleware: {
       sponsorUserOperation: async ({ userOperation }) => {
-        const res = zerodevPaymaster.sponsorUserOperation({ userOperation, entryPoint: ENTRYPOINT_ADDRESS_V07 });
+        const res = zerodevPaymaster.sponsorUserOperation({ userOperation, entryPoint: client.entrypointAddress });
         return res;
       },
     },

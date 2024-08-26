@@ -1,3 +1,5 @@
+import { KERNEL_V2_VERSION_TYPE, KERNEL_V3_VERSION_TYPE } from "@zerodev/sdk/types";
+import { EntryPoint } from "permissionless/types";
 import { PrivateKeyAccount } from "viem";
 
 export enum ContractType {
@@ -16,9 +18,14 @@ export enum SupportedNetworks {
   POLYGON,
 }
 
-export type Client = {
+export type ClientConfig = {
   network: SupportedNetworks;
   signer: PrivateKeyAccount;
+  rpcUrl: string;
+  paymasterUrl: string;
+  bundlerUrl: string;
+  entrypointAddress: EntryPoint;
+  kernelVersion: KERNEL_V2_VERSION_TYPE | KERNEL_V3_VERSION_TYPE;
 };
 
 export type AbiAddressPair = {
