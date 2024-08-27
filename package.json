@@ -31,6 +31,7 @@
     "permissionless": "^0.1.45",
     "rxjs": "^7.8.1",
     "viem": "^2.20.0",
+    "wagmi": "^2.12.7",
     "web3": "^4.6.0"
   },
   "devDependencies": {

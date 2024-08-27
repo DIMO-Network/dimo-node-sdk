@@ -1,8 +1,15 @@
-import abiRegistry from "../web3/resources/abis/DimoRegistry.json";
-import abiCredits from "../web3/resources/abis/DimoCredit.json";
-
-import { AllChainInfos, ContractType, NetworkProvider, SupportedNetworks } from "types";
+import abiCredits from "./abis/DimoCredit.json";
+import abiRegistry from "./abis/DimoRegistry.json";
 import { Chain, polygon, polygonAmoy } from "viem/chains";
+import {
+  API_BY_ENV,
+  AllChainInfos,
+  ContractType,
+  DIMO_APIs,
+  ENVIRONMENT,
+  NetworkProvider,
+  SupportedNetworks,
+} from "./types";
 
 export const POLYGON_DIMO_TOKEN_ADDRESS = "0xE261D618a959aFfFd53168Cd07D12E37B26761db";
 export const POLYGON_DIMO_CREDIT_ADDRESS = "0x7186F9aC35d24c9a4cf1E58a797c04DF1b334322";
@@ -34,6 +41,39 @@ export const PROVIDER_BY_NETWORK: NetworkProvider = {
   amoy: process.env.PROVIDER_AMOY || "",
 };
 
+export const ENV_TO_API_MAPPING: API_BY_ENV = {
+  [ENVIRONMENT.PROD]: {
+    [DIMO_APIs.ATTESTATION]: { url: "https://attestation-api.dimo.zone" },
+    [DIMO_APIs.AUTH]: { url: "https://auth.dimo.zone" },
+    [DIMO_APIs.IDENTITY]: { url: "https://identity-api.dimo.zone/query" },
+    [DIMO_APIs.DEVICES]: { url: "https://devices-api.dimo.zone" },
+    [DIMO_APIs.DEVICE_DATA]: { url: "https://device-data-api.dimo.zone" },
+    [DIMO_APIs.DEVICE_DEFINITIONS]: { url: "https://device-definitions-api.dimo.zone" },
+    [DIMO_APIs.EVENTS]: { url: "https://events-api.dimo.zone" },
+    [DIMO_APIs.TELEMETRY]: { url: "https://telemetry-api.dimo.zone/query" },
+    [DIMO_APIs.TOKEN_EXCHANGE]: { url: "https://token-exchange-api.dimo.zone" },
+    [DIMO_APIs.TRIPS]: { url: "https://trips-api.dimo.zone" },
+    [DIMO_APIs.USER]: { url: "https://users-api.dimo.zone" },
+    [DIMO_APIs.VALUATIONS]: { url: "https://valuations-api.dimo.zone" },
+    [DIMO_APIs.VEHICLE_SIGNAL_DECODING]: { url: "https://vehicle-signal-decoding.dimo.zone" },
+  },
+  [ENVIRONMENT.DEV]: {
+    [DIMO_APIs.ATTESTATION]: { url: "https://attestation-api.dev.dimo.zone" },
+    [DIMO_APIs.AUTH]: { url: "https://auth.dev.dimo.zone" },
+    [DIMO_APIs.IDENTITY]: { url: "https://identity-api.dev.dimo.zone/query" },
+    [DIMO_APIs.DEVICES]: { url: "https://devices-api.dev.dimo.zone" },
+    [DIMO_APIs.DEVICE_DATA]: { url: "https://device-data-api.dev.dimo.zone" },
+    [DIMO_APIs.DEVICE_DEFINITIONS]: { url: "https://device-definitions-api.dev.dimo.zone" },
+    [DIMO_APIs.EVENTS]: { url: "https://events-api.dev.dimo.zone" },
+    [DIMO_APIs.TELEMETRY]: { url: "https://telemetry-api.dev.dimo.zone/query" },
+    [DIMO_APIs.TOKEN_EXCHANGE]: { url: "https://token-exchange-api.dev.dimo.zone" },
+    [DIMO_APIs.TRIPS]: { url: "https://trips-api.dev.dimo.zone" },
+    [DIMO_APIs.USER]: { url: "https://users-api.dev.dimo.zone" },
+    [DIMO_APIs.VALUATIONS]: { url: "https://valuations-api.dev.dimo.zone" },
+    [DIMO_APIs.VEHICLE_SIGNAL_DECODING]: { url: "https://vehicle-signal-decoding.dev.dimo.zone" },
+  },
+};
+
 export const CHAIN_ABI_MAPPING: AllChainInfos = {
   [SupportedNetworks.AMOY]: {
     contracts: {
@@ -44,6 +84,11 @@ export const CHAIN_ABI_MAPPING: AllChainInfos = {
       [ContractType.DIMO_REGISTRY]: {
         abi: abiRegistry,
         address: AMOY_DIMO_REGISTRY_ADDRESS,
+      },
+      [ContractType.VEHICLE_TOKEN]: {
+        // TODO-- update these w correct values!
+        abi: abiRegistry,
+        address: AMOY_DIMO_TOKEN_ADDRESS,
       },
     },
   },
@@ -56,6 +101,11 @@ export const CHAIN_ABI_MAPPING: AllChainInfos = {
       [ContractType.DIMO_REGISTRY]: {
         abi: abiRegistry,
         address: POLYGON_DIMO_REGISTRY_ADDRESS,
+      },
+      [ContractType.VEHICLE_TOKEN]: {
+        // TODO-- update these w correct values!
+        abi: abiRegistry,
+        address: AMOY_DIMO_TOKEN_ADDRESS,
       },
     },
   },
