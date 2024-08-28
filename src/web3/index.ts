@@ -24,7 +24,12 @@ import { EntryPoint } from "permissionless/types";
 import { CustomError } from "../utils/error";
 import { KERNEL_V3_VERSION_TYPE } from "@zerodev/sdk/types";
 import { signerToEcdsaValidator } from "@zerodev/ecdsa-validator";
-import { ENTRYPOINT_ADDRESS_V07 } from "permissionless";
+import {
+  BundlerClient,
+  ENTRYPOINT_ADDRESS_V07,
+  GetUserOperationReceiptReturnType,
+  createBundlerClient,
+} from "permissionless";
 import { KERNEL_V3_1 } from "@zerodev/sdk/constants";
 import { privateKeyToAccount } from "viem/accounts";
 import {
@@ -42,6 +47,7 @@ export class DimoWeb3Client {
   kernelClient:
     | KernelAccountClient<EntryPoint, Transport, Chain | undefined, KernelSmartAccount<EntryPoint>>
     | undefined;
+  bundlerClient: BundlerClient<EntryPoint, Chain>;
 
   constructor(config: ClientConfigDimo) {
     this.entrypoint = ENTRYPOINT_ADDRESS_V07;
@@ -52,6 +58,12 @@ export class DimoWeb3Client {
       transport: http(process.env.RPC_URL as string),
       chain: config.chain,
     });
+
+    this.bundlerClient = createBundlerClient({
+      chain: this.publicClient.chain,
+      transport: http(process.env.BUNDLER_URL as string), // Use any bundler url
+      entryPoint: ENTRYPOINT_ADDRESS_V07,
+    }) as BundlerClient<EntryPoint, Chain>;
   }
 
   async connectKernalAccountPasskey(params: connectPasskeyParams) {
@@ -145,7 +157,9 @@ export class DimoWeb3Client {
   // TODO: we should be able to get a method just by the arg name and execute it here with args of [...]any
   //   });
 
-  async mintVehicleWithDeviceDefinition(args: MintVehicleWithDeviceDefinition): Promise<`0x${string}`> {
+  async mintVehicleWithDeviceDefinition(
+    args: MintVehicleWithDeviceDefinition
+  ): Promise<GetUserOperationReceiptReturnType> {
     if (this.kernelClient === undefined) {
       throw new CustomError("Kernel client is not initialized");
     }
@@ -168,11 +182,7 @@ export class DimoWeb3Client {
       },
     });
 
-    // TODO how can we go from the user op hash
-    // to the transaction hash to get status
-
-    // return the actual tx hash here not the jiffy tx
-    return txHash as `0x${string}`;
+    return await this.bundlerClient?.waitForUserOperationReceipt({ hash: txHash });
   }
 }
 
