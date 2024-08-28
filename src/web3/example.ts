@@ -8,7 +8,6 @@ dotenv.config();
 
 async function main() {
   const dimoClient = new DimoWeb3Client({
-    signer: privateKeyToAccount(process.env.PRIVATE_KEY as `0x${string}`),
     chain: polygonAmoy,
     rpcURL: process.env.RPC_URL as string,
     bundlrURL: process.env.BUNDLER_URL as string,
@@ -16,7 +15,15 @@ async function main() {
     chainExplorerURL: process.env.CHAIN_EXPLORER_URL as string, // TODO: can we get tx status using this
     environment: ENVIRONMENT.DEV,
   } as ClientConfigDimo);
-  await dimoClient.init();
+
+  // await dimoClient.connectKernalAccountPasskey({
+  //   passkeyName: "dimo",
+  //   passkeyServerUrl: "loclhost",
+  // });
+
+  await dimoClient.connectKernalAccountPrivateKey({
+    privateKey: process.env.PRIVATE_KEY as `0x${string}`,
+  });
 
   const transactionHash = await dimoClient.mintVehicleWithDeviceDefinition({
     manufacturerNode: BigInt(64),

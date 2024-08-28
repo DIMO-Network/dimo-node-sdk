@@ -70,12 +70,17 @@ export type AllChainInfos = {
   [key in SupportedNetworks]: ChainInfos;
 };
 
+export type connectPasskeyParams = {
+  passkeyName: string;
+  passkeyServerUrl: string;
+};
+
+export type connectPrivateKeyParams = {
+  privateKey: `0x${string}`;
+};
+
 export type ClientConfigDimo = {
   chain: Chain;
-  signer: PrivateKeyAccount;
-
-  entrypoint?: EntryPoint;
-  kernelVersion?: KERNEL_V2_VERSION_TYPE | KERNEL_V3_VERSION_TYPE;
 
   rpcURL: string;
   bundlrURL: string;
