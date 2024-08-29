@@ -24,6 +24,9 @@
   },
   "dependencies": {
     "@streamr/sdk": "^101.0.1",
+    "@turnkey/api-key-stamper": "^0.4.1",
+    "@turnkey/http": "^2.12.3",
+    "@turnkey/viem": "^0.4.28",
     "@zerodev/ecdsa-validator": "^5.3.1",
     "@zerodev/passkey-validator": "^5.4.1",
     "@zerodev/sdk": "^5.3.10",

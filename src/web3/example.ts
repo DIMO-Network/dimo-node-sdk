@@ -12,20 +12,21 @@ async function main() {
     rpcURL: process.env.RPC_URL as string,
     bundlrURL: process.env.BUNDLER_URL as string,
     paymasterURL: process.env.PAYMASTER_URL as string,
-    chainExplorerURL: process.env.CHAIN_EXPLORER_URL as string, // TODO: can we get tx status using this
+    chainExplorerURL: process.env.CHAIN_EXPLORER_URL as string,
     environment: ENVIRONMENT.DEV,
   } as ClientConfigDimo);
 
-  // await dimoClient.connectKernalAccountPasskey({
-  //   passkeyName: "dimo",
-  //   passkeyServerUrl: "loclhost",
-  // });
-
-  await dimoClient.connectKernalAccountPrivateKey({
-    privateKey: process.env.PRIVATE_KEY as `0x${string}`,
+  await dimoClient.connectKernelAccountTurnkey({
+    organizationId: process.env.ORGANIZATION_ID as string,
+    turnkeyBaseURL: process.env.TURNKEY_API_BASE_URL as string,
+    turnkeyApiPublicKey: process.env.TURNKEY_API_PUBLIC_KEY as string,
+    turnkeyApiPrivateKey: process.env.TURNKEY_API_PRIVATE_KEY as string,
+    turnkeyPKSignerAddress: process.env.TURNKEY_PRIVATE_KEY_ADDRESS as `0x${string}`,
   });
 
-  const transactionHash = await dimoClient.mintVehicleWithDeviceDefinition({
+  console.log("Kernel Account Address: ", dimoClient.kernelClient?.account.address);
+
+  const tx = await dimoClient.mintVehicleWithDeviceDefinition({
     manufacturerNode: BigInt(64),
     owner: process.env.OWNER_WALLET as `0x${string}`,
     deviceDefinitionID: "lamborghini_murcielago_2010",
@@ -37,7 +38,7 @@ async function main() {
     ],
   });
 
-  console.log(process.env.CHAIN_EXPLORER_URL + "/tx/" + transactionHash);
+  console.log(tx.receipt?.transactionHash, tx.sender);
 }
 
 main().catch(console.error);

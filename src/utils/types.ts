@@ -70,13 +70,21 @@ export type AllChainInfos = {
   [key in SupportedNetworks]: ChainInfos;
 };
 
-export type connectPasskeyParams = {
+export type ConnectPasskeyParams = {
   passkeyName: string;
   passkeyServerUrl: string;
 };
 
-export type connectPrivateKeyParams = {
+export type ConnectPrivateKeyParams = {
   privateKey: `0x${string}`;
+};
+
+export type ConnectTurnkeyParams = {
+  organizationId: string;
+  turnkeyApiPublicKey: string;
+  turnkeyApiPrivateKey: string;
+  turnkeyPKSignerAddress: `0x${string}`;
+  turnkeyBaseURL: string;
 };
 
 export type ClientConfigDimo = {

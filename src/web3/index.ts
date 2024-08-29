@@ -1,4 +1,16 @@
-import { encodeFunctionData, Chain, Transport, PublicClient, http, createPublicClient } from "viem";
+import {
+  encodeFunctionData,
+  Chain,
+  Transport,
+  PublicClient,
+  http,
+  createPublicClient,
+  createWalletClient,
+  parseAbi,
+} from "viem";
+import { TurnkeyClient } from "@turnkey/http";
+import { ApiKeyStamper } from "@turnkey/api-key-stamper";
+import { createAccount } from "@turnkey/viem";
 import {
   CHAIN_ABI_MAPPING,
   CHAIN_TO_NETWORK_ENUM_MAPPING,
@@ -17,18 +29,20 @@ import {
   ContractType,
   MintVehicleWithDeviceDefinition,
   SupportedNetworks,
-  connectPasskeyParams,
-  connectPrivateKeyParams,
+  ConnectPasskeyParams,
+  ConnectPrivateKeyParams,
+  ConnectTurnkeyParams,
 } from "../utils/types";
 import { EntryPoint } from "permissionless/types";
 import { CustomError } from "../utils/error";
-import { KERNEL_V3_VERSION_TYPE } from "@zerodev/sdk/types";
+import { KERNEL_V3_VERSION_TYPE, KernelValidator } from "@zerodev/sdk/types";
 import { signerToEcdsaValidator } from "@zerodev/ecdsa-validator";
 import {
   BundlerClient,
   ENTRYPOINT_ADDRESS_V07,
   GetUserOperationReceiptReturnType,
   createBundlerClient,
+  walletClientToSmartAccountSigner,
 } from "permissionless";
 import { KERNEL_V3_1 } from "@zerodev/sdk/constants";
 import { privateKeyToAccount } from "viem/accounts";
@@ -38,6 +52,7 @@ import {
   toPasskeyValidator,
   PasskeyValidatorContractVersion,
 } from "@zerodev/passkey-validator";
+import { ethers } from "ethers";
 
 export class DimoWeb3Client {
   publicClient: PublicClient;
@@ -66,11 +81,74 @@ export class DimoWeb3Client {
     }) as BundlerClient<EntryPoint, Chain>;
   }
 
-  async connectKernalAccountPasskey(params: connectPasskeyParams) {
+  async connectKernelAccountTurnkey(params: ConnectTurnkeyParams) {
+    const turnkeyClient = new TurnkeyClient(
+      { baseUrl: params.turnkeyBaseURL },
+      new ApiKeyStamper({
+        apiPublicKey: params.turnkeyApiPublicKey,
+        apiPrivateKey: params.turnkeyApiPrivateKey,
+      })
+    );
+
+    const turnkeyAccount = await createAccount({
+      client: turnkeyClient,
+      organizationId: params.organizationId, // organization id
+      signWith: params.turnkeyPKSignerAddress, // private key address (org)
+    });
+
+    const walletClient = createWalletClient({
+      account: turnkeyAccount,
+      transport: http(this.publicClient?.transport.url),
+    });
+
+    const smartAccountSigner = walletClientToSmartAccountSigner(walletClient);
+
+    const ecdsaValidator = await signerToEcdsaValidator(this.publicClient, {
+      signer: smartAccountSigner,
+      entryPoint: ENTRYPOINT_ADDRESS_V07,
+      kernelVersion: KERNEL_V3_1,
+    });
+
+    const kernelAcct = await createKernelAccount(this.publicClient, {
+      entryPoint: this.entrypoint,
+      kernelVersion: this.kernelVersion,
+      plugins: {
+        sudo: ecdsaValidator as KernelValidator<EntryPoint, string>,
+      },
+    });
+
+    const kernelClient = createKernelAccountClient({
+      account: kernelAcct,
+      entryPoint: this.entrypoint,
+      chain: this.publicClient.chain,
+      bundlerTransport: http(process.env.BUNDLER_URL as string),
+      middleware: {
+        sponsorUserOperation: async ({ userOperation }) => {
+          const zerodevPaymaster = createZeroDevPaymasterClient({
+            // @ts-ignore
+            account: kernelAcct,
+            chain: this.publicClient.chain,
+            entryPoint: this.entrypoint,
+            transport: http(process.env.PAYMASTER_URL as string),
+          });
+
+          const res = zerodevPaymaster.sponsorUserOperation({ userOperation, entryPoint: this.entrypoint });
+          return res;
+        },
+      },
+    });
+
+    this.kernelClient = kernelClient;
+  }
+
+  // TODO: test this with some passkey accounts
+  // that eduardo and crystal have set up
+  async connectKernalAccountPasskey(params: ConnectPasskeyParams) {
     const webAuthnKey = await toWebAuthnKey({
       passkeyName: params.passkeyName,
       passkeyServerUrl: params.passkeyServerUrl,
       mode: WebAuthnMode.Login,
+      passkeyServerHeaders: {},
     });
 
     const passkeyValidator = await toPasskeyValidator(this.publicClient, {
@@ -114,7 +192,7 @@ export class DimoWeb3Client {
       | undefined;
   }
 
-  async connectKernalAccountPrivateKey(params: connectPrivateKeyParams) {
+  async connectKernalAccountPrivateKey(params: ConnectPrivateKeyParams) {
     const ecdsaValidator = await signerToEcdsaValidator(this.publicClient, {
       entryPoint: this.entrypoint,
       kernelVersion: this.kernelVersion,
