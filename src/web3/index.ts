@@ -1,21 +1,8 @@
-import {
-  encodeFunctionData,
-  Chain,
-  Transport,
-  PublicClient,
-  http,
-  createPublicClient,
-  createWalletClient,
-  parseAbi,
-} from "viem";
+import { Chain, Transport, PublicClient, http, createPublicClient, createWalletClient } from "viem";
 import { TurnkeyClient } from "@turnkey/http";
 import { ApiKeyStamper } from "@turnkey/api-key-stamper";
 import { createAccount } from "@turnkey/viem";
-import {
-  CHAIN_ABI_MAPPING,
-  CHAIN_TO_NETWORK_ENUM_MAPPING,
-  MINT_VEHICLE_WITH_DEVICE_DEFINITION,
-} from "../utils/constants";
+import { CHAIN_ABI_MAPPING, CHAIN_TO_NETWORK_ENUM_MAPPING } from "../utils/constants";
 import {
   KernelSmartAccount,
   KernelAccountClient,
@@ -40,7 +27,6 @@ import { signerToEcdsaValidator } from "@zerodev/ecdsa-validator";
 import {
   BundlerClient,
   ENTRYPOINT_ADDRESS_V07,
-  GetUserOperationReceiptReturnType,
   createBundlerClient,
   walletClientToSmartAccountSigner,
 } from "permissionless";
@@ -53,6 +39,9 @@ import {
   PasskeyValidatorContractVersion,
 } from "@zerodev/passkey-validator";
 import { ethers } from "ethers";
+import { SendUserOperationParameters } from "permissionless/actions/smartAccount";
+import { SmartAccount } from "permissionless/accounts";
+import { mintVehicleWithDeviceDefinition } from "./actions/mintVehicleWithDeviceDefinition";
 
 export class DimoWeb3Client {
   publicClient: PublicClient;
@@ -236,35 +225,81 @@ export class DimoWeb3Client {
   //   });
 
   async mintVehicleWithDeviceDefinition(
-    args: MintVehicleWithDeviceDefinition
-  ): Promise<GetUserOperationReceiptReturnType> {
+    args: MintVehicleWithDeviceDefinition,
+    returnForSignature: boolean = false
+  ): Promise<any> {
     if (this.kernelClient === undefined) {
       throw new CustomError("Kernel client is not initialized");
     }
 
-    const mintVehicleCallData = await this.kernelClient?.account.encodeCallData({
-      to: this.chainAddrMapping.contracts[ContractType.DIMO_REGISTRY].address,
-      value: BigInt(0),
-      data: encodeFunctionData({
-        abi: this.chainAddrMapping.contracts[ContractType.DIMO_REGISTRY].abi,
-        functionName: MINT_VEHICLE_WITH_DEVICE_DEFINITION,
-        args: [args.manufacturerNode, args.owner, args.deviceDefinitionID, args.attributeInfo],
-      }),
+    const mintVehicleCallData = await mintVehicleWithDeviceDefinition(
+      args,
+      this.kernelClient,
+      process.env.DIMO_VEHICLE_CONTRACT_ADDRESS as `0x${string}`,
+      this.chainAddrMapping.contracts
+    );
+
+    if (returnForSignature) {
+      return this._returnUserOperationForSignature(mintVehicleCallData as `0x${string}`);
+    }
+
+    return this._submitUserOperation(mintVehicleCallData as `0x${string}`);
+  }
+
+  async _returnUserOperationForSignature(callData: `0x${string}`): Promise<any> {
+    const userOp: SendUserOperationParameters<
+      EntryPoint,
+      Transport,
+      Chain | undefined,
+      KernelSmartAccount<EntryPoint>
+    > = {
+      account: this.kernelClient?.account,
+      userOperation: {
+        callData: callData,
+      },
+    };
+
+    const userOperationForSignature = await this.kernelClient?.prepareUserOperationRequest({
+      ...userOp,
+      account: this.kernelClient?.account as unknown as SmartAccount<
+        EntryPoint,
+        string,
+        Transport,
+        // @ts-ignore
+        KernelSmartAccount<EntryPoint>
+      >,
     });
 
+    return userOperationForSignature;
+  }
+
+  async _submitUserOperation(callData: `0x${string}`): Promise<any> {
     const txHash = await this.kernelClient?.sendUserOperation({
       // @ts-ignore
       account: this.kernelClient?.account,
       userOperation: {
-        callData: mintVehicleCallData as `0x${string}`,
+        callData: callData as `0x${string}`,
       },
     });
 
-    return await this.bundlerClient?.waitForUserOperationReceipt({ hash: txHash });
+    const txResult = await this.bundlerClient?.waitForUserOperationReceipt({ hash: txHash! });
+    return txResult;
+  }
+
+  async _fundWalletDCX(walletAddress: `0x${string}`, amount: BigInt): Promise<any> {
+    let dimoCreditsInstance = new ethers.Contract(
+      process.env.DIMO_CREDITS_CONTRACT_ADDRESS as string,
+      this.chainAddrMapping.contracts[ContractType.DIMO_CREDIT].abi,
+      new ethers.Wallet(
+        process.env.DIMO_CREDITS_SIGNER as string,
+        new ethers.JsonRpcProvider(process.env.RPC_URL as string)
+      )
+    );
+
+    const tx = await dimoCreditsInstance.mintInDimo(walletAddress, amount);
+    tx.wait();
+
+    const balance = await dimoCreditsInstance.balanceOf(walletAddress);
+    return balance;
   }
 }
-
-// TODO: decode these errors for user in return
-// 0x1c48d49e00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000  --> idk yet, I think it has to do with the args being bad
-
-// 0x4e487b710000000000000000000000000000000000000000000000000000000000000011 --> not enough dcx in the kernel account!!
