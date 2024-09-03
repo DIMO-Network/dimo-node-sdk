@@ -24,9 +24,18 @@
   },
   "dependencies": {
     "@streamr/sdk": "^101.0.1",
+    "@turnkey/api-key-stamper": "^0.4.1",
+    "@turnkey/http": "^2.12.3",
+    "@turnkey/viem": "^0.4.28",
+    "@zerodev/ecdsa-validator": "^5.3.1",
+    "@zerodev/passkey-validator": "^5.4.1",
+    "@zerodev/sdk": "^5.3.10",
     "axios": "^1.6.7",
     "fs": "^0.0.1-security",
+    "permissionless": "^0.1.45",
     "rxjs": "^7.8.1",
+    "viem": "^2.20.0",
+    "wagmi": "^2.12.7",
     "web3": "^4.6.0"
   },
   "devDependencies": {

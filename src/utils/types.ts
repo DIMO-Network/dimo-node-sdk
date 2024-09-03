@@ -1,8 +1,11 @@
-import { Chain } from "viem";
+import { KERNEL_V2_VERSION_TYPE, KERNEL_V3_VERSION_TYPE } from "@zerodev/sdk/types";
+import { EntryPoint } from "permissionless/types";
+import { Chain, PrivateKeyAccount, PublicClient } from "viem";
 
 export enum ContractType {
   DIMO_CREDIT,
   DIMO_REGISTRY,
+  VEHICLE_TOKEN,
 }
 
 export enum SupportedNetworks {

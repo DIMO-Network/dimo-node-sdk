@@ -85,6 +85,11 @@ export const CHAIN_ABI_MAPPING: AllChainInfos = {
         abi: abiRegistry,
         address: AMOY_DIMO_REGISTRY_ADDRESS,
       },
+      [ContractType.VEHICLE_TOKEN]: {
+        // TODO-- update these w correct values!
+        abi: abiRegistry,
+        address: AMOY_DIMO_TOKEN_ADDRESS,
+      },
     },
   },
   [SupportedNetworks.POLYGON]: {
@@ -96,6 +101,11 @@ export const CHAIN_ABI_MAPPING: AllChainInfos = {
       [ContractType.DIMO_REGISTRY]: {
         abi: abiRegistry,
         address: POLYGON_DIMO_REGISTRY_ADDRESS,
+      },
+      [ContractType.VEHICLE_TOKEN]: {
+        // TODO-- update these w correct values!
+        abi: abiRegistry,
+        address: AMOY_DIMO_TOKEN_ADDRESS,
       },
     },
   },

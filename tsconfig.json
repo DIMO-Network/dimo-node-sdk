@@ -13,7 +13,7 @@
     "noUnusedParameters": true,                       /* Raise an error when a function parameter isn't read. */
     "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
     "types": ["node", "jest"],
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
   },
   "include": [
     "src", "node"

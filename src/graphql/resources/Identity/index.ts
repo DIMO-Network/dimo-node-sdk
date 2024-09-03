@@ -1,28 +1,28 @@
-import { Resource } from '../../Resource';
-import { DimoEnvironment } from '../../../environments';
+import { Resource } from "../../Resource";
+import { DimoEnvironment } from "../../../environments";
 
 export class Identity extends Resource {
-    constructor(api: any, env: keyof typeof DimoEnvironment) {
-        super(api, 'Identity', env);
-        this.query({
-            query: true
-        }), 
-        this.setQueries({
-            countDimoVehicles: {
-                query: `
+  constructor(api: any) {
+    super(api, "Identity");
+    this.query({
+      query: true,
+    }),
+      this.setQueries({
+        countDimoVehicles: {
+          query: `
                 { 
                     vehicles (first:10) {
                         totalCount,
                     }
                 }
-                `
-            },
-            listVehicleDefinitionsPerAddress: {
-                params: {
-                    address: true,
-                    limit: true
-                },
-                query: `
+                `,
+        },
+        listVehicleDefinitionsPerAddress: {
+          params: {
+            address: true,
+            limit: true,
+          },
+          query: `
                 {
                     vehicles(filterBy: {owner: $address}, first: $limit) {
                       nodes {
@@ -42,15 +42,11 @@ export class Identity extends Resource {
                       }
                     }
                   }
-                `
-            }
-
-        })
-    }
+                `,
+        },
+      });
+  }
 }
-
-
-
 
 export const listVehicleDefinitionsPerAddress = (address: string, limit: number) => `
 {
