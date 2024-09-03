@@ -9,19 +9,23 @@ dotenv.config();
 async function main() {
   const dimoClient = new DimoWeb3Client({
     chain: polygonAmoy,
+
     rpcURL: process.env.RPC_URL as string,
     bundlrURL: process.env.BUNDLER_URL as string,
     paymasterURL: process.env.PAYMASTER_URL as string,
-    chainExplorerURL: process.env.CHAIN_EXPLORER_URL as string,
-    environment: ENVIRONMENT.DEV,
+    chainExplorerURL: process.env.CHAIN_EXPLORER_URL as string, // TODO: can we get tx status using this
+
+    environment: "development",
   } as ClientConfigDimo);
+
+  // await dimoClient.connectKernalAccountPrivateKey()
 
   await dimoClient.connectKernelAccountTurnkey({
     organizationId: process.env.ORGANIZATION_ID as string,
     turnkeyBaseURL: process.env.TURNKEY_API_BASE_URL as string,
     turnkeyApiPublicKey: process.env.TURNKEY_API_PUBLIC_KEY as string,
     turnkeyApiPrivateKey: process.env.TURNKEY_API_PRIVATE_KEY as string,
-    turnkeyPKSignerAddress: process.env.TURNKEY_PRIVATE_KEY_ADDRESS as `0x${string}`,
+    turnkeyPKSignerAddress: process.env.TURNKEY_PRIVATE_KEY_ADDRESS as `0x${string}`, // not sub org
   });
 
   console.log("Kernel Account Address: ", dimoClient.kernelClient?.account.address);

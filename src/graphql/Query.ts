@@ -12,10 +12,7 @@ export const Query = async (resource: any, baseUrl: any, params: any = {}) => {
     if (params.headers.Authorization) {
       headers = params.headers;
     } else {
-      throw new DimoError({
-        message: `Access token not provided for ${resource.auth} authentication`,
-        statusCode: 401,
-      });
+      throw new DimoError(`Access token not provided for ${resource.auth} authentication`);
     }
   }
   headers = {
@@ -34,10 +31,7 @@ export const Query = async (resource: any, baseUrl: any, params: any = {}) => {
     if (variables[key] === true) {
       if (!params[key]) {
         console.error(`Missing required input: ${key}`);
-        throw new DimoError({
-          message: `Missing required input: ${key}`,
-          statusCode: 400,
-        });
+        throw new DimoError(`Missing required input: ${key}`);
       }
       const value = typeof params[key] === "string" ? `"${params[key]}"` : params[key];
       query = query.replace(placeholder, value);
@@ -57,10 +51,7 @@ export const Query = async (resource: any, baseUrl: any, params: any = {}) => {
     return response.data;
   } catch (error) {
     console.error("Error executing GraphQL query:", error);
-    throw new DimoError({
-      message: `Error`,
-      statusCode: 400,
-    });
+    throw new DimoError(`Error`);
   }
 };
 
@@ -74,10 +65,7 @@ export const CustomQuery = async (resource: any, baseUrl: string, params: any = 
     if (params.headers.Authorization) {
       headers = params.headers;
     } else {
-      throw new DimoError({
-        message: `Access token not provided for ${resource.auth} authentication`,
-        statusCode: 401,
-      });
+      throw new DimoError(`Access token not provided for ${resource.auth} authentication`);
     }
   }
   headers = {
@@ -102,9 +90,6 @@ export const CustomQuery = async (resource: any, baseUrl: string, params: any = 
     return response.data;
   } catch (error) {
     console.error("Error executing Custom GraphQL query:", error);
-    throw new DimoError({
-      message: "Error executing Custom GraphQL query",
-      statusCode: 400,
-    });
+    throw new DimoError("Error executing Custom GraphQL query");
   }
 };

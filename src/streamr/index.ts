@@ -34,11 +34,7 @@ export const Stream = async ({ streamId, clientId, privateKey, log }: StreamOpti
         );
       } catch (error) {
         console.error("Streamr connection failed:", error);
-        observer.error(
-          new DimoError({
-            message: "Streamr connection failure",
-          })
-        );
+        observer.error(new DimoError("Streamr connection failure"));
         observer.complete();
       }
     };

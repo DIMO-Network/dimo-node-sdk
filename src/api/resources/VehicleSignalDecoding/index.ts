@@ -1,5 +1,4 @@
 import { Resource } from "../../Resource";
-import { DimoEnvironment } from "../../../environments";
 
 export class VehicleSignalDecoding extends Resource {
   constructor(api: any) {
