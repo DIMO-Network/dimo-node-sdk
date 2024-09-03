@@ -1,6 +1,4 @@
-import { KERNEL_V2_VERSION_TYPE, KERNEL_V3_VERSION_TYPE } from "@zerodev/sdk/types";
-import { EntryPoint } from "permissionless/types";
-import { Chain, PrivateKeyAccount, PublicClient } from "viem";
+import { Chain } from "viem";
 
 export enum ContractType {
   DIMO_CREDIT,
@@ -36,7 +34,7 @@ export enum DIMO_APIs {
 
 export type API_BY_ENV = {
   [key in ENVIRONMENT]: {
-    [key in DIMO_APIs]?: {
+    [key in DIMO_APIs]: {
       url: string;
     };
   };
@@ -95,5 +93,5 @@ export type ClientConfigDimo = {
   paymasterURL: string;
   chainExplorerURL: string;
 
-  environment: ENVIRONMENT;
+  environment: string;
 };

@@ -1,5 +1,4 @@
 import { CustomQuery, Query } from "./Query";
-import { DimoEnvironment } from "../environments";
 
 export interface Resource {
   [key: string]: (...args: any) => any;
