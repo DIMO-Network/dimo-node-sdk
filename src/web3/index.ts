@@ -19,6 +19,7 @@ import {
   ConnectPasskeyParams,
   ConnectPrivateKeyParams,
   ConnectTurnkeyParams,
+  SetPermissionsSACD,
 } from "../utils/types";
 import { EntryPoint } from "permissionless/types";
 import { DimoError } from "../utils/error";
@@ -42,6 +43,7 @@ import { ethers } from "ethers";
 import { SendUserOperationParameters } from "permissionless/actions/smartAccount";
 import { SmartAccount } from "permissionless/accounts";
 import { mintVehicleWithDeviceDefinition } from "./actions/mintVehicleWithDeviceDefinition";
+import { setPermissionsSACD } from "./actions/setPermissionsSACD";
 
 export class DimoWeb3Client {
   publicClient: PublicClient;
@@ -223,6 +225,20 @@ export class DimoWeb3Client {
   // async execute(argname: string) {
   // TODO: we should be able to get a method just by the arg name and execute it here with args of [...]any
   //   });
+
+  async setPermissions(args: SetPermissionsSACD, returnForSignature: boolean = false): Promise<any> {
+    if (this.kernelClient === undefined) {
+      throw new DimoError("Kernel client is not initialized");
+    }
+
+    const setPermissionsCallData = await setPermissionsSACD(args, this.kernelClient, this.chainAddrMapping.contracts);
+
+    if (returnForSignature) {
+      return this._returnUserOperationForSignature(setPermissionsCallData as `0x${string}`);
+    }
+
+    return this._submitUserOperation(setPermissionsCallData as `0x${string}`);
+  }
 
   async mintVehicleWithDeviceDefinition(
     args: MintVehicleWithDeviceDefinition,

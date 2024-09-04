@@ -1,5 +1,6 @@
 import abiCredits from "./abis/DimoCredit.json";
 import abiRegistry from "./abis/DimoRegistry.json";
+import abiSacd from "./abis/DimoSacd.json";
 import { Chain, polygon, polygonAmoy } from "viem/chains";
 import {
   API_BY_ENV,
@@ -14,12 +15,15 @@ import {
 export const POLYGON_DIMO_TOKEN_ADDRESS = "0xE261D618a959aFfFd53168Cd07D12E37B26761db";
 export const POLYGON_DIMO_CREDIT_ADDRESS = "0x7186F9aC35d24c9a4cf1E58a797c04DF1b334322";
 export const POLYGON_DIMO_REGISTRY_ADDRESS = "0xFA8beC73cebB9D88FF88a2f75E7D7312f2Fd39EC";
+export const POLYGON_DIMO_SACD_ADDRESS = "0xEF919b3793deaae1637523d483e3434ae113004E";
 
 export const AMOY_DIMO_TOKEN_ADDRESS = "0x21cFE003997fB7c2B3cfe5cf71e7833B7B2eCe10";
 export const AMOY_DIMO_CREDIT_ADDRESS = "0x49c120f4C3c6679Ebd357F2d749E4D1C03598d65";
 export const AMOY_DIMO_REGISTRY_ADDRESS = "0x5eAA326fB2fc97fAcCe6A79A304876daD0F2e96c";
+export const AMOY_DIMO_SACD_ADDRESS = "0x3e78Cb1f68132D34C811dcd7D4a10E0Aad752C3c";
 
 export const MINT_VEHICLE_WITH_DEVICE_DEFINITION = "mintVehicleWithDeviceDefinition";
+export const SET_PERMISSIONS_SACD = "setPermissions";
 
 export const SUPPORTED_NETWORKS = [SupportedNetworks.AMOY, SupportedNetworks.POLYGON];
 export const SUPPORTED_CHAINS: Chain[] = [polygonAmoy, polygon];
@@ -87,6 +91,10 @@ export const ENV_TO_API_MAPPING: API_BY_ENV = {
 export const CHAIN_ABI_MAPPING: AllChainInfos = {
   [SupportedNetworks.AMOY]: {
     contracts: {
+      [ContractType.DIMO_SACD]: {
+        abi: abiSacd,
+        address: AMOY_DIMO_SACD_ADDRESS,
+      },
       [ContractType.DIMO_CREDIT]: {
         abi: abiCredits,
         address: AMOY_DIMO_CREDIT_ADDRESS,
@@ -104,6 +112,10 @@ export const CHAIN_ABI_MAPPING: AllChainInfos = {
   },
   [SupportedNetworks.POLYGON]: {
     contracts: {
+      [ContractType.DIMO_SACD]: {
+        abi: abiSacd,
+        address: AMOY_DIMO_SACD_ADDRESS,
+      },
       [ContractType.DIMO_CREDIT]: {
         abi: abiCredits,
         address: POLYGON_DIMO_CREDIT_ADDRESS,

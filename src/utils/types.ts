@@ -4,6 +4,7 @@ export enum ContractType {
   DIMO_CREDIT,
   DIMO_REGISTRY,
   VEHICLE_TOKEN,
+  DIMO_SACD,
 }
 
 export enum SupportedNetworks {
@@ -45,6 +46,15 @@ export type MintVehicleWithDeviceDefinition = {
   owner: `0x${string}`;
   deviceDefinitionID: string;
   attributeInfo: { attribute: string; info: string }[];
+};
+
+export type SetPermissionsSACD = {
+  asset: `0x${string}`;
+  tokenId: bigint;
+  grantee: `0x${string}`;
+  permissions: bigint;
+  expiration: bigint;
+  source: string;
 };
 
 export type NetworkProvider = {
