@@ -81,7 +81,7 @@ export type ConnectTurnkeyParams = {
   organizationId: string;
   turnkeyApiPublicKey: string;
   turnkeyApiPrivateKey: string;
-  turnkeyPKSignerAddress: `0x${string}`;
+  signer: `0x${string}`;
   turnkeyBaseURL: string;
 };
 
