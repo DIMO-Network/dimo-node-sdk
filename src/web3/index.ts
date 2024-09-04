@@ -39,7 +39,6 @@ import {
   PasskeyValidatorContractVersion,
 } from "@zerodev/passkey-validator";
 import { SendUserOperationParameters } from "permissionless/actions/smartAccount";
-import { SmartAccount } from "permissionless/accounts";
 import { mintVehicleWithDeviceDefinition } from "./actions/mintVehicleWithDeviceDefinition";
 import { setVehiclePermissions } from "./actions/setPermissionsSACD";
 
@@ -48,9 +47,7 @@ export class DimoWeb3Client {
   entrypoint: EntryPoint;
   kernelVersion: KERNEL_V3_VERSION_TYPE;
   chainAddrMapping: ChainInfos;
-  kernelClient:
-    | KernelAccountClient<EntryPoint, Transport, Chain | undefined, KernelSmartAccount<EntryPoint>>
-    | undefined;
+  kernelClient: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint>> | undefined;
   bundlerClient: BundlerClient<EntryPoint, Chain>;
 
   constructor(config: ClientConfigDimo) {
@@ -82,7 +79,7 @@ export class DimoWeb3Client {
     const turnkeyAccount = await createAccount({
       client: turnkeyClient,
       organizationId: params.organizationId, // organization id
-      signWith: params.turnkeyPKSignerAddress, // private key address (org)
+      signWith: params.signer, // private key address (org)
     });
 
     const walletClient = createWalletClient({
@@ -127,7 +124,12 @@ export class DimoWeb3Client {
       },
     });
 
-    this.kernelClient = kernelClient;
+    this.kernelClient = kernelClient as KernelAccountClient<
+      EntryPoint,
+      Transport,
+      Chain,
+      KernelSmartAccount<EntryPoint>
+    >;
   }
 
   // TODO: test this with some passkey accounts
@@ -176,9 +178,12 @@ export class DimoWeb3Client {
       },
     });
 
-    this.kernelClient = kernelClient as
-      | KernelAccountClient<EntryPoint, Transport, Chain | undefined, KernelSmartAccount<EntryPoint>>
-      | undefined;
+    this.kernelClient = kernelClient as KernelAccountClient<
+      EntryPoint,
+      Transport,
+      Chain,
+      KernelSmartAccount<EntryPoint>
+    >;
   }
 
   async connectKernalAccountPrivateKey(params: ConnectPrivateKeyParams) {
@@ -217,7 +222,12 @@ export class DimoWeb3Client {
       },
     });
 
-    this.kernelClient = kernelClient;
+    this.kernelClient = kernelClient as KernelAccountClient<
+      EntryPoint,
+      Transport,
+      Chain,
+      KernelSmartAccount<EntryPoint>
+    >;
   }
 
   // async execute(argname: string) {
@@ -264,12 +274,7 @@ export class DimoWeb3Client {
   }
 
   async _returnUserOperationForSignature(callData: `0x${string}`): Promise<any> {
-    const userOp: SendUserOperationParameters<
-      EntryPoint,
-      Transport,
-      Chain | undefined,
-      KernelSmartAccount<EntryPoint>
-    > = {
+    const userOp: SendUserOperationParameters<EntryPoint, KernelSmartAccount<EntryPoint>> = {
       account: this.kernelClient?.account,
       userOperation: {
         callData: callData,
@@ -278,10 +283,8 @@ export class DimoWeb3Client {
 
     const userOperationForSignature = await this.kernelClient?.prepareUserOperationRequest({
       ...userOp,
-      account: this.kernelClient?.account as unknown as SmartAccount<
+      account: this.kernelClient?.account as unknown as KernelSmartAccount<
         EntryPoint,
-        string,
-        Transport,
         // @ts-ignore
         KernelSmartAccount<EntryPoint>
       >,
