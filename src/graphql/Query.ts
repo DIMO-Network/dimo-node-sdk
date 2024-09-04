@@ -1,5 +1,5 @@
 import axios from "axios";
-import { DimoError } from "utils/error";
+import { DimoError } from "../utils/error";
 
 // GraphQL query factory function
 export const Query = async (resource: any, baseUrl: any, params: any = {}) => {

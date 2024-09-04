@@ -1,21 +1,21 @@
-import axios from "axios";
-import { CustomQuery, Query } from "./Query"; // Import the Query function to be tested
-import { DimoError } from "utils/error";
-import { ENV_TO_API_MAPPING } from "utils/constants";
-import { DIMO_APIs, ENVIRONMENT } from "utils/types";
+// import axios from "axios";
+// import { CustomQuery, Query } from "./Query"; // Import the Query function to be tested
+// import { DimoError } from "utils/error";
+// import { ENV_TO_API_MAPPING } from "utils/constants";
+// import { DIMO_APIs, ENVIRONMENT } from "utils/types";
 
-const RESOURCE = {
-  method: "POST",
-  path: "",
-  queryParams: { param1: true },
-};
-const PARAM = {
-  query: `{
-    vehicles (first:10) {
-      totalCount
-    }
-}`,
-};
+// const RESOURCE = {
+//   method: "POST",
+//   path: "",
+//   queryParams: { param1: true },
+// };
+// const PARAM = {
+//   query: `{
+//     vehicles (first:10) {
+//       totalCount
+//     }
+// }`,
+// };
 
 // describe("Query Function", () => {
 //   test("Valid API Call - Identity API Server is up and returning data", async () => {

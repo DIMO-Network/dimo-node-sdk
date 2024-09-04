@@ -1,5 +1,5 @@
 import StreamrClient from "@streamr/sdk";
-import { DimoError } from "utils/error";
+import { DimoError } from "../utils/error";
 import { Observable } from "rxjs";
 import { catchError, finalize } from "rxjs/operators";
 

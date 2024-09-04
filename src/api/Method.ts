@@ -1,6 +1,6 @@
 import axios from "axios";
 // import * as functionIndex from "../api/functions/";
-import { DimoError } from "utils/error";
+import { DimoError } from "../utils/error";
 
 export const Method = async (resource: any, baseUrl: any, params: any = {}) => {
   /**

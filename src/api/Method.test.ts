@@ -1,15 +1,15 @@
-import axios from "axios";
-import { Method } from "./Method"; // Import the Method function to be tested
-import { DimoError } from "utils/error";
+// import axios from "axios";
+// import { Method } from "./Method"; // Import the Method function to be tested
+// import { DimoError } from "../utils/error";
 
-const PROD = "Production";
-const DEV = "Dev";
-const RESOURCE = {
-  method: "GET",
-  path: "",
-  queryParams: { param1: true },
-};
-const PARAM = { param1: "value1" };
+// const PROD = "Production";
+// const DEV = "Dev";
+// const RESOURCE = {
+//   method: "GET",
+//   path: "",
+//   queryParams: { param1: true },
+// };
+// const PARAM = { param1: "value1" };
 
 // describe("Method Function", () => {
 //   test("Valid API Call - Device Data API Server is up and returning data", async () => {

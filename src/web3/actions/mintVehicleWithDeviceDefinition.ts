@@ -2,16 +2,15 @@ import { encodeFunctionData, Chain, Transport } from "viem";
 import { MINT_VEHICLE_WITH_DEVICE_DEFINITION } from "../../utils/constants";
 import { KernelAccountClient, KernelSmartAccount } from "@zerodev/sdk";
 import { ContractToMapping, ContractType, MintVehicleWithDeviceDefinition } from "../../utils/types";
-import { type EntryPointVersion } from "viem/account-abstraction";
+import { EntryPoint } from "permissionless/types";
 
 export async function mintVehicleWithDeviceDefinition(
   args: MintVehicleWithDeviceDefinition,
-  client: KernelAccountClient<EntryPointVersion, Transport, Chain | undefined, KernelSmartAccount<EntryPointVersion>>,
-  contract_address: `0x${string}`,
+  client: KernelAccountClient<EntryPoint, Transport, Chain | undefined, KernelSmartAccount<EntryPoint>>,
   contracts: ContractToMapping
 ): Promise<`0x${string}`> {
   return await client.account.encodeCallData({
-    to: contract_address,
+    to: contracts[ContractType.DIMO_REGISTRY].address,
     value: BigInt(0),
     data: encodeFunctionData({
       abi: contracts[ContractType.DIMO_REGISTRY].abi,

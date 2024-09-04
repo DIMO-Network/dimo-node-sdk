@@ -235,7 +235,6 @@ export class DimoWeb3Client {
     const mintVehicleCallData = await mintVehicleWithDeviceDefinition(
       args,
       this.kernelClient,
-      process.env.DIMO_VEHICLE_CONTRACT_ADDRESS as `0x${string}`,
       this.chainAddrMapping.contracts
     );
 
