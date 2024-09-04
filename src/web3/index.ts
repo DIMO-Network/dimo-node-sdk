@@ -13,13 +13,12 @@ import {
 import {
   ChainInfos,
   ClientConfigDimo,
-  ContractType,
   MintVehicleWithDeviceDefinition,
   SupportedNetworks,
   ConnectPasskeyParams,
   ConnectPrivateKeyParams,
   ConnectTurnkeyParams,
-  SetPermissionsSACD,
+  SetVehiclePermissions,
 } from "../utils/types";
 import { EntryPoint } from "permissionless/types";
 import { DimoError } from "../utils/error";
@@ -39,11 +38,10 @@ import {
   toPasskeyValidator,
   PasskeyValidatorContractVersion,
 } from "@zerodev/passkey-validator";
-import { ethers } from "ethers";
 import { SendUserOperationParameters } from "permissionless/actions/smartAccount";
 import { SmartAccount } from "permissionless/accounts";
 import { mintVehicleWithDeviceDefinition } from "./actions/mintVehicleWithDeviceDefinition";
-import { setPermissionsSACD } from "./actions/setPermissionsSACD";
+import { setVehiclePermissions } from "./actions/setPermissionsSACD";
 
 export class DimoWeb3Client {
   publicClient: PublicClient;
@@ -226,12 +224,16 @@ export class DimoWeb3Client {
   // TODO: we should be able to get a method just by the arg name and execute it here with args of [...]any
   //   });
 
-  async setPermissions(args: SetPermissionsSACD, returnForSignature: boolean = false): Promise<any> {
+  async setVehiclePermissions(args: SetVehiclePermissions, returnForSignature: boolean = false): Promise<any> {
     if (this.kernelClient === undefined) {
       throw new DimoError("Kernel client is not initialized");
     }
 
-    const setPermissionsCallData = await setPermissionsSACD(args, this.kernelClient, this.chainAddrMapping.contracts);
+    const setPermissionsCallData = await setVehiclePermissions(
+      args,
+      this.kernelClient,
+      this.chainAddrMapping.contracts
+    );
 
     if (returnForSignature) {
       return this._returnUserOperationForSignature(setPermissionsCallData as `0x${string}`);
@@ -299,22 +301,5 @@ export class DimoWeb3Client {
 
     const txResult = await this.bundlerClient?.waitForUserOperationReceipt({ hash: txHash! });
     return txResult;
-  }
-
-  async _fundWalletDCX(walletAddress: `0x${string}`, amount: BigInt): Promise<any> {
-    let dimoCreditsInstance = new ethers.Contract(
-      process.env.DIMO_CREDITS_CONTRACT_ADDRESS as string,
-      this.chainAddrMapping.contracts[ContractType.DIMO_CREDIT].abi,
-      new ethers.Wallet(
-        process.env.DIMO_CREDITS_SIGNER as string,
-        new ethers.JsonRpcProvider(process.env.RPC_URL as string)
-      )
-    );
-
-    const tx = await dimoCreditsInstance.mintInDimo(walletAddress, amount);
-    tx.wait();
-
-    const balance = await dimoCreditsInstance.balanceOf(walletAddress);
-    return balance;
   }
 }

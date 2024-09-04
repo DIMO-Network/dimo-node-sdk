@@ -1,8 +1,27 @@
 import { encodeFunctionData, Chain, Transport } from "viem";
 import { SET_PERMISSIONS_SACD } from "../../utils/constants";
 import { KernelAccountClient, KernelSmartAccount } from "@zerodev/sdk";
-import { ContractToMapping, ContractType, SetPermissionsSACD } from "../../utils/types";
+import { ContractToMapping, ContractType, SetPermissionsSACD, SetVehiclePermissions } from "../../utils/types";
 import { EntryPoint } from "permissionless/types";
+
+export async function setVehiclePermissions(
+  args: SetVehiclePermissions,
+  client: KernelAccountClient<EntryPoint, Transport, Chain | undefined, KernelSmartAccount<EntryPoint>>,
+  contracts: ContractToMapping
+): Promise<`0x${string}`> {
+  return await setPermissionsSACD(
+    {
+      asset: contracts[ContractType.DIMO_VEHICLE_ID].address,
+      tokenId: args.tokenId,
+      grantee: args.grantee,
+      permissions: args.permissions,
+      expiration: args.expiration,
+      source: args.source,
+    },
+    client,
+    contracts
+  );
+}
 
 export async function setPermissionsSACD(
   args: SetPermissionsSACD,

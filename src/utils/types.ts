@@ -3,7 +3,7 @@ import { Chain } from "viem";
 export enum ContractType {
   DIMO_CREDIT,
   DIMO_REGISTRY,
-  VEHICLE_TOKEN,
+  DIMO_VEHICLE_ID,
   DIMO_SACD,
 }
 
@@ -46,6 +46,14 @@ export type MintVehicleWithDeviceDefinition = {
   owner: `0x${string}`;
   deviceDefinitionID: string;
   attributeInfo: { attribute: string; info: string }[];
+};
+
+export type SetVehiclePermissions = {
+  tokenId: bigint;
+  grantee: `0x${string}`;
+  permissions: bigint;
+  expiration: bigint;
+  source: string;
 };
 
 export type SetPermissionsSACD = {

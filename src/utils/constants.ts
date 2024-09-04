@@ -1,6 +1,7 @@
 import abiCredits from "./abis/DimoCredit.json";
 import abiRegistry from "./abis/DimoRegistry.json";
 import abiSacd from "./abis/DimoSacd.json";
+import abiVehicleId from "./abis/DimoVehicleId.json";
 import { Chain, polygon, polygonAmoy } from "viem/chains";
 import {
   API_BY_ENV,
@@ -16,11 +17,13 @@ export const POLYGON_DIMO_TOKEN_ADDRESS = "0xE261D618a959aFfFd53168Cd07D12E37B26
 export const POLYGON_DIMO_CREDIT_ADDRESS = "0x7186F9aC35d24c9a4cf1E58a797c04DF1b334322";
 export const POLYGON_DIMO_REGISTRY_ADDRESS = "0xFA8beC73cebB9D88FF88a2f75E7D7312f2Fd39EC";
 export const POLYGON_DIMO_SACD_ADDRESS = "0xEF919b3793deaae1637523d483e3434ae113004E";
+export const POLYGON_DIMO_VEHICLE_ID_ADDRESS = "0xbA5738a18d83D41847dfFbDC6101d37C69c9B0cF";
 
 export const AMOY_DIMO_TOKEN_ADDRESS = "0x21cFE003997fB7c2B3cfe5cf71e7833B7B2eCe10";
 export const AMOY_DIMO_CREDIT_ADDRESS = "0x49c120f4C3c6679Ebd357F2d749E4D1C03598d65";
 export const AMOY_DIMO_REGISTRY_ADDRESS = "0x5eAA326fB2fc97fAcCe6A79A304876daD0F2e96c";
 export const AMOY_DIMO_SACD_ADDRESS = "0x3e78Cb1f68132D34C811dcd7D4a10E0Aad752C3c";
+export const AMOY_DIMO_VEHICLE_ID_ADDRESS = "0x45fbCD3ef7361d156e8b16F5538AE36DEdf61Da8";
 
 export const MINT_VEHICLE_WITH_DEVICE_DEFINITION = "mintVehicleWithDeviceDefinition";
 export const SET_PERMISSIONS_SACD = "setPermissions";
@@ -103,10 +106,9 @@ export const CHAIN_ABI_MAPPING: AllChainInfos = {
         abi: abiRegistry,
         address: AMOY_DIMO_REGISTRY_ADDRESS,
       },
-      [ContractType.VEHICLE_TOKEN]: {
-        // TODO-- update these w correct values!
-        abi: abiRegistry,
-        address: AMOY_DIMO_TOKEN_ADDRESS,
+      [ContractType.DIMO_VEHICLE_ID]: {
+        abi: abiVehicleId,
+        address: AMOY_DIMO_VEHICLE_ID_ADDRESS,
       },
     },
   },
@@ -124,10 +126,9 @@ export const CHAIN_ABI_MAPPING: AllChainInfos = {
         abi: abiRegistry,
         address: POLYGON_DIMO_REGISTRY_ADDRESS,
       },
-      [ContractType.VEHICLE_TOKEN]: {
-        // TODO-- update these w correct values!
-        abi: abiRegistry,
-        address: AMOY_DIMO_TOKEN_ADDRESS,
+      [ContractType.DIMO_VEHICLE_ID]: {
+        abi: abiVehicleId,
+        address: POLYGON_DIMO_VEHICLE_ID_ADDRESS,
       },
     },
   },
