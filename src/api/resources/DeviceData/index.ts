@@ -1,5 +1,4 @@
 import { Resource } from "../../Resource";
-import { DimoEnvironment } from "../../../environments";
 
 export class DeviceData extends Resource {
   constructor(api: any) {

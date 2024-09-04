@@ -1,5 +1,4 @@
 import { Resource } from "../../Resource";
-import { DimoEnvironment } from "../../../environments";
 
 export class TokenExchange extends Resource {
   constructor(api: any, vehicleNFTAddr: string) {

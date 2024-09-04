@@ -1,4 +1,4 @@
-import { DimoError } from "./errors";
+import { DimoError } from "./utils/error";
 
 import { Identity, Telemetry } from "./graphql/resources/DimoGraphqlResources";
 
@@ -19,8 +19,13 @@ import {
 import { DimoWeb3Client } from "./web3/index";
 
 import { Stream } from "./streamr";
-import { ClientConfigDimo, ContractType, DIMO_APIs, SupportedNetworks } from "utils/types";
-import { CHAIN_ABI_MAPPING, CHAIN_TO_NETWORK_ENUM_MAPPING, ENV_TO_API_MAPPING } from "utils/constants";
+import { ClientConfigDimo, ContractType, DIMO_APIs, ENVIRONMENT, SupportedNetworks } from "./utils/types";
+import {
+  CHAIN_ABI_MAPPING,
+  CHAIN_TO_NETWORK_ENUM_MAPPING,
+  ENV_TO_API_MAPPING,
+  api_mapping_by_env,
+} from "./utils/constants";
 
 export class DIMO {
   public attestation: Attestation;
@@ -39,36 +44,33 @@ export class DIMO {
   public web3: DimoWeb3Client;
 
   constructor(config: ClientConfigDimo) {
-    this.identity = new Identity(ENV_TO_API_MAPPING[config.environment][DIMO_APIs.IDENTITY]?.url);
-    this.telemetry = new Telemetry(ENV_TO_API_MAPPING[config.environment][DIMO_APIs.TELEMETRY]?.url);
+    const apiMapping = ENV_TO_API_MAPPING[api_mapping_by_env.get(config.environment) || ENVIRONMENT.DEV];
+    this.identity = new Identity(apiMapping[DIMO_APIs.IDENTITY].url);
+    this.telemetry = new Telemetry(apiMapping[DIMO_APIs.TELEMETRY].url);
 
     /**
      * Set up all REST Endpoints
      */
-    this.attestation = new Attestation(ENV_TO_API_MAPPING[config.environment][DIMO_APIs.ATTESTATION]?.url);
-    this.auth = new Auth(ENV_TO_API_MAPPING[config.environment][DIMO_APIs.AUTH]?.url);
-    this.devicedata = new DeviceData(ENV_TO_API_MAPPING[config.environment][DIMO_APIs.DEVICE_DATA]?.url);
-    this.devicedefinitions = new DeviceDefinitions(
-      ENV_TO_API_MAPPING[config.environment][DIMO_APIs.DEVICE_DEFINITIONS]?.url
-    );
-    this.devices = new Devices(ENV_TO_API_MAPPING[config.environment][DIMO_APIs.DEVICES]?.url);
-    this.events = new Events(ENV_TO_API_MAPPING[config.environment][DIMO_APIs.EVENTS]?.url);
+    this.attestation = new Attestation(apiMapping[DIMO_APIs.ATTESTATION].url);
+    this.auth = new Auth(apiMapping[DIMO_APIs.AUTH].url);
+    this.devicedata = new DeviceData(apiMapping[DIMO_APIs.DEVICE_DATA].url);
+    this.devicedefinitions = new DeviceDefinitions(apiMapping[DIMO_APIs.DEVICE_DEFINITIONS].url);
+    this.devices = new Devices(apiMapping[DIMO_APIs.DEVICES].url);
+    this.events = new Events(apiMapping[DIMO_APIs.EVENTS].url);
 
     const abiMapping =
       CHAIN_ABI_MAPPING[
         CHAIN_TO_NETWORK_ENUM_MAPPING.get(config.chain.name ? config.chain.name : "") as SupportedNetworks
       ];
     this.tokenexchange = new TokenExchange(
-      ENV_TO_API_MAPPING[config.environment][DIMO_APIs.TOKEN_EXCHANGE]?.url,
+      apiMapping[DIMO_APIs.TOKEN_EXCHANGE].url,
       abiMapping.contracts[ContractType.DIMO_REGISTRY].address
     );
 
-    this.trips = new Trips(ENV_TO_API_MAPPING[config.environment][DIMO_APIs.TELEMETRY]?.url);
-    this.user = new User(ENV_TO_API_MAPPING[config.environment][DIMO_APIs.TELEMETRY]?.url);
-    this.valuations = new Valuations(ENV_TO_API_MAPPING[config.environment][DIMO_APIs.TELEMETRY]?.url);
-    this.vehiclesignaldecoding = new VehicleSignalDecoding(
-      ENV_TO_API_MAPPING[config.environment][DIMO_APIs.TELEMETRY]?.url
-    );
+    this.trips = new Trips(apiMapping[DIMO_APIs.TELEMETRY].url);
+    this.user = new User(apiMapping[DIMO_APIs.TELEMETRY].url);
+    this.valuations = new Valuations(apiMapping[DIMO_APIs.TELEMETRY].url);
+    this.vehiclesignaldecoding = new VehicleSignalDecoding(apiMapping[DIMO_APIs.TELEMETRY].url);
 
     /**
      * Set up Web3 Client
@@ -90,9 +92,7 @@ export class DIMO {
       }
 
       if (!fs.existsSync(".credentials.json")) {
-        throw new DimoError({
-          message: "Credentials file does not exist",
-        });
+        throw new DimoError("Credentials file does not exist");
       }
 
       const data = fs.readFileSync(".credentials.json", "utf8");
@@ -109,9 +109,7 @@ export class DIMO {
       // Handle file not existing and other errors
       console.error("Failed to authenticate:", error.message);
       // Decide whether to throw the error or handle it differently
-      throw new DimoError({
-        message: "Authentication failed",
-      });
+      throw new DimoError("Authentication failed");
     }
   }
 
@@ -120,9 +118,7 @@ export class DIMO {
       return Stream({ streamId, clientId, privateKey, log });
     } catch (error: any) {
       console.error("Streaming failed:", error.type);
-      throw new DimoError({
-        message: "Subscribe to stream failed",
-      });
+      throw new DimoError("Subscribe to stream failed");
     }
   }
 }

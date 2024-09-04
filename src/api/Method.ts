@@ -1,7 +1,6 @@
 import axios from "axios";
-import * as functionIndex from "../api/functions/";
-import { DimoEnvironment } from "../environments";
-import { DimoError } from "../errors";
+// import * as functionIndex from "../api/functions/";
+import { DimoError } from "../utils/error";
 
 export const Method = async (resource: any, baseUrl: any, params: any = {}) => {
   /**
@@ -14,10 +13,7 @@ export const Method = async (resource: any, baseUrl: any, params: any = {}) => {
     if (params.headers.Authorization) {
       headers = params.headers;
     } else {
-      throw new DimoError({
-        message: `Access token not provided for ${resource.auth} authentication`,
-        statusCode: 401,
-      });
+      throw new DimoError(`Access token not provided for ${resource.auth} authentication`);
     }
   }
 
@@ -26,19 +22,16 @@ export const Method = async (resource: any, baseUrl: any, params: any = {}) => {
   }
 
   // If resource.method is 'FUNCTION', call the function defined by 'resource.path'
-  if (resource.method === "FUNCTION") {
-    const functionName = resource.path;
-    const dynamicFunction = (functionIndex as Record<string, Function>)[functionName];
-    if (typeof dynamicFunction === "function") {
-      // Call the dynamic function with params and pass the necessary arguments
-      return dynamicFunction(params);
-    } else {
-      throw new DimoError({
-        message: `Function in ${resource.path} is not a valid function.`,
-        statusCode: 400,
-      });
-    }
-  }
+  // if (resource.method === "FUNCTION") {
+  //   const functionName = resource.path;
+  //   const dynamicFunction = (functionIndex as Record<string, Function>)[functionName];
+  //   if (typeof dynamicFunction === "function") {
+  //     // Call the dynamic function with params and pass the necessary arguments
+  //     return dynamicFunction(params);
+  //   } else {
+  //     throw new DimoError(`Function in ${resource.path} is not a valid function.`);
+  //   }
+  // }
 
   /**
    * Query Parameters
@@ -51,10 +44,7 @@ export const Method = async (resource: any, baseUrl: any, params: any = {}) => {
     // We'll fail early if there's a missing required query param from the user
     if (queryParams[key] === true && !params[key]) {
       console.error(`Missing required query parameter: ${key}`);
-      throw new DimoError({
-        message: `Missing required query parameter: ${key}`,
-        statusCode: 400,
-      });
+      throw new DimoError(`Missing required query parameter: ${key}`);
     }
     if (queryParams[key][0] === "$") {
       const variableKey = queryParams[key].substring(1); // Remove the leading $
@@ -62,10 +52,7 @@ export const Method = async (resource: any, baseUrl: any, params: any = {}) => {
         params[key] = params[variableKey]; // Set the value based on the value of the variable key
       } else {
         console.error(`Variable key '${variableKey}' not found in params`);
-        throw new DimoError({
-          message: `Variable key '${variableKey}' not found in params`,
-          statusCode: 400,
-        });
+        throw new DimoError(`Variable key '${variableKey}' not found in params`);
       }
     } else if (typeof queryParams[key] === "string") {
       params[key] = queryParams[key];
@@ -100,9 +87,7 @@ export const Method = async (resource: any, baseUrl: any, params: any = {}) => {
       if (typeof resource.body[key] === "boolean") {
         if (!params[key]) {
           console.error(`Missing required body parameter: ${key}`);
-          throw new DimoError({
-            message: `Missing required body parameter: ${key}`,
-          });
+          throw new DimoError(`Missing required body parameter: ${key}`);
         } else {
           body[key] = params[key];
         }
@@ -138,10 +123,6 @@ export const Method = async (resource: any, baseUrl: any, params: any = {}) => {
     return { headers: authHeader };
   } catch (error: any) {
     console.error("API call error:", error.response.data);
-    throw new DimoError({
-      message: `API call error: ${error.response.data.message}`,
-      statusCode: error.response.data.code,
-      body: error.response.data,
-    });
+    throw new DimoError(`API call error: ${error.response.data.message}`);
   }
 };

@@ -1,5 +1,4 @@
 import { Method } from "./Method";
-import { DimoEnvironment } from "../environments";
 
 export interface Resource {
   [key: string]: (...args: any) => any;

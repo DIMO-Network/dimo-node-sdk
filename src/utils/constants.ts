@@ -24,6 +24,8 @@ export const MINT_VEHICLE_WITH_DEVICE_DEFINITION = "mintVehicleWithDeviceDefinit
 export const SUPPORTED_NETWORKS = [SupportedNetworks.AMOY, SupportedNetworks.POLYGON];
 export const SUPPORTED_CHAINS: Chain[] = [polygonAmoy, polygon];
 
+export const PRODUCTION_ENV = "production";
+
 export const CHAIN_ENUM_MAPPING: {
   [key in SupportedNetworks]: Chain;
 } = {
@@ -40,6 +42,14 @@ export const PROVIDER_BY_NETWORK: NetworkProvider = {
   polygon: process.env.PROVIDER_POLYGON || "",
   amoy: process.env.PROVIDER_AMOY || "",
 };
+
+export const api_mapping_by_env = new Map<string, ENVIRONMENT>([
+  ["production", ENVIRONMENT.PROD],
+  ["prod", ENVIRONMENT.PROD],
+
+  ["development", ENVIRONMENT.DEV],
+  ["dev", ENVIRONMENT.DEV],
+]);
 
 export const ENV_TO_API_MAPPING: API_BY_ENV = {
   [ENVIRONMENT.PROD]: {

@@ -1,4 +1,4 @@
-export class CustomError extends Error {
+export class DimoError extends Error {
   constructor(message: string) {
     super(message);
     Error.captureStackTrace(this, this.constructor);

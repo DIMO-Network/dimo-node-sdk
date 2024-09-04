@@ -21,7 +21,7 @@ import {
   ConnectTurnkeyParams,
 } from "../utils/types";
 import { EntryPoint } from "permissionless/types";
-import { CustomError } from "../utils/error";
+import { DimoError } from "../utils/error";
 import { KERNEL_V3_VERSION_TYPE, KernelValidator } from "@zerodev/sdk/types";
 import { signerToEcdsaValidator } from "@zerodev/ecdsa-validator";
 import {
@@ -229,13 +229,12 @@ export class DimoWeb3Client {
     returnForSignature: boolean = false
   ): Promise<any> {
     if (this.kernelClient === undefined) {
-      throw new CustomError("Kernel client is not initialized");
+      throw new DimoError("Kernel client is not initialized");
     }
 
     const mintVehicleCallData = await mintVehicleWithDeviceDefinition(
       args,
       this.kernelClient,
-      process.env.DIMO_VEHICLE_CONTRACT_ADDRESS as `0x${string}`,
       this.chainAddrMapping.contracts
     );
 

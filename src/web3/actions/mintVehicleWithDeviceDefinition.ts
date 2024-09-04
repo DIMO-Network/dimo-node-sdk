@@ -7,11 +7,10 @@ import { EntryPoint } from "permissionless/types";
 export async function mintVehicleWithDeviceDefinition(
   args: MintVehicleWithDeviceDefinition,
   client: KernelAccountClient<EntryPoint, Transport, Chain | undefined, KernelSmartAccount<EntryPoint>>,
-  contract_address: `0x${string}`,
   contracts: ContractToMapping
 ): Promise<`0x${string}`> {
   return await client.account.encodeCallData({
-    to: contract_address,
+    to: contracts[ContractType.DIMO_REGISTRY].address,
     value: BigInt(0),
     data: encodeFunctionData({
       abi: contracts[ContractType.DIMO_REGISTRY].abi,

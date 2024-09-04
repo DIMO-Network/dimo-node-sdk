@@ -12,9 +12,6 @@
  */
 
 export * from "./api";
-export * from "./environments";
-export * from "./errors";
 export * from "./graphql";
-export * from "./utils/constants";
-export * from "./utils/types";
+export * from "./utils";
 export * from "./dimo";
