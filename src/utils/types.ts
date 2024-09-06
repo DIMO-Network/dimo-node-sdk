@@ -86,8 +86,6 @@ export type ConnectTurnkeyParams = {
 };
 
 export type ClientConfigDimo = {
-  chain: Chain;
-
   rpcURL: string;
   bundlrURL: string;
   paymasterURL: string;

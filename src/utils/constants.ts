@@ -26,16 +26,9 @@ export const SUPPORTED_CHAINS: Chain[] = [polygonAmoy, polygon];
 
 export const PRODUCTION_ENV = "production";
 
-export const CHAIN_ENUM_MAPPING: {
-  [key in SupportedNetworks]: Chain;
-} = {
-  [SupportedNetworks.AMOY]: polygonAmoy,
-  [SupportedNetworks.POLYGON]: polygon,
-};
-
-export const CHAIN_TO_NETWORK_ENUM_MAPPING = new Map<string, SupportedNetworks>([
-  [polygon.name, SupportedNetworks.POLYGON],
-  [polygonAmoy.name, SupportedNetworks.AMOY],
+export const ENV_NETWORK_MAPPING = new Map<ENVIRONMENT, Chain>([
+  [ENVIRONMENT.PROD, polygon],
+  [ENVIRONMENT.DEV, polygonAmoy],
 ]);
 
 export const PROVIDER_BY_NETWORK: NetworkProvider = {
