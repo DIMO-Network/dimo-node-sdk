@@ -1,5 +1,3 @@
-import { Chain } from "viem";
-
 export enum ContractType {
   DIMO_CREDIT,
   DIMO_REGISTRY,
@@ -66,11 +64,6 @@ export type ChainInfos = {
 
 export type AllChainInfos = {
   [key in SupportedNetworks]: ChainInfos;
-};
-
-export type ConnectPasskeyParams = {
-  passkeyName: string;
-  passkeyServerUrl: string;
 };
 
 export type ConnectPrivateKeyParams = {

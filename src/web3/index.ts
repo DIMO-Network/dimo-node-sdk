@@ -1,29 +1,17 @@
 import { Chain, Transport, PublicClient, http, createPublicClient } from "viem";
 import { CHAIN_ABI_MAPPING, ENV_NETWORK_MAPPING } from "../utils/constants";
 import { KernelSmartAccount, KernelAccountClient } from "@zerodev/sdk";
-import {
-  ChainInfos,
-  ContractType,
-  MintVehicleWithDeviceDefinition,
-  ConnectPasskeyParams,
-  ConnectPrivateKeyParams,
-  ConnectTurnkeyParams,
-  ENVIRONMENT,
-} from "../utils/types";
+import { ChainInfos, MintVehicleWithDeviceDefinition, ConnectPrivateKeyParams, ENVIRONMENT } from "../utils/types";
 import { EntryPoint } from "permissionless/types";
 import { DimoError } from "../utils/error";
-import { KERNEL_V3_VERSION_TYPE } from "@zerodev/sdk/types";
-import { BundlerClient, ENTRYPOINT_ADDRESS_V07, createBundlerClient } from "permissionless";
+import { BundlerClient, ENTRYPOINT_ADDRESS_V07 } from "permissionless";
 import { KERNEL_V3_1 } from "@zerodev/sdk/constants";
-import { SendUserOperationParameters } from "permissionless/actions/smartAccount";
 import { mintVehicleWithDeviceDefinition } from "./actions/mintVehicleWithDeviceDefinition";
 import { polygonAmoy } from "viem/chains";
-import { kernelClientFromTurnkeySigner } from "./kernelClientFromSigner/kernelClientFromTurnkeySigner";
-import { kernelClientFromPasskeySigner } from "./kernelClientFromSigner/kernelClientFromPasskeySigner";
-import { kernelClientFromPrivateKeySigner } from "./kernelClientFromSigner/kernelClientFromPrivateKeySigner";
-import { TurnkeyClient } from "@turnkey/http";
 import { TStamper } from "@turnkey/http/dist/base";
 import { SmartAccount } from "permissionless/accounts";
+import { kernelClientFromPasskeySigner } from "./kernelClientFromSigner/kernelClientFromPasskeySigner";
+import { kernelClientFromPrivateKeySigner } from "./kernelClientFromSigner/kernelClientFromPrivateKeySigner";
 
 export class DimoWeb3Client {
   publicClient: PublicClient;
@@ -40,30 +28,21 @@ export class DimoWeb3Client {
     });
   }
 
-  // async connectPasskeySigner(stamper: TStamper) {
-  //   const client = new TurnkeyClient({ baseUrl: "https://api.turnkey.com" }, stamper);
-  //   // const getWhoamiResult = await client.getWhoami({
-  //   //   organizationId: process.env.EXPO_PUBLIC_TURNKEY_ORGANIZATION_ID,
-  //   // });
-
-  //   // client.signTransaction();
-  // }
-
-  async connectTurnkeySigner(params: ConnectTurnkeyParams) {
-    this.kernelClient = await kernelClientFromTurnkeySigner(
-      params,
-      ENTRYPOINT_ADDRESS_V07,
-      this.publicClient,
-      KERNEL_V3_1,
-      process.env.BUNDLER_URL as string,
-      process.env.PAYMASTER_URL as string
+  async connectKernalAccountPasskey(
+    subOrganizationId: string,
+    address: `0x${string}`,
+    stamper: TStamper,
+    turnkeyApiBaseUrl: string,
+    bundlrUrl: string
+  ) {
+    this.kernelClient = await kernelClientFromPasskeySigner(
+      subOrganizationId,
+      address,
+      stamper,
+      turnkeyApiBaseUrl,
+      bundlrUrl,
+      this.publicClient
     );
-  }
-
-  // TODO: test this with some passkey accounts
-  // that eduardo and crystal have set up
-  async connectKernalAccountPasskey(params: ConnectPasskeyParams) {
-    this.kernelClient = await kernelClientFromPasskeySigner(params, ENTRYPOINT_ADDRESS_V07, this.publicClient);
   }
 
   async connectKernalAccountPrivateKey(params: ConnectPrivateKeyParams) {
@@ -76,10 +55,6 @@ export class DimoWeb3Client {
       process.env.PAYMASTER_URL as string
     );
   }
-
-  // async execute(argname: string) {
-  // TODO: we should be able to get a method just by the arg name and execute it here with args of [...]any
-  //   });
 
   async mintVehicleWithDeviceDefinition(
     args: MintVehicleWithDeviceDefinition,
@@ -103,12 +78,13 @@ export class DimoWeb3Client {
   }
 
   async _returnUserOperationForSignature(callData: `0x${string}`): Promise<any> {
-    const userOp: SendUserOperationParameters<EntryPoint, SmartAccount<EntryPoint>> = {
+    const userOp = {
       account: this.kernelClient?.account as SmartAccount<EntryPoint, string, Transport, Chain>,
       userOperation: {
         callData: callData,
       },
     };
+
     const userOperationForSignature = await this.kernelClient?.prepareUserOperationRequest({
       ...userOp,
       account: this.kernelClient?.account as any,
@@ -125,31 +101,7 @@ export class DimoWeb3Client {
       },
     });
 
-    // this.kernelClient?.bundlerTransport?.waitForUserOperationReceipt({ hash: txHash! });
-
-    // const bundlrClient = createBundlerClient({
-    //   chain: this.publicClient.chain,
-    //   transport: this.kernelClient?.bundlerTransport.htt
-    // });
-
     const txResult = await this.bundlerClient?.waitForUserOperationReceipt({ hash: txHash! });
     return txResult;
   }
-
-  // async _fundWalletDCX(walletAddress: `0x${string}`, amount: BigInt): Promise<any> {
-  //   let dimoCreditsInstance = new ethers.Contract(
-  //     process.env.DIMO_CREDITS_CONTRACT_ADDRESS as string,
-  //     this.chainAddrMapping.contracts[ContractType.DIMO_CREDIT].abi,
-  //     new ethers.Wallet(
-  //       process.env.DIMO_CREDITS_SIGNER as string,
-  //       new ethers.JsonRpcProvider(process.env.RPC_URL as string)
-  //     )
-  //   );
-
-  //   const tx = await dimoCreditsInstance.mintInDimo(walletAddress, amount);
-  //   tx.wait();
-
-  //   const balance = await dimoCreditsInstance.balanceOf(walletAddress);
-  //   return balance;
-  // }
 }

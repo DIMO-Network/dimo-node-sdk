@@ -15,3 +15,4 @@ export * from "./api";
 export * from "./graphql";
 export * from "./utils";
 export * from "./dimo";
+export * from "./web3";
