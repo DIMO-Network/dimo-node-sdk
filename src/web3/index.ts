@@ -18,10 +18,12 @@ export class DimoWeb3Client {
   chainAddrMapping: ChainInfos;
   kernelClient: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint>> | undefined;
   bundlerClient: BundlerClient<EntryPoint, Chain> | undefined;
+  chain: ENVIRONMENT = ENVIRONMENT.PROD;
 
   constructor(env: ENVIRONMENT.DEV) {
     const chain = ENV_NETWORK_MAPPING.get(env) || polygonAmoy;
     this.chainAddrMapping = CHAIN_ABI_MAPPING[env];
+
     this.publicClient = createPublicClient({
       transport: http(process.env.RPC_URL as string),
       chain: chain as Chain,
@@ -64,11 +66,7 @@ export class DimoWeb3Client {
       throw new DimoError("Kernel client is not initialized");
     }
 
-    const mintVehicleCallData = await mintVehicleWithDeviceDefinition(
-      args,
-      this.kernelClient,
-      this.chainAddrMapping.contracts
-    );
+    const mintVehicleCallData = await mintVehicleWithDeviceDefinition(args, this.kernelClient, this.chain);
 
     if (returnForSignature) {
       return this._returnUserOperationForSignature(mintVehicleCallData as `0x${string}`);
