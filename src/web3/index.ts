@@ -19,15 +19,20 @@ export class DimoWeb3Client {
   kernelClient: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint>> | undefined;
   bundlerClient: BundlerClient<EntryPoint, Chain> | undefined;
   chain: ENVIRONMENT = ENVIRONMENT.PROD;
+  paymasterURL: string;
+  bundlerURL: string;
 
-  constructor(env: ENVIRONMENT.DEV) {
+  constructor(env: ENVIRONMENT.DEV, rpcURL: string, paymasterURL: string, bundlerURL: string) {
     const chain = ENV_NETWORK_MAPPING.get(env) || polygonAmoy;
     this.chainAddrMapping = CHAIN_ABI_MAPPING[env];
 
     this.publicClient = createPublicClient({
-      transport: http(process.env.RPC_URL as string),
+      transport: http(rpcURL as string),
       chain: chain as Chain,
     });
+
+    this.paymasterURL = paymasterURL;
+    this.bundlerURL = bundlerURL;
   }
 
   async connectKernalAccountPasskey(
@@ -43,7 +48,8 @@ export class DimoWeb3Client {
       stamper,
       turnkeyApiBaseUrl,
       bundlrUrl,
-      this.publicClient
+      this.publicClient,
+      this.paymasterURL
     );
   }
 
@@ -53,8 +59,8 @@ export class DimoWeb3Client {
       ENTRYPOINT_ADDRESS_V07,
       this.publicClient,
       KERNEL_V3_1,
-      process.env.BUNDLER_URL as string,
-      process.env.PAYMASTER_URL as string
+      this.bundlerURL,
+      this.paymasterURL
     );
   }
 

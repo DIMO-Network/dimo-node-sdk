@@ -23,7 +23,8 @@ export async function kernelClientFromPasskeySigner(
   stamper: TStamper,
   turnkeyApiBaseUrl: string,
   bundlrUrl: string,
-  publicClient: PublicClient
+  publicClient: PublicClient,
+  paymasterURL: string // is there a constant we can default this to?
 ): Promise<KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint>>> {
   const turnkeyClient = new TurnkeyClient(
     {
@@ -32,22 +33,22 @@ export async function kernelClientFromPasskeySigner(
     stamper
   );
 
-  const localAccount = await createAccount({
+  const account = await createAccount({
     client: turnkeyClient,
     organizationId: subOrganizationId,
     signWith: address,
     ethereumAddress: address,
   });
 
-  const smartAccountClient = createWalletClient({
-    account: localAccount,
+  const walletClient = createWalletClient({
+    account: account,
     chain: publicClient.chain,
     transport: http(bundlrUrl),
   });
 
-  const signer = walletClientToSmartAccountSigner(smartAccountClient);
+  const signer = walletClientToSmartAccountSigner(walletClient);
 
-  return await kernelClientFromSigner(signer, publicClient, bundlrUrl, process.env.PAYMASTER_URL as string);
+  return await kernelClientFromSigner(signer, publicClient, bundlrUrl, paymasterURL);
 }
 
 async function kernelClientFromSigner(

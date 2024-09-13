@@ -18,6 +18,7 @@ import { KERNEL_V3_1 } from "@zerodev/sdk/constants";
 import { ConnectTurnkeyParams } from "utils/types";
 import { KERNEL_V3_VERSION_TYPE } from "@zerodev/sdk/types";
 
+// TODO-- maybe delete this? not sure when we would use it?
 export async function kernelClientFromTurnkeySigner(
   params: ConnectTurnkeyParams,
   entrypoint: EntryPoint,
