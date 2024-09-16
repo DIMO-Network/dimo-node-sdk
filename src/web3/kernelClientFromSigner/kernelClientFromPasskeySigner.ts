@@ -8,12 +8,11 @@ import {
   KernelValidator,
 } from "@zerodev/sdk";
 import { EntryPoint } from "permissionless/types";
-import { walletClientToSmartAccountSigner } from "permissionless";
+import { walletClientToSmartAccountSigner, ENTRYPOINT_ADDRESS_V07 } from "permissionless";
 import { TStamper } from "@turnkey/http/dist/base";
 import { TurnkeyClient } from "@turnkey/http";
 import { createAccount } from "@turnkey/viem";
 import { SmartAccountSigner } from "permissionless/accounts";
-import { entryPoint07Address } from "viem/constants/address";
 import { KERNEL_V3_1 } from "@zerodev/sdk/constants";
 import { signerToEcdsaValidator } from "@zerodev/ecdsa-validator";
 
@@ -25,7 +24,7 @@ export async function kernelClientFromPasskeySigner(
   bundlrUrl: string,
   publicClient: PublicClient,
   paymasterURL: string // is there a constant we can default this to?
-): Promise<KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint>>> {
+): Promise<KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>> {
   const turnkeyClient = new TurnkeyClient(
     {
       baseUrl: turnkeyApiBaseUrl,
@@ -56,24 +55,24 @@ async function kernelClientFromSigner(
   publicClient: PublicClient,
   bundlrUrl: string,
   paymasterUrl: string
-): Promise<KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint>>> {
+): Promise<KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>> {
   const ecdsaValidator = await signerToEcdsaValidator(publicClient, {
     signer: signer,
-    entryPoint: entryPoint07Address,
+    entryPoint: ENTRYPOINT_ADDRESS_V07,
     kernelVersion: KERNEL_V3_1,
   });
 
   const kernelAcct = (await createKernelAccount(publicClient, {
-    entryPoint: entryPoint07Address,
+    entryPoint: ENTRYPOINT_ADDRESS_V07,
     kernelVersion: KERNEL_V3_1,
     plugins: {
       sudo: ecdsaValidator as KernelValidator<EntryPoint, string> | undefined,
     },
-  })) as KernelSmartAccount<typeof entryPoint07Address> | undefined;
+  })) as KernelSmartAccount<typeof ENTRYPOINT_ADDRESS_V07> | undefined;
 
   const kernelClient = createKernelAccountClient({
     account: kernelAcct,
-    entryPoint: entryPoint07Address,
+    entryPoint: ENTRYPOINT_ADDRESS_V07,
     chain: publicClient.chain,
     bundlerTransport: http(bundlrUrl),
     middleware: {
@@ -82,17 +81,25 @@ async function kernelClientFromSigner(
           // @ts-ignore
           account: kernelAcct,
           chain: publicClient.chain,
-          entryPoint: entryPoint07Address,
+          entryPoint: ENTRYPOINT_ADDRESS_V07,
           transport: http(paymasterUrl),
         });
 
-        const res = zerodevPaymaster.sponsorUserOperation({ userOperation, entryPoint: entryPoint07Address });
+        const res = zerodevPaymaster.sponsorUserOperation({
+          userOperation,
+          entryPoint: ENTRYPOINT_ADDRESS_V07,
+        });
         return res;
       },
     },
   });
 
-  return kernelClient as KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint>>;
+  return kernelClient as KernelAccountClient<
+    EntryPoint,
+    Transport,
+    Chain,
+    KernelSmartAccount<EntryPoint, Transport, Chain>
+  >;
 }
 
 // export async function kernelClientFromPasskeySigner(

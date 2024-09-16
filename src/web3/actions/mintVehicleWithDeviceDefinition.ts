@@ -6,7 +6,7 @@ import { EntryPoint } from "permissionless/types";
 
 export async function mintVehicleWithDeviceDefinition(
   args: MintVehicleWithDeviceDefinition,
-  client: KernelAccountClient<EntryPoint, Transport, Chain | undefined, KernelSmartAccount<EntryPoint>>,
+  client: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>,
   env: ENVIRONMENT = ENVIRONMENT.PROD
 ): Promise<`0x${string}`> {
   const contracts = CHAIN_ABI_MAPPING[env].contracts;

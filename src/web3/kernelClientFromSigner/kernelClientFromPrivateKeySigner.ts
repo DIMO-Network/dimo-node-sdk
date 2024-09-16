@@ -10,8 +10,8 @@ import { EntryPoint } from "permissionless/types";
 import { KERNEL_V3_VERSION_TYPE } from "@zerodev/sdk/types";
 import { signerToEcdsaValidator } from "@zerodev/ecdsa-validator";
 import { privateKeyToAccount } from "viem/accounts";
-import { ConnectPrivateKeyParams } from "utils";
 import { SmartAccountSigner } from "permissionless/accounts";
+import { ConnectPrivateKeyParams } from "../../utils/types";
 
 export async function kernelClientFromPrivateKeySigner(
   params: ConnectPrivateKeyParams,
@@ -20,7 +20,7 @@ export async function kernelClientFromPrivateKeySigner(
   kernelVersion: KERNEL_V3_VERSION_TYPE,
   bundlrUrl: string,
   paymasterUrl: string
-): Promise<KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint>>> {
+): Promise<KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>> {
   const ecdsaValidator = await signerToEcdsaValidator(publicClient, {
     entryPoint: entrypoint,
     kernelVersion: kernelVersion,
@@ -50,11 +50,19 @@ export async function kernelClientFromPrivateKeySigner(
           transport: http(paymasterUrl),
         });
 
-        const res = zerodevPaymaster.sponsorUserOperation({ userOperation, entryPoint: entrypoint });
+        const res = zerodevPaymaster.sponsorUserOperation({
+          userOperation,
+          entryPoint: entrypoint,
+        });
         return res;
       },
     },
   });
 
-  return kernelClient as KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint>>;
+  return kernelClient as KernelAccountClient<
+    EntryPoint,
+    Transport,
+    Chain,
+    KernelSmartAccount<EntryPoint, Transport, Chain>
+  >;
 }

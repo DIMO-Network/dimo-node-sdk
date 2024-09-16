@@ -11,8 +11,7 @@
  *
  */
 
-export * from "./api";
-export * from "./graphql";
-export * from "./utils";
-export * from "./dimo";
-export * from "./web3";
+export { mintVehicleWithDeviceDefinition } from "./web3/actions/mintVehicleWithDeviceDefinition";
+export { setVehiclePermissions } from "./web3/actions/setPermissionsSACD";
+export { kernelClientFromPasskeySigner } from "./web3/kernelClientFromSigner/kernelClientFromPasskeySigner";
+export { kernelClientFromPrivateKeySigner } from "./web3/kernelClientFromSigner/kernelClientFromPrivateKeySigner";

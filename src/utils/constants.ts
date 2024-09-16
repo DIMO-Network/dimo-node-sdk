@@ -3,15 +3,7 @@ import abiRegistry from "./abis/DimoRegistry.json";
 import abiSacd from "./abis/DimoSacd.json";
 import abiVehicleId from "./abis/DimoVehicleId.json";
 import { Chain, polygon, polygonAmoy } from "viem/chains";
-import {
-  API_BY_ENV,
-  AllChainInfos,
-  ContractType,
-  DIMO_APIs,
-  ENVIRONMENT,
-  NetworkProvider,
-  SupportedNetworks,
-} from "./types";
+import { API_BY_ENV, AllChainInfos, ContractType, DIMO_APIs, ENVIRONMENT } from "./types.js";
 
 export const POLYGON_DIMO_TOKEN_ADDRESS = "0xE261D618a959aFfFd53168Cd07D12E37B26761db";
 export const POLYGON_DIMO_CREDIT_ADDRESS = "0x7186F9aC35d24c9a4cf1E58a797c04DF1b334322";
@@ -28,7 +20,6 @@ export const AMOY_DIMO_VEHICLE_ID_ADDRESS = "0x45fbCD3ef7361d156e8b16F5538AE36DE
 export const MINT_VEHICLE_WITH_DEVICE_DEFINITION = "mintVehicleWithDeviceDefinition";
 export const SET_PERMISSIONS_SACD = "setPermissions";
 
-export const SUPPORTED_NETWORKS = [SupportedNetworks.AMOY, SupportedNetworks.POLYGON];
 export const SUPPORTED_CHAINS: Chain[] = [polygonAmoy, polygon];
 
 export const PRODUCTION_ENV = "production";
@@ -37,11 +28,6 @@ export const ENV_NETWORK_MAPPING = new Map<ENVIRONMENT, Chain>([
   [ENVIRONMENT.PROD, polygon],
   [ENVIRONMENT.DEV, polygonAmoy],
 ]);
-
-export const PROVIDER_BY_NETWORK: NetworkProvider = {
-  polygon: process.env.PROVIDER_POLYGON || "",
-  amoy: process.env.PROVIDER_AMOY || "",
-};
 
 export const ENV_MAPPING = new Map<string, ENVIRONMENT>([
   ["production", ENVIRONMENT.PROD],
@@ -85,7 +71,7 @@ export const ENV_TO_API_MAPPING: API_BY_ENV = {
 };
 
 export const CHAIN_ABI_MAPPING: AllChainInfos = {
-  [SupportedNetworks.AMOY]: {
+  [ENVIRONMENT.DEV]: {
     contracts: {
       [ContractType.DIMO_SACD]: {
         abi: abiSacd,
@@ -105,7 +91,7 @@ export const CHAIN_ABI_MAPPING: AllChainInfos = {
       },
     },
   },
-  [SupportedNetworks.POLYGON]: {
+  [ENVIRONMENT.PROD]: {
     contracts: {
       [ContractType.DIMO_SACD]: {
         abi: abiSacd,
@@ -155,21 +141,3 @@ export const ChainContractMapping = {
     },
   },
 };
-
-// TODO- pull this into constants map above and simplify where its used elsewhere
-export const DimoConstants = {
-  Production: {
-    NFT_address: "0xbA5738a18d83D41847dfFbDC6101d37C69c9B0cF",
-    RPC_provider: "https://eth.llamarpc.com",
-    DLX_address: "0x9A9D2E717bB005B240094ba761Ff074d392C7C85",
-    DCX_address: "0x7186F9aC35d24c9a4cf1E58a797c04DF1b334322",
-    Vehicle_address: "0xba5738a18d83d41847dffbdc6101d37c69c9b0cf",
-  },
-  Dev: {
-    NFT_address: "0x45fbCD3ef7361d156e8b16F5538AE36DEdf61Da8",
-    RPC_provider: "https://eth.llamarpc.com",
-    DLX_address: "",
-  },
-} as const;
-
-export type DimoConstants = typeof DimoConstants.Production | typeof DimoConstants.Dev;

@@ -12,7 +12,7 @@ import { EntryPoint } from "permissionless/types";
 
 export async function setVehiclePermissions(
   args: SetVehiclePermissions,
-  client: KernelAccountClient<EntryPoint, Transport, Chain | undefined, KernelSmartAccount<EntryPoint>>,
+  client: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>,
   env: ENVIRONMENT = ENVIRONMENT.PROD
 ): Promise<`0x${string}`> {
   const contracts = CHAIN_ABI_MAPPING[env].contracts;
@@ -32,7 +32,7 @@ export async function setVehiclePermissions(
 
 export async function setPermissionsSACD(
   args: SetPermissionsSACD,
-  client: KernelAccountClient<EntryPoint, Transport, Chain | undefined, KernelSmartAccount<EntryPoint>>,
+  client: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>,
   contracts: ContractToMapping
 ): Promise<`0x${string}`> {
   return await client.account.encodeCallData({

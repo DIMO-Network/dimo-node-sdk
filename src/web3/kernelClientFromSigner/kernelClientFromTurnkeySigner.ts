@@ -15,7 +15,7 @@ import { EntryPoint } from "permissionless/types";
 import { signerToEcdsaValidator } from "@zerodev/ecdsa-validator";
 import { ENTRYPOINT_ADDRESS_V07, walletClientToSmartAccountSigner } from "permissionless";
 import { KERNEL_V3_1 } from "@zerodev/sdk/constants";
-import { ConnectTurnkeyParams } from "utils/types";
+import { ConnectTurnkeyParams } from "../../utils/types";
 import { KERNEL_V3_VERSION_TYPE } from "@zerodev/sdk/types";
 
 // TODO-- maybe delete this? not sure when we would use it?
@@ -26,7 +26,7 @@ export async function kernelClientFromTurnkeySigner(
   kernelVersion: KERNEL_V3_VERSION_TYPE,
   bundlrUrl: string,
   paymasterUrl: string
-): Promise<KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint>>> {
+): Promise<KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>> {
   const turnkeyClient = new TurnkeyClient(
     { baseUrl: params.turnkeyBaseURL },
     new ApiKeyStamper({
@@ -77,11 +77,19 @@ export async function kernelClientFromTurnkeySigner(
           transport: http(paymasterUrl),
         });
 
-        const res = zerodevPaymaster.sponsorUserOperation({ userOperation, entryPoint: entrypoint });
+        const res = zerodevPaymaster.sponsorUserOperation({
+          userOperation,
+          entryPoint: entrypoint,
+        });
         return res;
       },
     },
   });
 
-  return kernelClient as KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint>>;
+  return kernelClient as KernelAccountClient<
+    EntryPoint,
+    Transport,
+    Chain,
+    KernelSmartAccount<EntryPoint, Transport, Chain>
+  >;
 }
