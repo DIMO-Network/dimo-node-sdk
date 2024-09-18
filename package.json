@@ -8,6 +8,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "sideEffects": false,
+  "type": "module",
   "scripts": {
     "test": "jest",
     "test:coverage": "yarn test:unit && open coverage/lcov-report/index.html",
@@ -21,12 +22,13 @@
     "@noble/hashes": "^1.4.0",
     "@turnkey/http": "^2.13.0",
     "@turnkey/viem": "^0.4.31",
+    "@zerodev/ecdsa-validator": "^5.3.3",
     "@zerodev/sdk": "^5.3.15",
+    "bun-types": "^1.1.27",
     "clsx": "^1.2.1",
-    "eventemitter3": "^5.0.1",
-    "permissionless": "^0.2.1",
+    "permissionless": "^0.1.29",
     "preact": "^10.16.0",
-    "viem": "^2.21.8"
+    "viem": ">=2.16.3 <2.18.0"
   },
   "devDependencies": {
     "@babel/core": "^7.22.9",

@@ -16,7 +16,7 @@
       ":util/*": ["src/util/*"],
       ":core/*": ["src/core/*"]
     },
-    "target": "es2017",
+    "target": "ES2017",
     "jsx": "react",
     "jsxFactory": "h",
     "esModuleInterop": true,
@@ -25,10 +25,8 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "lib": [
-      "dom",
       "esnext",
-      "dom.iterable",
-      "es2016",
+      "ES2016",
     ],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",

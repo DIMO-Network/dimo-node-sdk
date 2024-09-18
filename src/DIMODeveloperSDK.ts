@@ -1,4 +1,4 @@
-import { encodeFunctionData } from "viem";
+import { Chain, Transport, encodeFunctionData } from "viem";
 import {
   ContractToMapping,
   ContractType,
@@ -6,10 +6,10 @@ import {
   MintVehicleWithDeviceDefinition,
   SetPermissionsSACD,
   SetVehiclePermissions,
-} from "./core/types/interface";
-import { CHAIN_ABI_MAPPING, MINT_VEHICLE_WITH_DEVICE_DEFINITION, SET_PERMISSIONS_SACD } from ":core/constants";
-// import { KernelAccountClient, KernelSmartAccount } from "@zerodev/sdk";
-// import { EntryPoint } from "permissionless";
+} from "./core/types/interface.js";
+import { CHAIN_ABI_MAPPING, MINT_VEHICLE_WITH_DEVICE_DEFINITION, SET_PERMISSIONS_SACD } from ":core/constants.js";
+import { KernelAccountClient, KernelSmartAccount } from "@zerodev/sdk";
+import { EntryPoint } from "permissionless/types";
 
 export const mintVehicleCallData = async (
   args: MintVehicleWithDeviceDefinition,
@@ -25,12 +25,12 @@ export const mintVehicleCallData = async (
 
 export const mintVehicleWithDeviceDefinition = async (
   args: MintVehicleWithDeviceDefinition,
-  client: any,
+  client: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>,
   env: ENVIRONMENT = ENVIRONMENT.DEV
 ): Promise<`0x${string}`> => {
   const contracts = CHAIN_ABI_MAPPING[env].contracts;
   return await client.account.encodeCallData({
-    abi: contracts[ContractType.DIMO_REGISTRY].address,
+    to: contracts[ContractType.DIMO_REGISTRY].address,
     value: BigInt(0),
     data: encodeFunctionData({
       abi: contracts[ContractType.DIMO_REGISTRY].abi,
@@ -42,7 +42,7 @@ export const mintVehicleWithDeviceDefinition = async (
 
 export async function setVehiclePermissions(
   args: SetVehiclePermissions,
-  client: any,
+  client: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>,
   env: ENVIRONMENT = ENVIRONMENT.DEV
 ): Promise<`0x${string}`> {
   const contracts = CHAIN_ABI_MAPPING[env].contracts;
@@ -62,7 +62,7 @@ export async function setVehiclePermissions(
 
 export async function setPermissionsSACD(
   args: SetPermissionsSACD,
-  client: any,
+  client: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>,
   contracts: ContractToMapping
 ): Promise<`0x${string}`> {
   return await client.account.encodeCallData({

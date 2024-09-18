@@ -3,8 +3,9 @@
   "compilerOptions": {
     "allowJs": false,
     "declaration": true,
-    "sourceMap": false,
+    "noEmitOnError": false,
+    "sourceMap": true,
   },
   "include": ["src"],
-  "exclude": ["dist", "build", "**/*.test.*", "mocks"]
+  "exclude": ["dist", "build", "**/*.test.*", "mocks", "node_modules"]
 }

@@ -1,7 +1,8 @@
-export type { MintVehicleWithDeviceDefinition, ENVIRONMENT } from "./core/types/interface";
+export type { MintVehicleWithDeviceDefinition, ENVIRONMENT } from "./core/types/interface.js";
 export {
   mintVehicleCallData,
   mintVehicleWithDeviceDefinition,
   setPermissionsSACD,
   setVehiclePermissions,
-} from "./DIMODeveloperSDK";
+} from "./DIMODeveloperSDK.js";
+export { kernelClientFromPasskeySigner } from "./kernelSignerFromPasskey.js";
