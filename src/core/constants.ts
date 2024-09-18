@@ -1,9 +1,11 @@
-import abiCredits from "./abis/DimoCredit.json" assert { type: "json" };
-import abiRegistry from "./abis/DimoRegistry.json" assert { type: "json" };
-import abiSacd from "./abis/DimoSacd.json" assert { type: "json" };
-import abiVehicleId from "./abis/DimoVehicleId.json" assert { type: "json" };
 import { Chain, polygon, polygonAmoy } from "viem/chains";
 import { API_BY_ENV, AllChainInfos, ContractType, DIMO_APIs, ENVIRONMENT } from "./types/interface.js";
+
+import { abiVehicleId } from "./abis/DimoVehicleId.js";
+import { abiRegistry } from "./abis/DimoRegistry.js";
+import { abiCredits } from "./abis/DimoCredit.js";
+import { abiToken } from "./abis/DimoToken.js";
+import { abiSacd } from "./abis/DimoSacd.js";
 
 export const POLYGON_DIMO_TOKEN_ADDRESS = "0xE261D618a959aFfFd53168Cd07D12E37B26761db";
 export const POLYGON_DIMO_CREDIT_ADDRESS = "0x7186F9aC35d24c9a4cf1E58a797c04DF1b334322";
@@ -19,6 +21,7 @@ export const AMOY_DIMO_VEHICLE_ID_ADDRESS = "0x45fbCD3ef7361d156e8b16F5538AE36DE
 
 export const MINT_VEHICLE_WITH_DEVICE_DEFINITION = "mintVehicleWithDeviceDefinition";
 export const SET_PERMISSIONS_SACD = "setPermissions";
+export const SEND_DIMO_TOKENS = "transfer";
 
 export const SUPPORTED_CHAINS: Chain[] = [polygonAmoy, polygon];
 
@@ -89,6 +92,10 @@ export const CHAIN_ABI_MAPPING: AllChainInfos = {
         abi: abiVehicleId,
         address: AMOY_DIMO_VEHICLE_ID_ADDRESS,
       },
+      [ContractType.DIMO_TOKEN]: {
+        abi: abiToken,
+        address: AMOY_DIMO_TOKEN_ADDRESS,
+      },
     },
   },
   [ENVIRONMENT.PROD]: {
@@ -108,6 +115,10 @@ export const CHAIN_ABI_MAPPING: AllChainInfos = {
       [ContractType.DIMO_VEHICLE_ID]: {
         abi: abiVehicleId,
         address: POLYGON_DIMO_VEHICLE_ID_ADDRESS,
+      },
+      [ContractType.DIMO_TOKEN]: {
+        abi: abiToken,
+        address: POLYGON_DIMO_TOKEN_ADDRESS,
       },
     },
   },

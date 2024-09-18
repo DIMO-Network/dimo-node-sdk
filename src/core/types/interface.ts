@@ -3,6 +3,7 @@ export enum ContractType {
   DIMO_REGISTRY,
   DIMO_VEHICLE_ID,
   DIMO_SACD,
+  DIMO_TOKEN,
 }
 
 export enum SupportedNetworks {
@@ -61,6 +62,11 @@ export type SetPermissionsSACD = {
   permissions: bigint;
   expiration: bigint;
   source: string;
+};
+
+export type SendDIMOTokens = {
+  to: `0x${string}`;
+  amount: bigint;
 };
 
 export type NetworkProvider = {
