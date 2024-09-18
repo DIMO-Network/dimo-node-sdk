@@ -3,7 +3,7 @@ import abiRegistry from "./abis/DimoRegistry.json";
 import abiSacd from "./abis/DimoSacd.json";
 import abiVehicleId from "./abis/DimoVehicleId.json";
 import { Chain, polygon, polygonAmoy } from "viem/chains";
-import { API_BY_ENV, AllChainInfos, ContractType, DIMO_APIs, ENVIRONMENT } from "./types.js";
+import { API_BY_ENV, AllChainInfos, ContractType, DIMO_APIs, ENVIRONMENT } from "./types/interface";
 
 export const POLYGON_DIMO_TOKEN_ADDRESS = "0xE261D618a959aFfFd53168Cd07D12E37B26761db";
 export const POLYGON_DIMO_CREDIT_ADDRESS = "0x7186F9aC35d24c9a4cf1E58a797c04DF1b334322";
