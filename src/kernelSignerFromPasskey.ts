@@ -23,7 +23,7 @@ import { signerToEcdsaValidator } from "@zerodev/ecdsa-validator";
 import { TStamper } from "node_modules/@turnkey/http/dist/base.js";
 import { walletClientToSmartAccountSigner } from "permissionless/utils";
 
-const entryPoint = "0x0000000071727De22E5E9d8BAf0edAc6f37da032";
+const entryPoint = "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789";
 
 export async function kernelClientFromPasskeySigner(
   subOrganizationId: string,
