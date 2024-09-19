@@ -12,4 +12,5 @@ export {
   sendDIMOTokensCallData,
   sendDIMOTokens,
 } from "./DIMODeveloperSDK.js";
-export { kernelClientFromPasskeySigner } from "./kernelSignerFromPasskey.js";
+export { kernelClientFromPasskeySigner } from "./core/kernelClientFromSigner/kernelClientFromPasskey.js";
+export { kernelClientFromPrivateKey } from "./core/kernelClientFromSigner/kernelClientFromPrivateKey.js";
