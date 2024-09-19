@@ -1,112 +1,92 @@
-import { Chain, Transport, encodeFunctionData } from "viem";
+import { ENTRYPOINT, ENV_MAPPING, ENV_NETWORK_MAPPING } from ":core/constants.js";
 import {
-  ContractToMapping,
-  ContractType,
   ENVIRONMENT,
   MintVehicleWithDeviceDefinition,
   SendDIMOTokens,
-  SetPermissionsSACD,
   SetVehiclePermissions,
-} from "./core/types/interface.js";
-import {
-  CHAIN_ABI_MAPPING,
-  MINT_VEHICLE_WITH_DEVICE_DEFINITION,
-  SEND_DIMO_TOKENS,
-  SET_PERMISSIONS_SACD,
-} from ":core/constants.js";
+} from ":core/types/interface.js";
+import { KERNEL_V2_4 } from "@zerodev/sdk/constants";
+import { KERNEL_V2_VERSION_TYPE } from "@zerodev/sdk/types";
+import { Chain, PublicClient, Transport, createPublicClient, http } from "viem";
+import { kernelClientFromPrivateKey } from "./index.js";
 import { KernelAccountClient, KernelSmartAccount } from "@zerodev/sdk";
 import { EntryPoint } from "permissionless/types";
+import { BundlerClient, GetUserOperationReceiptReturnType, createBundlerClient } from "permissionless";
+import { mintVehicleWithDeviceDefinition } from ":core/actions/mintVehicleWithDeviceDefinition.js";
+import { setVehiclePermissions } from ":core/actions/setPermissionsSACD.js";
+import { sendDIMOTokens } from ":core/actions/sendDIMOTokens.js";
 
-export const mintVehicleCallData = async (
-  args: MintVehicleWithDeviceDefinition,
-  env: ENVIRONMENT = ENVIRONMENT.DEV
-): Promise<`0x${string}`> => {
-  const contracts = CHAIN_ABI_MAPPING[env].contracts;
-  return encodeFunctionData({
-    abi: contracts[ContractType.DIMO_REGISTRY].abi,
-    functionName: MINT_VEHICLE_WITH_DEVICE_DEFINITION,
-    args: [args.manufacturerNode, args.owner, args.deviceDefinitionID, args.attributeInfo],
-  });
-};
+export class KernelSigner {
+  publicClient: PublicClient;
+  chain: Chain | undefined;
+  bundlerClient: BundlerClient<EntryPoint, Chain | undefined>;
+  kernelClient: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>;
+  environment: string;
 
-export const mintVehicleWithDeviceDefinition = async (
-  args: MintVehicleWithDeviceDefinition,
-  client: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>,
-  env: ENVIRONMENT = ENVIRONMENT.DEV
-): Promise<`0x${string}`> => {
-  const contracts = CHAIN_ABI_MAPPING[env].contracts;
-  return await client.account.encodeCallData({
-    to: contracts[ContractType.DIMO_REGISTRY].address,
-    value: BigInt(0),
-    data: encodeFunctionData({
-      abi: contracts[ContractType.DIMO_REGISTRY].abi,
-      functionName: MINT_VEHICLE_WITH_DEVICE_DEFINITION,
-      args: [args.manufacturerNode, args.owner, args.deviceDefinitionID, args.attributeInfo],
-    }),
-  });
-};
+  constructor(environment: string = "prod", rpcURL: string) {
+    this.environment = environment;
+    this.chain = ENV_NETWORK_MAPPING.get(ENV_MAPPING.get(this.environment) ?? ENVIRONMENT.DEV);
+    this.publicClient = createPublicClient({
+      transport: http(rpcURL),
+      chain: this.chain,
+    });
+  }
 
-export async function setVehiclePermissions(
-  args: SetVehiclePermissions,
-  client: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>,
-  env: ENVIRONMENT = ENVIRONMENT.DEV
-): Promise<`0x${string}`> {
-  const contracts = CHAIN_ABI_MAPPING[env].contracts;
-  return await setPermissionsSACD(
-    {
-      asset: contracts[ContractType.DIMO_REGISTRY].address,
-      tokenId: args.tokenId,
-      grantee: args.grantee,
-      permissions: args.permissions,
-      expiration: args.expiration,
-      source: args.source,
-    },
-    client,
-    contracts
-  );
-}
+  public async connectKernelClient(
+    privateKey: `0x${string}`,
+    bundlrUrl: string,
+    paymasterUrl: string,
+    entryPoint: `0x${string}` = ENTRYPOINT,
+    kernelVersion: KERNEL_V2_VERSION_TYPE = KERNEL_V2_4
+  ) {
+    this.kernelClient = await kernelClientFromPrivateKey(
+      privateKey,
+      this.publicClient,
+      bundlrUrl,
+      paymasterUrl,
+      entryPoint,
+      kernelVersion
+    );
 
-export async function setPermissionsSACD(
-  args: SetPermissionsSACD,
-  client: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>,
-  contracts: ContractToMapping
-): Promise<`0x${string}`> {
-  return await client.account.encodeCallData({
-    to: contracts[ContractType.DIMO_SACD].address,
-    value: BigInt(0),
-    data: encodeFunctionData({
-      abi: contracts[ContractType.DIMO_SACD].abi,
-      functionName: SET_PERMISSIONS_SACD,
-      args: [args.asset, args.tokenId, args.grantee, args.permissions, args.expiration, args.source],
-    }),
-  });
-}
+    this.bundlerClient = createBundlerClient({
+      chain: this.chain,
+      transport: http(bundlrUrl),
+      entryPoint: entryPoint,
+    });
+  }
 
-export async function sendDIMOTokensCallData(
-  args: SendDIMOTokens,
-  env: ENVIRONMENT = ENVIRONMENT.DEV
-): Promise<`0x${string}`> {
-  const contracts = CHAIN_ABI_MAPPING[env].contracts;
-  return await encodeFunctionData({
-    abi: contracts[ContractType.DIMO_TOKEN].abi,
-    functionName: SEND_DIMO_TOKENS,
-    args: [args.to, args.amount],
-  });
-}
+  public async mintVehicleWithDeviceDefinition(
+    args: MintVehicleWithDeviceDefinition
+  ): Promise<GetUserOperationReceiptReturnType> {
+    const mintVehicleCallData = await mintVehicleWithDeviceDefinition(args, this.kernelClient, this.environment);
+    const userOpHash = await this.kernelClient.sendUserOperation({
+      userOperation: {
+        callData: mintVehicleCallData as `0x${string}`,
+      },
+    });
+    const txResult = await this.bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
+    return txResult;
+  }
 
-export async function sendDIMOTokens(
-  args: SendDIMOTokens,
-  client: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>,
-  env: ENVIRONMENT = ENVIRONMENT.DEV
-): Promise<`0x${string}`> {
-  const contracts = CHAIN_ABI_MAPPING[env].contracts;
-  return await client.account.encodeCallData({
-    to: contracts[ContractType.DIMO_TOKEN].address,
-    value: BigInt(0),
-    data: encodeFunctionData({
-      abi: contracts[ContractType.DIMO_TOKEN].abi,
-      functionName: SEND_DIMO_TOKENS,
-      args: [args.to, args.amount],
-    }),
-  });
+  public async setVehiclePermissions(args: SetVehiclePermissions): Promise<GetUserOperationReceiptReturnType> {
+    const setVehiclePermissionsCallData = await setVehiclePermissions(args, this.kernelClient, this.environment);
+    const userOpHash = await this.kernelClient.sendUserOperation({
+      userOperation: {
+        callData: setVehiclePermissionsCallData as `0x${string}`,
+      },
+    });
+    const txResult = await this.bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
+    return txResult;
+  }
+
+  public async sendDIMOTokens(args: SendDIMOTokens): Promise<GetUserOperationReceiptReturnType> {
+    const sendDIMOTokensCallData = await sendDIMOTokens(args, this.kernelClient, this.environment);
+    const userOpHash = await this.kernelClient.sendUserOperation({
+      userOperation: {
+        callData: sendDIMOTokensCallData as `0x${string}`,
+      },
+    });
+    const txResult = await this.bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
+    return txResult;
+  }
 }

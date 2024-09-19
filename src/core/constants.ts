@@ -27,8 +27,6 @@ export const SEND_DIMO_TOKENS = "transfer";
 
 export const SUPPORTED_CHAINS: Chain[] = [polygonAmoy, polygon];
 
-export const PRODUCTION_ENV = "production";
-
 export const ENV_NETWORK_MAPPING = new Map<ENVIRONMENT, Chain>([
   [ENVIRONMENT.PROD, polygon],
   [ENVIRONMENT.DEV, polygonAmoy],
