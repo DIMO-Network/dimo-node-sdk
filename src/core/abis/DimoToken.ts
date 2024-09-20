@@ -1,4 +1,6 @@
-export const abiToken = [
+import { Abi } from "viem";
+
+export const abiToken: Abi = [
   {
     anonymous: false,
     inputs: [

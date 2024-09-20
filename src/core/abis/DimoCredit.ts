@@ -1,4 +1,6 @@
-export const abiCredits = [
+import { Abi } from "viem";
+
+export const abiCredits: Abi = [
   {
     inputs: [],
     stateMutability: "nonpayable",

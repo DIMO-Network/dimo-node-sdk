@@ -1,4 +1,6 @@
-export const abiVehicleId = [
+import { Abi } from "viem";
+
+export const abiVehicleId: Abi = [
   {
     inputs: [],
     stateMutability: "nonpayable",

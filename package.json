@@ -1,6 +1,6 @@
 {
-  "name": "@dimo-network/dimo-node-sdk",
-  "version": "1.1.9",
+  "name": "@dimo-network/dimo-node-sdk-dev",
+  "version": "1.2.01",
   "description": "DIMO SDK",
   "keywords": [
     "DIMO"
@@ -63,5 +63,7 @@
     "tsc-alias": "^1.8.10",
     "tslib": "^2.6.0",
     "typescript": "^5.1.6"
-  }
+  },
+  "author": "",
+  "license": "ISC"
 }

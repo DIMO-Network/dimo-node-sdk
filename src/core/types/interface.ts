@@ -1,3 +1,5 @@
+import { Abi } from "viem";
+
 export enum ContractType {
   DIMO_CREDIT,
   DIMO_REGISTRY,
@@ -41,32 +43,32 @@ export type API_BY_ENV = {
 };
 
 export type MintVehicleWithDeviceDefinition = {
-  manufacturerNode: bigint;
+  manufacturerNode: BigInt;
   owner: `0x${string}`;
   deviceDefinitionID: string;
   attributeInfo: { attribute: string; info: string }[];
 };
 
 export type SetVehiclePermissions = {
-  tokenId: bigint;
+  tokenId: BigInt;
   grantee: `0x${string}`;
-  permissions: bigint;
-  expiration: bigint;
+  permissions: BigInt;
+  expiration: BigInt;
   source: string;
 };
 
 export type SetPermissionsSACD = {
   asset: `0x${string}`;
-  tokenId: bigint;
+  tokenId: BigInt;
   grantee: `0x${string}`;
-  permissions: bigint;
-  expiration: bigint;
+  permissions: BigInt;
+  expiration: BigInt;
   source: string;
 };
 
 export type SendDIMOTokens = {
   to: `0x${string}`;
-  amount: bigint;
+  amount: BigInt;
 };
 
 export type NetworkProvider = {
@@ -74,7 +76,7 @@ export type NetworkProvider = {
 };
 
 export type AbiAddressPair = {
-  abi: any;
+  abi: Abi;
   address: `0x${string}`;
 };
 
