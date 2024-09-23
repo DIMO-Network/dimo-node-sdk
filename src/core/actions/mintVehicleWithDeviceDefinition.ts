@@ -1,8 +1,10 @@
 import { Chain, Transport, encodeFunctionData } from "viem";
-import { ContractType, ENVIRONMENT, MintVehicleWithDeviceDefinition } from "../types/interface.js";
-import { CHAIN_ABI_MAPPING, ENV_MAPPING, MINT_VEHICLE_WITH_DEVICE_DEFINITION } from ":core/constants.js";
+import { ContractType, ENVIRONMENT } from ":core/types/dimoTypes.js";
+import { CHAIN_ABI_MAPPING, ENV_MAPPING } from ":core/constants/mappings.js";
 import { KernelAccountClient, KernelSmartAccount } from "@zerodev/sdk";
 import { EntryPoint } from "permissionless/types";
+import { MINT_VEHICLE_WITH_DEVICE_DEFINITION } from ":core/constants/methods.js";
+import { MintVehicleWithDeviceDefinition } from ":core/types/args.js";
 
 export const mintVehicleCallData = async (
   args: MintVehicleWithDeviceDefinition,

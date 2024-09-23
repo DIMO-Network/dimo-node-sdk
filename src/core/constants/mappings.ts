@@ -1,31 +1,24 @@
 import { Chain, polygon, polygonAmoy } from "viem/chains";
-import { API_BY_ENV, AllChainInfos, ContractType, DIMO_APIs, ENVIRONMENT } from "./types/interface.js";
 
-import { abiVehicleId } from "./abis/DimoVehicleId.js";
-import { abiRegistry } from "./abis/DimoRegistry.js";
-import { abiCredits } from "./abis/DimoCredit.js";
-import { abiToken } from "./abis/DimoToken.js";
-import { abiSacd } from "./abis/DimoSacd.js";
+import { API_BY_ENV, ContractType, DIMO_APIs, ENVIRONMENT } from ":core/types/dimoTypes.js";
+import { abiVehicleId } from ":core/abis/DimoVehicleId.js";
+import { abiRegistry } from ":core/abis/DimoRegistry.js";
+import { abiCredits } from ":core/abis/DimoCredit.js";
+import { abiToken } from ":core/abis/DimoToken.js";
+import { abiSacd } from ":core/abis/DimoSacd.js";
 
-export const POLYGON_DIMO_TOKEN_ADDRESS = "0xE261D618a959aFfFd53168Cd07D12E37B26761db";
-export const POLYGON_DIMO_CREDIT_ADDRESS = "0x7186F9aC35d24c9a4cf1E58a797c04DF1b334322";
-export const POLYGON_DIMO_REGISTRY_ADDRESS = "0xFA8beC73cebB9D88FF88a2f75E7D7312f2Fd39EC";
-export const POLYGON_DIMO_SACD_ADDRESS = "0xEF919b3793deaae1637523d483e3434ae113004E";
-export const POLYGON_DIMO_VEHICLE_ID_ADDRESS = "0xbA5738a18d83D41847dfFbDC6101d37C69c9B0cF";
-
-export const AMOY_DIMO_TOKEN_ADDRESS = "0x21cFE003997fB7c2B3cfe5cf71e7833B7B2eCe10";
-export const AMOY_DIMO_CREDIT_ADDRESS = "0x49c120f4C3c6679Ebd357F2d749E4D1C03598d65";
-export const AMOY_DIMO_REGISTRY_ADDRESS = "0x5eAA326fB2fc97fAcCe6A79A304876daD0F2e96c";
-export const AMOY_DIMO_SACD_ADDRESS = "0x3e78Cb1f68132D34C811dcd7D4a10E0Aad752C3c";
-export const AMOY_DIMO_VEHICLE_ID_ADDRESS = "0x45fbCD3ef7361d156e8b16F5538AE36DEdf61Da8";
-
-export const ENTRYPOINT = "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789";
-
-export const MINT_VEHICLE_WITH_DEVICE_DEFINITION = "mintVehicleWithDeviceDefinition";
-export const SET_PERMISSIONS_SACD = "setPermissions";
-export const SEND_DIMO_TOKENS = "transfer";
-
-export const SUPPORTED_CHAINS: Chain[] = [polygonAmoy, polygon];
+import {
+  AMOY_DIMO_CREDIT_ADDRESS,
+  AMOY_DIMO_SACD_ADDRESS,
+  AMOY_DIMO_VEHICLE_ID_ADDRESS,
+  AMOY_DIMO_TOKEN_ADDRESS,
+  AMOY_DIMO_REGISTRY_ADDRESS,
+  POLYGON_DIMO_VEHICLE_ID_ADDRESS,
+  POLYGON_DIMO_TOKEN_ADDRESS,
+  POLYGON_DIMO_CREDIT_ADDRESS,
+  POLYGON_DIMO_REGISTRY_ADDRESS,
+} from ":core/constants/contractAddrs.js";
+import { AllChainInfos } from ":core/types/args.js";
 
 export const ENV_NETWORK_MAPPING = new Map<ENVIRONMENT, Chain>([
   [ENVIRONMENT.PROD, polygon],

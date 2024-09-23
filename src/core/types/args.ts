@@ -1,52 +1,19 @@
 import { Abi } from "viem";
-
-export enum ContractType {
-  DIMO_CREDIT,
-  DIMO_REGISTRY,
-  DIMO_VEHICLE_ID,
-  DIMO_SACD,
-  DIMO_TOKEN,
-}
-
-export enum SupportedNetworks {
-  AMOY,
-  POLYGON,
-}
-
-export enum ENVIRONMENT {
-  PROD,
-  DEV,
-}
-
-export enum DIMO_APIs {
-  ATTESTATION,
-  AUTH,
-  IDENTITY,
-  DEVICES,
-  DEVICE_DATA,
-  DEVICE_DEFINITIONS,
-  EVENTS,
-  TELEMETRY,
-  TOKEN_EXCHANGE,
-  TRIPS,
-  USER,
-  VALUATIONS,
-  VEHICLE_SIGNAL_DECODING,
-}
-
-export type API_BY_ENV = {
-  [key in ENVIRONMENT]: {
-    [key in DIMO_APIs]: {
-      url: string;
-    };
-  };
-};
+import { ContractType, SupportedNetworks } from "./dimoTypes.js";
 
 export type MintVehicleWithDeviceDefinition = {
   manufacturerNode: BigInt;
   owner: `0x${string}`;
   deviceDefinitionID: string;
   attributeInfo: { attribute: string; info: string }[];
+};
+
+export type MintPermissionedVehicleWithDeviceDefinition = {
+  manufacturerNode: BigInt;
+  owner: `0x${string}`;
+  deviceDefinitionID: string;
+  attributeInfo: { attribute: string; info: string }[];
+  source: string;
 };
 
 export type SetVehiclePermissions = {

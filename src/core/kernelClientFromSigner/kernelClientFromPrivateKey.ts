@@ -11,8 +11,8 @@ import { KERNEL_V2_VERSION_TYPE } from "@zerodev/sdk/types";
 import { signerToEcdsaValidator } from "@zerodev/ecdsa-validator";
 import { privateKeyToAccount } from "viem/accounts";
 import { SmartAccountSigner } from "permissionless/accounts";
-import { ENTRYPOINT } from ":core/constants.js";
 import { KERNEL_V2_4 } from "@zerodev/sdk/constants";
+import { ENTRYPOINT } from ":core/constants/contractAddrs.js";
 
 export async function kernelClientFromPrivateKey(
   privateKey: `0x${string}`,

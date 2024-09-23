@@ -1,11 +1,4 @@
-import { CHAIN_ABI_MAPPING, ENTRYPOINT, ENV_MAPPING, ENV_NETWORK_MAPPING } from ":core/constants.js";
-import {
-  ContractType,
-  ENVIRONMENT,
-  MintVehicleWithDeviceDefinition,
-  SendDIMOTokens,
-  SetVehiclePermissions,
-} from ":core/types/interface.js";
+import { ContractType, ENVIRONMENT } from ":core/types/dimoTypes.js";
 import { KERNEL_V2_4 } from "@zerodev/sdk/constants";
 import { KERNEL_V2_VERSION_TYPE } from "@zerodev/sdk/types";
 import { Chain, PublicClient, Transport, createPublicClient, http, parseEventLogs } from "viem";
@@ -17,17 +10,29 @@ import { mintVehicleWithDeviceDefinition } from ":core/actions/mintVehicleWithDe
 import { setVehiclePermissions } from ":core/actions/setPermissionsSACD.js";
 import { sendDIMOTokens } from ":core/actions/sendDIMOTokens.js";
 import { VehicleNodeMintedWithDeviceDefinition } from ":core/types/eventLogs.js";
+import { CHAIN_ABI_MAPPING, ENV_MAPPING, ENV_NETWORK_MAPPING } from ":core/constants/mappings.js";
+import { ENTRYPOINT } from ":core/constants/contractAddrs.js";
+import { SACD_DEFAULT_PERMISSIONS } from ":core/constants/sacdPerms.js";
+import {
+  ContractToMapping,
+  MintPermissionedVehicleWithDeviceDefinition,
+  MintVehicleWithDeviceDefinition,
+  SendDIMOTokens,
+  SetVehiclePermissions,
+} from ":core/types/args.js";
 
 export class KernelSigner {
   publicClient: PublicClient;
   chain: Chain | undefined;
   bundlerClient: BundlerClient<EntryPoint, Chain | undefined>;
   kernelClient: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>;
+  contractMapping: ContractToMapping;
   environment: string;
 
   constructor(environment: string = "prod", rpcURL: string) {
     this.environment = environment;
     this.chain = ENV_NETWORK_MAPPING.get(ENV_MAPPING.get(this.environment) ?? ENVIRONMENT.DEV);
+    this.contractMapping = CHAIN_ABI_MAPPING[ENV_MAPPING.get(this.environment) ?? ENVIRONMENT.DEV].contracts;
     this.publicClient = createPublicClient({
       transport: http(rpcURL),
       chain: this.chain,
@@ -57,10 +62,8 @@ export class KernelSigner {
     });
   }
 
-  // TODO-- need to update this to have real defaults
-  // we can only set perms on vehicles owned by the address making the call
   public async mintVehicleAndSetDefaultPerms(
-    args: MintVehicleWithDeviceDefinition
+    args: MintPermissionedVehicleWithDeviceDefinition
   ): Promise<GetUserOperationReceiptReturnType> {
     const mintVehicleCallData = await mintVehicleWithDeviceDefinition(args, this.kernelClient, this.environment);
     const userOpHashMint = await this.kernelClient.sendUserOperation({
@@ -70,9 +73,8 @@ export class KernelSigner {
     });
     const txResultMint = await this.bundlerClient.waitForUserOperationReceipt({ hash: userOpHashMint });
 
-    const contracts = CHAIN_ABI_MAPPING[ENV_MAPPING.get(this.environment) ?? ENVIRONMENT.DEV].contracts;
     const log = parseEventLogs({
-      abi: contracts[ContractType.DIMO_REGISTRY].abi,
+      abi: this.contractMapping[ContractType.DIMO_REGISTRY].abi,
       logs: txResultMint.logs,
       eventName: "VehicleNodeMintedWithDeviceDefinition",
     })[0];
@@ -85,10 +87,11 @@ export class KernelSigner {
     const setVehiclePermsCallData = await setVehiclePermissions(
       {
         tokenId: event.vehicleId,
-        permissions: BigInt(4091),
+        permissions: SACD_DEFAULT_PERMISSIONS,
         grantee: this.kernelClient.account.address,
+        // TODO(ae): what time period do want to set this for, 1 year? 10 years?
         expiration: BigInt(Math.floor(new Date().setFullYear(new Date().getFullYear() + 1) / 1000)),
-        source: "default-string",
+        source: args.source,
       },
       this.kernelClient,
       this.environment
