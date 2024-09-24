@@ -14,7 +14,7 @@ export async function setVehiclePermissions(
   const contracts = CHAIN_ABI_MAPPING[ENV_MAPPING.get(environment) ?? ENVIRONMENT.DEV].contracts;
   return await setPermissionsSACD(
     {
-      asset: contracts[ContractType.DIMO_REGISTRY].address,
+      asset: contracts[ContractType.DIMO_VEHICLE_ID].address,
       tokenId: args.tokenId,
       grantee: args.grantee,
       permissions: args.permissions,

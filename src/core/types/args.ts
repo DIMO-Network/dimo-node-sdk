@@ -8,7 +8,7 @@ export type MintVehicleWithDeviceDefinition = {
   attributeInfo: { attribute: string; info: string }[];
 };
 
-export type MintPermissionedVehicleWithDeviceDefinition = {
+export type MintVehicleDefaultPerms = {
   manufacturerNode: BigInt;
   owner: `0x${string}`;
   deviceDefinitionID: string;

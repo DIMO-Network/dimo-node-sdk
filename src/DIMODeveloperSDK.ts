@@ -12,10 +12,10 @@ import { sendDIMOTokens } from ":core/actions/sendDIMOTokens.js";
 import { VehicleNodeMintedWithDeviceDefinition } from ":core/types/eventLogs.js";
 import { CHAIN_ABI_MAPPING, ENV_MAPPING, ENV_NETWORK_MAPPING } from ":core/constants/mappings.js";
 import { ENTRYPOINT } from ":core/constants/contractAddrs.js";
-import { SACD_DEFAULT_PERMISSIONS } from ":core/constants/sacdPerms.js";
+import { SACD_DEFAULT_EXPIRATION, SACD_DEFAULT_PERMISSIONS } from ":core/constants/sacd.js";
 import {
   ContractToMapping,
-  MintPermissionedVehicleWithDeviceDefinition,
+  MintVehicleDefaultPerms,
   MintVehicleWithDeviceDefinition,
   SendDIMOTokens,
   SetVehiclePermissions,
@@ -62,9 +62,7 @@ export class KernelSigner {
     });
   }
 
-  public async mintVehicleAndSetDefaultPerms(
-    args: MintPermissionedVehicleWithDeviceDefinition
-  ): Promise<GetUserOperationReceiptReturnType> {
+  public async mintVehicleDefaultPerms(args: MintVehicleDefaultPerms): Promise<GetUserOperationReceiptReturnType[]> {
     const mintVehicleCallData = await mintVehicleWithDeviceDefinition(args, this.kernelClient, this.environment);
     const userOpHashMint = await this.kernelClient.sendUserOperation({
       userOperation: {
@@ -80,7 +78,7 @@ export class KernelSigner {
     })[0];
 
     if (!log) {
-      throw new Error("No event logs found");
+      throw new Error(`mint vehicle event logs not found. transaction hash: ${txResultMint.hash}`);
     }
 
     const event = log.args as VehicleNodeMintedWithDeviceDefinition;
@@ -89,8 +87,7 @@ export class KernelSigner {
         tokenId: event.vehicleId,
         permissions: SACD_DEFAULT_PERMISSIONS,
         grantee: this.kernelClient.account.address,
-        // TODO(ae): what time period do want to set this for, 1 year? 10 years?
-        expiration: BigInt(Math.floor(new Date().setFullYear(new Date().getFullYear() + 1) / 1000)),
+        expiration: SACD_DEFAULT_EXPIRATION,
         source: args.source,
       },
       this.kernelClient,
