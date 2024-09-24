@@ -1,7 +1,7 @@
-import { ContractType, ENVIRONMENT } from ":core/types/dimoTypes.js";
+import { ENVIRONMENT } from ":core/types/dimoTypes.js";
 import { KERNEL_V2_4 } from "@zerodev/sdk/constants";
 import { KERNEL_V2_VERSION_TYPE } from "@zerodev/sdk/types";
-import { Chain, PublicClient, Transport, createPublicClient, http, parseEventLogs } from "viem";
+import { Chain, PublicClient, Transport, createPublicClient, http } from "viem";
 import { kernelClientFromPrivateKey } from "./index.js";
 import { KernelAccountClient, KernelSmartAccount } from "@zerodev/sdk";
 import { EntryPoint } from "permissionless/types";
@@ -9,17 +9,18 @@ import { BundlerClient, GetUserOperationReceiptReturnType, createBundlerClient }
 import { mintVehicleWithDeviceDefinition } from ":core/actions/mintVehicleWithDeviceDefinition.js";
 import { setVehiclePermissions } from ":core/actions/setPermissionsSACD.js";
 import { sendDIMOTokens } from ":core/actions/sendDIMOTokens.js";
-import { VehicleNodeMintedWithDeviceDefinition } from ":core/types/eventLogs.js";
 import { CHAIN_ABI_MAPPING, ENV_MAPPING, ENV_NETWORK_MAPPING } from ":core/constants/mappings.js";
 import { ENTRYPOINT } from ":core/constants/contractAddrs.js";
 import { SACD_DEFAULT_EXPIRATION, SACD_DEFAULT_PERMISSIONS } from ":core/constants/sacd.js";
 import {
+  ClaimAftermarketdevice,
   ContractToMapping,
-  MintVehicleDefaultPerms,
   MintVehicleWithDeviceDefinition,
+  PairAftermarketDevice,
   SendDIMOTokens,
   SetVehiclePermissions,
 } from ":core/types/args.js";
+import { claimAftermarketDevice, pairAftermarketDevice } from ":core/actions/claimAndPairAftermarketDevice.js";
 
 export class KernelSigner {
   publicClient: PublicClient;
@@ -62,7 +63,18 @@ export class KernelSigner {
     });
   }
 
-  public async mintVehicleDefaultPerms(args: MintVehicleDefaultPerms): Promise<GetUserOperationReceiptReturnType[]> {
+  public async mintVehicleDefaultPerms(
+    args: MintVehicleWithDeviceDefinition
+  ): Promise<GetUserOperationReceiptReturnType> {
+    if (!args.sacdInput) {
+      args.sacdInput = {
+        grantee: this.kernelClient.account.address,
+        permissions: SACD_DEFAULT_PERMISSIONS,
+        expiration: SACD_DEFAULT_EXPIRATION,
+        source: "todo-setDefaultValue",
+      };
+    }
+
     const mintVehicleCallData = await mintVehicleWithDeviceDefinition(args, this.kernelClient, this.environment);
     const userOpHashMint = await this.kernelClient.sendUserOperation({
       userOperation: {
@@ -71,37 +83,7 @@ export class KernelSigner {
     });
     const txResultMint = await this.bundlerClient.waitForUserOperationReceipt({ hash: userOpHashMint });
 
-    const log = parseEventLogs({
-      abi: this.contractMapping[ContractType.DIMO_REGISTRY].abi,
-      logs: txResultMint.logs,
-      eventName: "VehicleNodeMintedWithDeviceDefinition",
-    })[0];
-
-    if (!log) {
-      throw new Error(`mint vehicle event logs not found. transaction hash: ${txResultMint.hash}`);
-    }
-
-    const event = log.args as VehicleNodeMintedWithDeviceDefinition;
-    const setVehiclePermsCallData = await setVehiclePermissions(
-      {
-        tokenId: event.vehicleId,
-        permissions: SACD_DEFAULT_PERMISSIONS,
-        grantee: this.kernelClient.account.address,
-        expiration: SACD_DEFAULT_EXPIRATION,
-        source: args.source,
-      },
-      this.kernelClient,
-      this.environment
-    );
-
-    const userOpHashPerms = await this.kernelClient.sendUserOperation({
-      userOperation: {
-        callData: setVehiclePermsCallData as `0x${string}`,
-      },
-    });
-    const txResultPerms = await this.bundlerClient.waitForUserOperationReceipt({ hash: userOpHashPerms });
-
-    return [txResultMint, txResultPerms];
+    return txResultMint;
   }
 
   public async mintVehicleWithDeviceDefinition(
@@ -137,5 +119,52 @@ export class KernelSigner {
     });
     const txResult = await this.bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
     return txResult;
+  }
+
+  public async claimAftermarketDevice(args: ClaimAftermarketdevice): Promise<GetUserOperationReceiptReturnType> {
+    const claimADCallData = await claimAftermarketDevice(args, this.kernelClient, this.environment);
+    const userOpHash = await this.kernelClient.sendUserOperation({
+      userOperation: {
+        callData: claimADCallData as `0x${string}`,
+      },
+    });
+    const txResult = await this.bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
+    return txResult;
+  }
+
+  public async pairAftermarketDevice(args: PairAftermarketDevice): Promise<GetUserOperationReceiptReturnType> {
+    const pairADCallData = await pairAftermarketDevice(args, this.kernelClient, this.environment);
+    const userOpHash = await this.kernelClient.sendUserOperation({
+      userOperation: {
+        callData: pairADCallData as `0x${string}`,
+      },
+    });
+    const txResult = await this.bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
+    return txResult;
+  }
+
+  public async claimAndPairAftermarketDevice(
+    args: ClaimAftermarketdevice & PairAftermarketDevice
+  ): Promise<GetUserOperationReceiptReturnType[]> {
+    const claimADCallData = await claimAftermarketDevice(args, this.kernelClient, this.environment);
+    const claimADHash = await this.kernelClient.sendUserOperation({
+      userOperation: {
+        callData: claimADCallData as `0x${string}`,
+      },
+    });
+    const claimADResult = await this.bundlerClient.waitForUserOperationReceipt({ hash: claimADHash });
+
+    if (!claimADResult.success) {
+      return [claimADResult];
+    }
+
+    const pairADCallData = await pairAftermarketDevice(args, this.kernelClient, this.environment);
+    const pairADHash = await this.kernelClient.sendUserOperation({
+      userOperation: {
+        callData: pairADCallData as `0x${string}`,
+      },
+    });
+    const pairADResult = await this.bundlerClient.waitForUserOperationReceipt({ hash: pairADHash });
+    return [claimADResult, pairADResult];
   }
 }

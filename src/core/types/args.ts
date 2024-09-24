@@ -6,14 +6,7 @@ export type MintVehicleWithDeviceDefinition = {
   owner: `0x${string}`;
   deviceDefinitionID: string;
   attributeInfo: { attribute: string; info: string }[];
-};
-
-export type MintVehicleDefaultPerms = {
-  manufacturerNode: BigInt;
-  owner: `0x${string}`;
-  deviceDefinitionID: string;
-  attributeInfo: { attribute: string; info: string }[];
-  source: string;
+  sacdInput?: { grantee: `0x${string}`; permissions: BigInt; expiration: BigInt; source: string };
 };
 
 export type SetVehiclePermissions = {
@@ -36,6 +29,16 @@ export type SetPermissionsSACD = {
 export type SendDIMOTokens = {
   to: `0x${string}`;
   amount: BigInt;
+};
+
+export type ClaimAftermarketdevice = {
+  aftermarketDeviceNode: BigInt;
+  aftermarketDeviceSig: Uint8Array;
+};
+
+export type PairAftermarketDevice = {
+  vehicleNode: BigInt;
+  aftermarketDeviceNode: BigInt;
 };
 
 export type NetworkProvider = {

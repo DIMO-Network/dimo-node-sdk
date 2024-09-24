@@ -14,7 +14,7 @@ export const mintVehicleCallData = async (
   return encodeFunctionData({
     abi: contracts[ContractType.DIMO_REGISTRY].abi,
     functionName: MINT_VEHICLE_WITH_DEVICE_DEFINITION,
-    args: [args.manufacturerNode, args.owner, args.deviceDefinitionID, args.attributeInfo],
+    args: [args.manufacturerNode, args.owner, args.deviceDefinitionID, args.attributeInfo, args.sacdInput],
   });
 };
 
@@ -30,7 +30,7 @@ export const mintVehicleWithDeviceDefinition = async (
     data: encodeFunctionData({
       abi: contracts[ContractType.DIMO_REGISTRY].abi,
       functionName: MINT_VEHICLE_WITH_DEVICE_DEFINITION,
-      args: [args.manufacturerNode, args.owner, args.deviceDefinitionID, args.attributeInfo],
+      args: [args.manufacturerNode, args.owner, args.deviceDefinitionID, args.attributeInfo, args.sacdInput],
     }),
   });
 };

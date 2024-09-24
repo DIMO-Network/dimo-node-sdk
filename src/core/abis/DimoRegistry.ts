@@ -946,71 +946,6 @@ export const abiRegistry: Abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "getAdMintCost",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "adMintCost",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_adMintCost",
-        type: "uint256",
-      },
-    ],
-    name: "setAdMintCost",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "_dimoToken",
-        type: "address",
-      },
-    ],
-    name: "setDimoToken",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "_foundation",
-        type: "address",
-      },
-    ],
-    name: "setFoundationAddress",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "_license",
-        type: "address",
-      },
-    ],
-    name: "setLicense",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "uint256",
@@ -1315,9 +1250,22 @@ export const abiRegistry: Abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "manufacturerNode",
+        name: "aftermarketDeviceNode",
         type: "uint256",
       },
+      {
+        internalType: "bytes",
+        name: "aftermarketDeviceSig",
+        type: "bytes",
+      },
+    ],
+    name: "claimAftermarketDevice",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
       {
         components: [
           {
@@ -1464,6 +1412,24 @@ export const abiRegistry: Abi = [
       },
     ],
     name: "mintAftermarketDeviceByManufacturerBatch",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "aftermarketDeviceNode",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "vehicleNode",
+        type: "uint256",
+      },
+    ],
+    name: "pairAftermarketDevice",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -2943,6 +2909,73 @@ export const abiRegistry: Abi = [
         name: "attrInfo",
         type: "tuple[]",
       },
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "grantee",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "permissions",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "expiration",
+            type: "uint256",
+          },
+          {
+            internalType: "string",
+            name: "source",
+            type: "string",
+          },
+        ],
+        internalType: "struct SacdInput",
+        name: "sacdInput",
+        type: "tuple",
+      },
+    ],
+    name: "mintVehicleWithDeviceDefinition",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "manufacturerNode",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+      {
+        internalType: "string",
+        name: "deviceDefinitionId",
+        type: "string",
+      },
+      {
+        components: [
+          {
+            internalType: "string",
+            name: "attribute",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "info",
+            type: "string",
+          },
+        ],
+        internalType: "struct AttributeInfoPair[]",
+        name: "attrInfo",
+        type: "tuple[]",
+      },
     ],
     name: "mintVehicleWithDeviceDefinition",
     outputs: [],
@@ -3443,6 +3476,162 @@ export const abiRegistry: Abi = [
       },
     ],
     name: "setBaseDataURI",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "dimoCredit",
+        type: "address",
+      },
+    ],
+    name: "DimoCreditSet",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "dimoToken",
+        type: "address",
+      },
+    ],
+    name: "DimoTokenSet",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "foundation",
+        type: "address",
+      },
+    ],
+    name: "FoundationSet",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "manufacturerLicense",
+        type: "address",
+      },
+    ],
+    name: "ManufacturerLicenseSet",
+    type: "event",
+  },
+  {
+    inputs: [],
+    name: "getDimoCredit",
+    outputs: [
+      {
+        internalType: "address",
+        name: "dimoCredit",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getDimoToken",
+    outputs: [
+      {
+        internalType: "address",
+        name: "dimoToken",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getFoundation",
+    outputs: [
+      {
+        internalType: "address",
+        name: "foundation",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getManufacturerLicense",
+    outputs: [
+      {
+        internalType: "address",
+        name: "manufacturerLicense",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "dimoCredit",
+        type: "address",
+      },
+    ],
+    name: "setDimoCredit",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "dimoToken",
+        type: "address",
+      },
+    ],
+    name: "setDimoToken",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "foundation",
+        type: "address",
+      },
+    ],
+    name: "setFoundation",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "manufacturerLicense",
+        type: "address",
+      },
+    ],
+    name: "setManufacturerLicense",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -4309,6 +4498,62 @@ export const abiRegistry: Abi = [
       },
     ],
     stateMutability: "payable",
+    type: "function",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "operation",
+        type: "bytes32",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "cost",
+        type: "uint256",
+      },
+    ],
+    name: "OperationCostSet",
+    type: "event",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "operation",
+        type: "bytes32",
+      },
+    ],
+    name: "getDcxOperationCost",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "cost",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "operation",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "cost",
+        type: "uint256",
+      },
+    ],
+    name: "setDcxOperationCost",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
 ];
