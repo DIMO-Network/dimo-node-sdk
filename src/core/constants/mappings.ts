@@ -116,32 +116,3 @@ export const CHAIN_ABI_MAPPING: AllChainInfos = {
     },
   },
 };
-
-export const ChainContractMapping = {
-  polygon: {
-    chain: polygonAmoy,
-    contracts: {
-      [ContractType.DIMO_CREDIT]: {
-        abi: abiCredits,
-        address: POLYGON_DIMO_CREDIT_ADDRESS,
-      },
-      [ContractType.DIMO_REGISTRY]: {
-        abi: abiRegistry,
-        address: POLYGON_DIMO_REGISTRY_ADDRESS,
-      },
-    },
-  },
-  amoy: {
-    chain: polygonAmoy,
-    contracts: {
-      [ContractType.DIMO_CREDIT]: {
-        abi: abiCredits,
-        address: AMOY_DIMO_CREDIT_ADDRESS,
-      },
-      [ContractType.DIMO_REGISTRY]: {
-        abi: abiRegistry,
-        address: AMOY_DIMO_REGISTRY_ADDRESS,
-      },
-    },
-  },
-};

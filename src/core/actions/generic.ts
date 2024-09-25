@@ -20,7 +20,6 @@ export async function genericCallData(
     | undefined
 ): Promise<`0x${string}`> {
   const unpackedArgs = unpackValues(args);
-  console.log("unpacked Args: ", unpackedArgs);
 
   if (!client) {
     return await encodeFunctionData({

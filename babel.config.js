@@ -20,6 +20,15 @@ module.exports = {
     ],
   ],
   plugins: [
+    [
+      "module-resolver",
+      {
+        root: ["./src"],
+        alias: {
+          ":core": "./src/core",
+        },
+      },
+    ],
     ["@babel/plugin-transform-runtime"],
     [
       "@babel/plugin-transform-react-jsx",
