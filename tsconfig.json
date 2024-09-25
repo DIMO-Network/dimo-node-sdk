@@ -1,24 +1,16 @@
 {
-  "compilerOptions": {
-    "target": "es2022",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
-    "module": "ESNext",                                  /* Specify what module code is generated. */
-    "rootDir": "src",                                  /* Specify the root folder within your source files. */
-    "moduleResolution": "node",                          /* Specify how TypeScript looks up a file from a given module specifier. */
-    "baseUrl": "src",                                  /* Specify the base directory to resolve non-relative module names. */
-    "declaration": true,                              /* Generate .d.ts files from TypeScript and JavaScript files in your project. */
-    "outDir": "./dist",                                  /* Specify an output folder for all emitted files. */
-    "esModuleInterop": true,                             /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
-    "forceConsistentCasingInFileNames": true,            /* Ensure that casing is correct in imports. */
-    "strict": true,                                      /* Enable all strict type-checking options. */
-    "noUnusedParameters": true,                       /* Raise an error when a function parameter isn't read. */
-    "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
-    "types": ["node", "jest"]
-  },
-  "include": [
-    "src", "node"
-  ],
-  "exclude": ["node_modules", "**/*.spec.ts"],
-  "ts-node": {
-    "esm": true
+  "extends": "./tsconfig.base.json",
+  "watchOptions": {
+    // Use native file system events for files and directories
+    "watchFile": "useFsEvents",
+    "watchDirectory": "useFsEvents",
+    "fallbackPolling": "dynamicPriority",
+    "synchronousWatchDirectory": true,
+    "excludeDirectories": [
+      "**/node_modules",
+      "dist",
+      "**/*.test.*",
+    ],
   },
 }
+ 

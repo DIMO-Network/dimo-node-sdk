@@ -1,0 +1,46 @@
+{
+  "include": [
+    "./src",
+    "**/*.test.*",
+    "./trash"
+  ],
+  "exclude": [
+    "dist",
+  ],  
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "outDir": "./dist",
+    "paths": {
+      ":util/*": ["src/util/*"],
+      ":core/*": ["src/core/*"]
+    },
+    "target": "ES2017",
+    "jsx": "react",
+    "jsxFactory": "h",
+    "esModuleInterop": true,
+    // "emitDecoratorMetadata": true,    
+    // "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "lib": [
+      "esnext",
+      "ES2016",
+      "dom",
+      "dom.iterable"
+    ],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "noErrorTruncation": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "types": ["node", "jest", "@testing-library/jest-dom"],
+  }
+}

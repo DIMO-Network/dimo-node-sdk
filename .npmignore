@@ -1,5 +1,20 @@
-node_modules
-.gitignore
+# Source
+src/**
+./node_modules/
+__tests__/**
+
+# Config
 tsconfig.json
-src
-test.ts
+tsconfig.base.json
+tsconfig.build.json
+.eslintignore
+.eslintrc.js
+.prettierignore
+babel.config.js
+release.sh
+
+# Jest
+jest.setup.ts
+jest.config.ts
+coverage/**
+

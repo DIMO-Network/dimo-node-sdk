@@ -52,3 +52,6 @@ Thumbs.db
 test.ts
 
 brainstorm.ts
+*.tgz
+
+package-lock.json
