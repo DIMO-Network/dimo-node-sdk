@@ -8,6 +8,12 @@ export {
 } from "./core/actions/mintVehicleWithDeviceDefinition.js";
 export { setVehiclePermissions, setPermissionsSACD } from "./core/actions/setPermissionsSACD.js";
 export { sendDIMOTokens, sendDIMOTokensCallData } from "./core/actions/sendDIMOTokens.js";
+export {
+  claimAftermarketDeviceCallData,
+  pairAftermarketDeviceCallData,
+  claimAftermarketDevice,
+  pairAftermarketDevice,
+} from "./core/actions/claimAndPairAftermarketDevice.js";
 export { kernelClientFromPasskeySigner } from "./core/kernelClientFromSigner/kernelClientFromPasskey.js";
 export { kernelClientFromPrivateKey } from "./core/kernelClientFromSigner/kernelClientFromPrivateKey.js";
 export { KernelSigner } from "./DIMODeveloperSDK.js";

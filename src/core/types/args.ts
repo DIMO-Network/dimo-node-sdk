@@ -33,7 +33,7 @@ export type SendDIMOTokens = {
 
 export type ClaimAftermarketdevice = {
   aftermarketDeviceNode: BigInt;
-  aftermarketDeviceSig: Uint8Array;
+  aftermarketDeviceSig: `0x${string}`;
 };
 
 export type PairAftermarketDevice = {
