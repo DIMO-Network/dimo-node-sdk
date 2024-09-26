@@ -1,0 +1,56 @@
+import StreamrClient, { LogLevel } from '@streamr/sdk';
+import { DimoError } from '../errors';
+import { Observable } from 'rxjs';
+import { catchError, finalize } from 'rxjs/operators';
+import { Log } from 'web3';
+
+type StreamOptions = {
+    streamId: string,
+    clientId: string,
+    privateKey: string,
+    log?: LogLevel
+};
+
+export const Stream = async ({ streamId, clientId, privateKey, log }: StreamOptions) => {
+    return new Observable(observer => {
+        const client = new StreamrClient({
+            logLevel: log || 'info',
+            auth: {
+              //this is the signer private key the developer adds
+              privateKey: privateKey
+            },
+        });
+
+        const setupStream = async () => {
+            try {
+                const stream = await client.getStream(streamId);
+                await client.subscribe({
+                    streamId,
+                    erc1271Contract: clientId,
+                }, (msg) => {
+                    observer.next(msg);
+                });
+
+            } catch (error) {
+                console.error('Streamr connection failed:', error);
+                observer.error(new DimoError({
+                    message: 'Streamr connection failure'
+                }));
+                observer.complete();
+            }
+        };
+        setupStream();
+
+        return async () => {
+            await client.unsubscribe(streamId);
+        }
+    }).pipe(
+        catchError(error => {
+            console.error('Streamr subscription error:', error);
+            return new Observable();
+        }),
+        finalize(() => {
+            console.log('Cleaning up Stream listeners');
+        })
+    );
+}
