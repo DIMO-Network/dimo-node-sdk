@@ -1,8 +1,7 @@
-import { ENVIRONMENT } from ":core/types/dimoTypes.js";
+import { ContractToMapping, ENVIRONMENT } from ":core/types/dimoTypes.js";
 import { KERNEL_V2_4 } from "@zerodev/sdk/constants";
 import { KERNEL_V2_VERSION_TYPE } from "@zerodev/sdk/types";
 import { Chain, PublicClient, Transport, createPublicClient, http } from "viem";
-import { kernelClientFromPrivateKey } from "./index.js";
 import { KernelAccountClient, KernelSmartAccount } from "@zerodev/sdk";
 import { EntryPoint } from "permissionless/types";
 import { BundlerClient, GetUserOperationReceiptReturnType, createBundlerClient } from "permissionless";
@@ -11,16 +10,18 @@ import { setVehiclePermissions } from ":core/actions/setPermissionsSACD.js";
 import { sendDIMOTokens } from ":core/actions/sendDIMOTokens.js";
 import { CHAIN_ABI_MAPPING, ENV_MAPPING, ENV_NETWORK_MAPPING } from ":core/constants/mappings.js";
 import { ENTRYPOINT } from ":core/constants/contractAddrs.js";
-import { SACD_DEFAULT_EXPIRATION, SACD_DEFAULT_PERMISSIONS } from ":core/constants/sacd.js";
+import { SACD_DEFAULT_EXPIRATION, SACD_DEFAULT_PERMISSIONS, SACD_DEFAULT_SOURCE } from ":core/constants/sacd.js";
 import {
   ClaimAftermarketdevice,
-  ContractToMapping,
   MintVehicleWithDeviceDefinition,
   PairAftermarketDevice,
   SendDIMOTokens,
   SetVehiclePermissions,
 } from ":core/types/args.js";
 import { claimAftermarketDevice, pairAftermarketDevice } from ":core/actions/claimAndPairAftermarketDevice.js";
+import { kernelClientFromPasskey } from ":core/kernelClientFromSigner/kernelClientFromPasskey.js";
+import { TStamper } from "node_modules/@turnkey/http/dist/base.js";
+import { kernelClientFromPrivateKey } from ":core/kernelClientFromSigner/kernelClientFromPrivateKey.js";
 
 export class KernelSigner {
   publicClient: PublicClient;
@@ -29,8 +30,20 @@ export class KernelSigner {
   kernelClient: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>;
   contractMapping: ContractToMapping;
   environment: string;
+  rpcURL: string;
+  bundlerUrl: string | undefined;
+  paymasterUrl: string | undefined;
+  turnkeyApiBaseUrl: string | undefined;
+  entryPoint: `0x${string}` = ENTRYPOINT;
 
-  constructor(environment: string = "prod", rpcURL: string) {
+  constructor(
+    environment: string = "prod",
+    rpcURL: string,
+    bundlerUrl?: string,
+    paymasterUrl?: string,
+    turnkeyApiBaseUrl?: string,
+    entryPoint: `0x${string}` = ENTRYPOINT
+  ) {
     this.environment = environment;
     this.chain = ENV_NETWORK_MAPPING.get(ENV_MAPPING.get(this.environment) ?? ENVIRONMENT.DEV);
     this.contractMapping = CHAIN_ABI_MAPPING[ENV_MAPPING.get(this.environment) ?? ENVIRONMENT.DEV].contracts;
@@ -38,9 +51,35 @@ export class KernelSigner {
       transport: http(rpcURL),
       chain: this.chain,
     });
+
+    this.rpcURL = rpcURL;
+    this.bundlerUrl = bundlerUrl;
+    this.paymasterUrl = paymasterUrl;
+    this.turnkeyApiBaseUrl = turnkeyApiBaseUrl;
+    this.entryPoint = entryPoint;
+
+    if (this.bundlerUrl) {
+      this.bundlerClient = createBundlerClient({
+        chain: this.chain,
+        transport: http(this.bundlerUrl),
+        entryPoint: this.entryPoint,
+      });
+    }
   }
 
-  public async connectKernelClient(
+  public async connectPasskey(subOrganizationId: string, address: `0x${string}`, stamper: TStamper) {
+    this.kernelClient = await kernelClientFromPasskey(
+      subOrganizationId,
+      address,
+      stamper,
+      this.turnkeyApiBaseUrl!,
+      this.bundlerUrl!,
+      this.publicClient,
+      this.paymasterUrl!
+    );
+  }
+
+  public async connectPrivateKey(
     privateKey: `0x${string}`,
     bundlrUrl: string,
     paymasterUrl: string,
@@ -71,7 +110,7 @@ export class KernelSigner {
         grantee: this.kernelClient.account.address,
         permissions: SACD_DEFAULT_PERMISSIONS,
         expiration: SACD_DEFAULT_EXPIRATION,
-        source: "todo-setDefaultValue",
+        source: SACD_DEFAULT_SOURCE,
       };
     }
 

@@ -1,10 +1,10 @@
 import { Chain, Transport, encodeFunctionData } from "viem";
-import { ContractType, ENVIRONMENT } from "../types/dimoTypes.js";
+import { ContractToMapping, ContractType, ENVIRONMENT } from ":core/types/dimoTypes.js";
 import { KernelAccountClient, KernelSmartAccount } from "@zerodev/sdk";
 import { EntryPoint } from "permissionless/types";
 import { CHAIN_ABI_MAPPING, ENV_MAPPING } from ":core/constants/mappings.js";
 import { SET_PERMISSIONS_SACD } from ":core/constants/methods.js";
-import { ContractToMapping, SetPermissionsSACD, SetVehiclePermissions } from ":core/types/args.js";
+import { SetPermissionsSACD, SetVehiclePermissions } from ":core/types/args.js";
 
 export async function setVehiclePermissions(
   args: SetVehiclePermissions,

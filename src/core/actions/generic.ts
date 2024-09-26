@@ -1,7 +1,7 @@
 import { Chain, Transport, encodeFunctionData } from "viem";
 import { KernelAccountClient, KernelSmartAccount } from "@zerodev/sdk";
 import { EntryPoint } from "permissionless/types";
-import { AbiAddressPair } from ":core/types/args.js";
+import { AbiAddressPair } from ":core/types/dimoTypes.js";
 
 const unpackValues = (input: any): any[] => {
   if (typeof input === "object" && input !== null) {

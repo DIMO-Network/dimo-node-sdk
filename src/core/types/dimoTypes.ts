@@ -1,3 +1,4 @@
+import { Abi } from "viem";
 import { Chain, polygon, polygonAmoy } from "viem/chains";
 export const SUPPORTED_CHAINS: Chain[] = [polygonAmoy, polygon];
 
@@ -41,4 +42,25 @@ export type API_BY_ENV = {
       url: string;
     };
   };
+};
+
+export type ApiInfos = {
+  [key in ENVIRONMENT]: DIMO_APIs;
+};
+
+export type AllChainInfos = {
+  [key in SupportedNetworks]: ChainInfos;
+};
+
+export type ChainInfos = {
+  contracts: ContractToMapping;
+};
+
+export type ContractToMapping = {
+  [key in ContractType]: AbiAddressPair;
+};
+
+export type AbiAddressPair = {
+  abi: Abi;
+  address: `0x${string}`;
 };

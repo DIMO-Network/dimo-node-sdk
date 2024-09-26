@@ -1,6 +1,3 @@
-import { Abi } from "viem";
-import { ContractType, SupportedNetworks } from "./dimoTypes.js";
-
 export type MintVehicleWithDeviceDefinition = {
   manufacturerNode: BigInt;
   owner: `0x${string}`;
@@ -39,27 +36,6 @@ export type ClaimAftermarketdevice = {
 export type PairAftermarketDevice = {
   vehicleNode: BigInt;
   aftermarketDeviceNode: BigInt;
-};
-
-export type NetworkProvider = {
-  [network: string]: string;
-};
-
-export type AbiAddressPair = {
-  abi: Abi;
-  address: `0x${string}`;
-};
-
-export type ContractToMapping = {
-  [key in ContractType]: AbiAddressPair;
-};
-
-export type ChainInfos = {
-  contracts: ContractToMapping;
-};
-
-export type AllChainInfos = {
-  [key in SupportedNetworks]: ChainInfos;
 };
 
 export type ConnectPrivateKeyParams = {

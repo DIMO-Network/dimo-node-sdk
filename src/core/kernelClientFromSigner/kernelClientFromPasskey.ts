@@ -7,14 +7,14 @@ import { TStamper } from "node_modules/@turnkey/http/dist/base.js";
 import { walletClientToSmartAccountSigner } from "permissionless/utils";
 import { kernelClientFromSigner } from "./kernelClientFromSigner.js";
 
-export async function kernelClientFromPasskeySigner(
+export async function kernelClientFromPasskey(
   subOrganizationId: string,
   address: `0x${string}`,
   stamper: TStamper,
   turnkeyApiBaseUrl: string,
   bundlrUrl: string,
   publicClient: PublicClient,
-  paymasterURL: string // is there a constant we can default this to?
+  paymasterURL: string
 ): Promise<KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>> {
   const turnkeyClient = new TurnkeyClient(
     {

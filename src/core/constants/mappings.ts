@@ -1,6 +1,6 @@
 import { Chain, polygon, polygonAmoy } from "viem/chains";
 
-import { API_BY_ENV, ContractType, DIMO_APIs, ENVIRONMENT } from ":core/types/dimoTypes.js";
+import { API_BY_ENV, AllChainInfos, ContractType, DIMO_APIs, ENVIRONMENT } from ":core/types/dimoTypes.js";
 import { abiVehicleId } from ":core/abis/DimoVehicleId.js";
 import { abiRegistry } from ":core/abis/DimoRegistry.js";
 import { abiCredits } from ":core/abis/DimoCredit.js";
@@ -18,7 +18,6 @@ import {
   POLYGON_DIMO_CREDIT_ADDRESS,
   POLYGON_DIMO_REGISTRY_ADDRESS,
 } from ":core/constants/contractAddrs.js";
-import { AllChainInfos } from ":core/types/args.js";
 
 export const ENV_NETWORK_MAPPING = new Map<ENVIRONMENT, Chain>([
   [ENVIRONMENT.PROD, polygon],

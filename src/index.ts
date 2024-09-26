@@ -14,6 +14,6 @@ export {
   claimAftermarketDevice,
   pairAftermarketDevice,
 } from "./core/actions/claimAndPairAftermarketDevice.js";
-export { kernelClientFromPasskeySigner } from "./core/kernelClientFromSigner/kernelClientFromPasskey.js";
+export { kernelClientFromPasskey } from "./core/kernelClientFromSigner/kernelClientFromPasskey.js";
 export { kernelClientFromPrivateKey } from "./core/kernelClientFromSigner/kernelClientFromPrivateKey.js";
 export { KernelSigner } from "./KernelSigner.js";
