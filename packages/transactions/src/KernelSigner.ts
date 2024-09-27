@@ -18,10 +18,10 @@ import {
   SendDIMOTokens,
   SetVehiclePermissions,
 } from ":core/types/args.js";
-import { claimAftermarketDevice, pairAftermarketDevice } from ":core/actions/claimAndPairAftermarketDevice.js";
+import { claimAftermarketDevice, claimAftermarketDeviceTypeHash, pairAftermarketDevice } from ":core/actions/claimAndPairAftermarketDevice.js";
 import { kernelClientFromPasskey } from ":core/kernelClientFromSigner/kernelClientFromPasskey.js";
-import { TStamper } from "node_modules/@turnkey/http/dist/base.js";
 import { kernelClientFromPrivateKey } from ":core/kernelClientFromSigner/kernelClientFromPrivateKey.js";
+import { PasskeyStamper } from "@turnkey/react-native-passkey-stamper";
 
 export class KernelSigner {
   publicClient: PublicClient;
@@ -67,7 +67,7 @@ export class KernelSigner {
     }
   }
 
-  public async connectPasskey(subOrganizationId: string, address: `0x${string}`, stamper: TStamper) {
+  public async connectPasskey(subOrganizationId: string, address: `0x${string}`, stamper: PasskeyStamper) {
     this.kernelClient = await kernelClientFromPasskey(
       subOrganizationId,
       address,
@@ -158,6 +158,10 @@ export class KernelSigner {
     });
     const txResult = await this.bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
     return txResult;
+  }
+
+  public claimAftermarketDeviceTypeHash(aftermarketDeviceNode: bigint, owner: `0x${string}`): `0x${string}` {
+    return claimAftermarketDeviceTypeHash(aftermarketDeviceNode, owner, this.environment);
   }
 
   public async claimAftermarketDevice(args: ClaimAftermarketdevice): Promise<GetUserOperationReceiptReturnType> {

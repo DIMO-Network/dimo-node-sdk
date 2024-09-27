@@ -3,14 +3,14 @@ import { KernelSmartAccount, KernelAccountClient } from "@zerodev/sdk";
 import { EntryPoint } from "permissionless/types";
 import { TurnkeyClient } from "@turnkey/http";
 import { createAccount } from "@turnkey/viem";
-import { TStamper } from "node_modules/@turnkey/http/dist/base.js";
+import { PasskeyStamper } from "@turnkey/react-native-passkey-stamper";
 import { walletClientToSmartAccountSigner } from "permissionless/utils";
 import { kernelClientFromSigner } from "./kernelClientFromSigner.js";
 
 export async function kernelClientFromPasskey(
   subOrganizationId: string,
   address: `0x${string}`,
-  stamper: TStamper,
+  stamper: PasskeyStamper,
   turnkeyApiBaseUrl: string,
   bundlrUrl: string,
   publicClient: PublicClient,

@@ -1,10 +1,37 @@
-import { Chain, Transport, encodeFunctionData } from "viem";
+import { Chain, Transport, encodeFunctionData, hashTypedData } from "viem";
 import { ContractType, ENVIRONMENT } from ":core/types/dimoTypes.js";
-import { CHAIN_ABI_MAPPING, ENV_MAPPING } from ":core/constants/mappings.js";
+import { CHAIN_ABI_MAPPING, ENV_MAPPING, ENV_NETWORK_MAPPING } from ":core/constants/mappings.js";
 import { KernelAccountClient, KernelSmartAccount } from "@zerodev/sdk";
 import { EntryPoint } from "permissionless/types";
 import { CLAIM_AFTERMARKET_DEVICE, PAIR_AFTERMARKET_DEVICE } from ":core/constants/methods.js";
 import { ClaimAftermarketdevice, PairAftermarketDevice } from ":core/types/args.js";
+import { polygonAmoy } from "viem/chains";
+
+export const claimAftermarketDeviceTypeHash = (aftermarketDeviceNode: bigint, owner: `0x${string}`, environment: string = "prod"): `0x${string}` => {
+  const env = ENV_MAPPING.get(environment) ?? ENVIRONMENT.DEV;
+  const chain = ENV_NETWORK_MAPPING.get(env) ?? polygonAmoy;
+  const contracts = CHAIN_ABI_MAPPING[ENV_MAPPING.get(environment) ?? ENVIRONMENT.DEV].contracts;
+   const hashed = hashTypedData({
+    domain: {
+      name: 'DIMO',
+      version: '1',
+      chainId: chain.id,
+      verifyingContract:  contracts[ContractType.DIMO_REGISTRY].address,
+    },
+    types: {
+      ClaimAftermarketDeviceSign: [
+        { name: 'aftermarketDeviceNode', type: 'uint256' },
+        { name: 'owner', type: 'address' },
+      ]
+    },
+    primaryType: 'ClaimAftermarketDeviceSign',
+    message: {
+      aftermarketDeviceNode: aftermarketDeviceNode, 
+      owner: owner,
+    } 
+  })
+  return hashed
+}
 
 export const claimAftermarketDeviceCallData = async (
   args: ClaimAftermarketdevice,
