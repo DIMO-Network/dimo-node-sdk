@@ -1,13 +1,13 @@
-import { ContractToMapping, ENVIRONMENT } from ":core/types/dimoTypes.js";
+import { ContractToMapping, ContractType, ENVIRONMENT } from ":core/types/dimoTypes.js";
 import { KERNEL_V2_4 } from "@zerodev/sdk/constants";
 import { KERNEL_V2_VERSION_TYPE } from "@zerodev/sdk/types";
-import { Chain, PublicClient, Transport, createPublicClient, http } from "viem";
+import { Chain, PublicClient, Transport, createPublicClient, encodeFunctionData, http } from "viem";
 import { KernelAccountClient, KernelSmartAccount } from "@zerodev/sdk";
 import { EntryPoint } from "permissionless/types";
 import { BundlerClient, GetUserOperationReceiptReturnType, createBundlerClient } from "permissionless";
 import { mintVehicleWithDeviceDefinition } from ":core/actions/mintVehicleWithDeviceDefinition.js";
 import { setVehiclePermissions } from ":core/actions/setPermissionsSACD.js";
-import { sendDIMOTokens } from ":core/actions/sendDIMOTokens.js";
+// import { sendDIMOTokens } from ":core/actions/sendDIMOTokens.js";
 import { CHAIN_ABI_MAPPING, ENV_MAPPING, ENV_NETWORK_MAPPING } from ":core/constants/mappings.js";
 import { ENTRYPOINT } from ":core/constants/contractAddrs.js";
 import { SACD_DEFAULT_EXPIRATION, SACD_DEFAULT_PERMISSIONS, SACD_DEFAULT_SOURCE } from ":core/constants/sacd.js";
@@ -18,10 +18,25 @@ import {
   SendDIMOTokens,
   SetVehiclePermissions,
 } from ":core/types/args.js";
-import { claimAftermarketDevice, claimAftermarketDeviceTypeHash, pairAftermarketDevice } from ":core/actions/claimAndPairAftermarketDevice.js";
+import {
+  claimAftermarketDevice,
+  claimAftermarketDeviceTypeHash,
+  pairAftermarketDevice,
+} from ":core/actions/claimAndPairAftermarketDevice.js";
 import { kernelClientFromPasskey } from ":core/kernelClientFromSigner/kernelClientFromPasskey.js";
 import { kernelClientFromPrivateKey } from ":core/kernelClientFromSigner/kernelClientFromPrivateKey.js";
+import { TurnkeyClient } from "@turnkey/http";
+import { signerToEcdsaValidator } from "@zerodev/ecdsa-validator";
 import { PasskeyStamper } from "@turnkey/react-native-passkey-stamper";
+import { createKernelAccount, createKernelAccountClient, createZeroDevPaymasterClient } from "@zerodev/sdk";
+import { KERNEL_V3_1 } from "@zerodev/sdk/constants";
+import { KernelEncodeCallDataArgs } from "@zerodev/sdk/types";
+import { walletClientToSmartAccountSigner } from "permissionless/utils";
+import { createWalletClient } from "viem";
+import { entryPoint07Address } from "viem/account-abstraction";
+import { polygonAmoy } from "viem/chains";
+import { createAccount } from "@turnkey/viem";
+import { SEND_DIMO_TOKENS } from ":core/constants/methods.js";
 
 export class KernelSigner {
   publicClient: PublicClient;
@@ -149,13 +164,42 @@ export class KernelSigner {
     return txResult;
   }
 
-  public async sendDIMOTokens(args: SendDIMOTokens): Promise<GetUserOperationReceiptReturnType> {
-    const sendDIMOTokensCallData = await sendDIMOTokens(args, this.kernelClient, this.environment);
-    const userOpHash = await this.kernelClient.sendUserOperation({
-      userOperation: {
-        callData: sendDIMOTokensCallData as `0x${string}`,
-      },
-    });
+  public async sendDIMOTokens(
+    args: SendDIMOTokens,
+    subOrganizationId: string,
+    walletAddress: string,
+    rpcURL: string,
+    paymasterRPC: string,
+    bundlerRPC: string,
+    passkeyStamper: PasskeyStamper
+  ): Promise<GetUserOperationReceiptReturnType> {
+    const contracts = CHAIN_ABI_MAPPING[ENV_MAPPING.get(this.environment) ?? ENVIRONMENT.DEV].contracts;
+
+    const txData: KernelEncodeCallDataArgs = {
+      callType: "call",
+      to: contracts[ContractType.DIMO_TOKEN].address,
+      value: BigInt("0"),
+      data: encodeFunctionData({
+        abi: contracts[ContractType.DIMO_TOKEN].abi,
+        functionName: SEND_DIMO_TOKENS,
+        args: [args.to, args.amount],
+      }),
+    };
+
+    const { success, reason, userOpHash } = await executeTransaction(
+      subOrganizationId,
+      walletAddress,
+      rpcURL,
+      paymasterRPC,
+      bundlerRPC,
+      txData,
+      passkeyStamper
+    );
+
+    if (!success) {
+      throw new Error(`Failed to send DIMO tokens: ${reason}`);
+    }
+
     const txResult = await this.bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
     return txResult;
   }
@@ -211,3 +255,137 @@ export class KernelSigner {
     return [claimADResult, pairADResult];
   }
 }
+
+export const sendDIMOTransaction = async (
+  args: SendDIMOTokens,
+  subOrganizationId: string,
+  walletAddress: string,
+  rpcURL: string,
+  paymasterRPC: string,
+  bundlerRPC: string,
+  passkeyStamper: PasskeyStamper
+): Promise<GetUserOperationReceiptReturnType> => {
+  const contracts = CHAIN_ABI_MAPPING[ENV_MAPPING.get("dev") ?? ENVIRONMENT.DEV].contracts;
+
+  const txData: KernelEncodeCallDataArgs = {
+    callType: "call",
+    to: contracts[ContractType.DIMO_TOKEN].address,
+    value: BigInt("0"),
+    data: encodeFunctionData({
+      abi: contracts[ContractType.DIMO_TOKEN].abi,
+      functionName: SEND_DIMO_TOKENS,
+      args: [args.to, args.amount],
+    }),
+  };
+
+  const { success, reason, userOpHash } = await executeTransaction(
+    subOrganizationId,
+    walletAddress,
+    rpcURL,
+    paymasterRPC,
+    bundlerRPC,
+    txData,
+    passkeyStamper
+  );
+
+  if (!success) {
+    throw new Error(`Failed to send DIMO tokens: ${reason}`);
+  }
+
+  return { success, reason, userOpHash };
+
+  // const txResult = await this.bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
+  // return txResult;
+};
+
+export const executeTransaction = async (
+  subOrganizationId: string,
+  walletAddress: string,
+  rpcURL: string,
+  paymasterRPC: string,
+  bundlerRPC: string,
+  transactionData: KernelEncodeCallDataArgs,
+  passkeyStamper: PasskeyStamper
+) => {
+  const chain = polygonAmoy;
+  const entryPoint = entryPoint07Address;
+  const kernelVersion = KERNEL_V3_1;
+  const turnkeyBaseUrl = "https://api.turnkey.com";
+
+  const publicClient = createPublicClient({
+    transport: http(rpcURL),
+  });
+
+  const passkeyStamperClient = new TurnkeyClient({ baseUrl: turnkeyBaseUrl }, passkeyStamper);
+
+  const localAccount = await createAccount({
+    // @ts-ignore
+    client: passkeyStamperClient,
+    organizationId: subOrganizationId,
+    signWith: walletAddress,
+    ethereumAddress: walletAddress,
+  });
+
+  const smartAccountClient = createWalletClient({
+    account: localAccount,
+    chain: chain,
+    transport: http(rpcURL),
+  });
+  const smartAccountSigner = walletClientToSmartAccountSigner(smartAccountClient);
+  const ecdsaValidator = await signerToEcdsaValidator(publicClient, {
+    signer: smartAccountSigner,
+    entryPoint: entryPoint,
+    // @ts-ignore
+    kernelVersion: kernelVersion,
+  });
+
+  const account = await createKernelAccount(publicClient, {
+    plugins: {
+      sudo: ecdsaValidator,
+    },
+    entryPoint: entryPoint,
+    // @ts-ignore
+    kernelVersion: kernelVersion,
+  });
+
+  const kernelClient = createKernelAccountClient({
+    account,
+    chain,
+    entryPoint,
+    bundlerTransport: http(bundlerRPC),
+    middleware: {
+      // @ts-ignore
+      sponsorUserOperation: async ({ userOperation }) => {
+        const zerodevPaymaster = createZeroDevPaymasterClient({
+          chain,
+          entryPoint,
+          transport: http(paymasterRPC),
+        });
+        return zerodevPaymaster.sponsorUserOperation({
+          userOperation,
+          entryPoint,
+        });
+      },
+    },
+  });
+
+  const bundlerClient = createBundlerClient({
+    chain,
+    transport: http(rpcURL),
+  });
+
+  const callData = await kernelClient.account.encodeCallData(transactionData);
+  const txHash = await kernelClient.sendUserOperation({
+    // @ts-ignore
+    account: kernelClient.account,
+    userOperation: {
+      callData,
+    },
+  });
+
+  const { success, reason, userOpHash } = await bundlerClient.waitForUserOperationReceipt({
+    hash: txHash,
+  });
+
+  return { success, reason, userOpHash };
+};

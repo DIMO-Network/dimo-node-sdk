@@ -5,8 +5,8 @@ import { KernelAccountClient, KernelSmartAccount } from "@zerodev/sdk";
 import { EntryPoint } from "permissionless/types";
 import { CHAIN_ABI_MAPPING, ENV_MAPPING } from ":core/constants/mappings.js";
 import { SendDIMOTokens } from ":core/types/args.js";
-import { airdropERC20 } from "thirdweb/extensions/airdrop";
-import { sendTransaction } from "thirdweb";
+// import { airdropERC20 } from "thirdweb/extensions/airdrop";
+// import { sendTransaction } from "thirdweb";
 
 export async function sendDIMOTokensCallData(
   args: SendDIMOTokens,
@@ -37,31 +37,31 @@ export async function sendDIMOTokens(
   });
 }
 
-export async function erc20Airdrop(
-  args: SendDIMOTokens[],
-  account: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>,
-  environment: string = "prod"
-): Promise<`0x${string}`> {
-  const contracts = CHAIN_ABI_MAPPING[ENV_MAPPING.get(environment) ?? ENVIRONMENT.DEV].contracts;
-  const tokenContract = {
-    address: contracts[ContractType.DIMO_TOKEN].address,
-    abi: contracts[ContractType.DIMO_TOKEN].abi,
-  };
+// export async function erc20Airdrop(
+//   args: SendDIMOTokens[],
+//   account: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>,
+//   environment: string = "prod"
+// ): Promise<`0x${string}`> {
+//   const contracts = CHAIN_ABI_MAPPING[ENV_MAPPING.get(environment) ?? ENVIRONMENT.DEV].contracts;
+//   const tokenContract = {
+//     address: contracts[ContractType.DIMO_TOKEN].address,
+//     abi: contracts[ContractType.DIMO_TOKEN].abi,
+//   };
 
-  const transaction = await airdropERC20({
-    // @ts-ignore
-    contract: tokenContract.abi,
-    tokenAddress: tokenContract.address,
-    // @ts-ignore
-    contents: args.map((arg) => ({
-      recipient: arg.to,
-      amount: arg.amount,
-    })),
-  });
+//   const transaction = await airdropERC20({
+//     // @ts-ignore
+//     contract: tokenContract.abi,
+//     tokenAddress: tokenContract.address,
+//     // @ts-ignore
+//     contents: args.map((arg) => ({
+//       recipient: arg.to,
+//       amount: arg.amount,
+//     })),
+//   });
 
-  const res = await sendTransaction({ transaction, account });
+//   const res = await sendTransaction({ transaction, account });
 
-  console.log(res);
+//   console.log(res);
 
-  return res.transactionHash;
-}
+//   return res.transactionHash;
+// }
