@@ -13,10 +13,19 @@ export {
   pairAftermarketDeviceCallData,
   claimAftermarketDevice,
   pairAftermarketDevice,
+  claimAftermarketDeviceTypeHash,
 } from "./core/actions/claimAndPairAftermarketDevice.js";
 export { kernelClientFromPasskey } from "./core/kernelClientFromSigner/kernelClientFromPasskey.js";
 export { kernelClientFromPrivateKey } from "./core/kernelClientFromSigner/kernelClientFromPrivateKey.js";
-export { KernelSigner, executeTransaction, sendDIMOTransaction } from "./KernelSigner.js";
+export {
+  KernelSigner,
+  executeTransaction,
+  sendDIMOTransaction,
+  newKernelSignerConfig,
+  claimAftermarketDeviceTransaction,
+  pairAftermarketDeviceTransaction,
+  setVehiclePermissionsTransaction,
+} from "./KernelSigner.js";
 export {
   SACD_DEFAULT_PERMISSIONS,
   SACD_DEFAULT_EXPIRATION,

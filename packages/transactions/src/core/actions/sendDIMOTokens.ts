@@ -10,7 +10,7 @@ import { SendDIMOTokens } from ":core/types/args.js";
 
 export async function sendDIMOTokensCallData(
   args: SendDIMOTokens,
-  environment: string = "prod"
+  environment: string = "dev"
 ): Promise<`0x${string}`> {
   const contracts = CHAIN_ABI_MAPPING[ENV_MAPPING.get(environment) ?? ENVIRONMENT.DEV].contracts;
   return await encodeFunctionData({
@@ -23,7 +23,7 @@ export async function sendDIMOTokensCallData(
 export async function sendDIMOTokens(
   args: SendDIMOTokens,
   client: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>,
-  environment: string = "prod"
+  environment: string = "dev"
 ): Promise<`0x${string}`> {
   const contracts = CHAIN_ABI_MAPPING[ENV_MAPPING.get(environment) ?? ENVIRONMENT.DEV].contracts;
   return await client.account.encodeCallData({
@@ -40,7 +40,7 @@ export async function sendDIMOTokens(
 // export async function erc20Airdrop(
 //   args: SendDIMOTokens[],
 //   account: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>,
-//   environment: string = "prod"
+//   environment: string = "dev"
 // ): Promise<`0x${string}`> {
 //   const contracts = CHAIN_ABI_MAPPING[ENV_MAPPING.get(environment) ?? ENVIRONMENT.DEV].contracts;
 //   const tokenContract = {

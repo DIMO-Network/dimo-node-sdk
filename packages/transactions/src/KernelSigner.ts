@@ -36,7 +36,12 @@ import { createWalletClient } from "viem";
 import { entryPoint07Address } from "viem/account-abstraction";
 import { polygonAmoy } from "viem/chains";
 import { createAccount } from "@turnkey/viem";
-import { SEND_DIMO_TOKENS } from ":core/constants/methods.js";
+import {
+  CLAIM_AFTERMARKET_DEVICE,
+  PAIR_AFTERMARKET_DEVICE,
+  SEND_DIMO_TOKENS,
+  SET_PERMISSIONS_SACD,
+} from ":core/constants/methods.js";
 
 export class KernelSigner {
   publicClient: PublicClient;
@@ -52,7 +57,7 @@ export class KernelSigner {
   entryPoint: `0x${string}` = ENTRYPOINT;
 
   constructor(
-    environment: string = "prod",
+    environment: string = "dev",
     rpcURL: string,
     bundlerUrl?: string,
     paymasterUrl?: string,
@@ -203,7 +208,7 @@ export class KernelSigner {
     return txResult;
   }
 
-  public claimAftermarketDeviceTypeHash(aftermarketDeviceNode: bigint, owner: `0x${string}`): `0x${string}` {
+  public claimAftermarketDeviceTypeHash(aftermarketDeviceNode: bigint, owner: `0x${string}`): any[] {
     return claimAftermarketDeviceTypeHash(aftermarketDeviceNode, owner, this.environment);
   }
 
@@ -288,6 +293,88 @@ export const newKernelSignerConfig = (
     kernelVersion,
     environment,
   };
+};
+
+export const claimAftermarketDeviceTransaction = async (
+  args: ClaimAftermarketdevice,
+  subOrganizationId: string,
+  walletAddress: string,
+  passkeyStamper: PasskeyStamper,
+  config: KernelSignerConfig
+): Promise<GetUserOperationReceiptReturnType> => {
+  const env = ENV_MAPPING.get(config.environment) ?? ENVIRONMENT.DEV;
+  const chain = ENV_NETWORK_MAPPING.get(env) ?? polygonAmoy;
+  const contracts = CHAIN_ABI_MAPPING[env].contracts;
+
+  const txData: KernelEncodeCallDataArgs = {
+    callType: "call",
+    to: contracts[ContractType.DIMO_REGISTRY].address,
+    value: BigInt("0"),
+    data: encodeFunctionData({
+      abi: contracts[ContractType.DIMO_REGISTRY].abi,
+      functionName: CLAIM_AFTERMARKET_DEVICE,
+      args: [args.aftermarketDeviceNode, args.aftermarketDeviceSig],
+    }),
+  };
+
+  const resp = await executeTransaction(subOrganizationId, walletAddress, txData, passkeyStamper, chain, config);
+
+  return resp;
+};
+
+export const pairAftermarketDeviceTransaction = async (
+  args: PairAftermarketDevice,
+  subOrganizationId: string,
+  walletAddress: string,
+  passkeyStamper: PasskeyStamper,
+  config: KernelSignerConfig
+): Promise<GetUserOperationReceiptReturnType> => {
+  const env = ENV_MAPPING.get(config.environment) ?? ENVIRONMENT.DEV;
+  const chain = ENV_NETWORK_MAPPING.get(env) ?? polygonAmoy;
+  const contracts = CHAIN_ABI_MAPPING[env].contracts;
+
+  const txData: KernelEncodeCallDataArgs = {
+    callType: "call",
+    to: contracts[ContractType.DIMO_REGISTRY].address,
+    value: BigInt("0"),
+    data: encodeFunctionData({
+      abi: contracts[ContractType.DIMO_REGISTRY].abi,
+      functionName: PAIR_AFTERMARKET_DEVICE,
+      args: [args.aftermarketDeviceNode, args.vehicleNode],
+    }),
+  };
+
+  const resp = await executeTransaction(subOrganizationId, walletAddress, txData, passkeyStamper, chain, config);
+
+  return resp;
+};
+
+export const setVehiclePermissionsTransaction = async (
+  args: SetVehiclePermissions,
+  subOrganizationId: string,
+  walletAddress: string,
+  passkeyStamper: PasskeyStamper,
+  config: KernelSignerConfig
+): Promise<GetUserOperationReceiptReturnType> => {
+  const env = ENV_MAPPING.get(config.environment) ?? ENVIRONMENT.DEV;
+  const chain = ENV_NETWORK_MAPPING.get(env) ?? polygonAmoy;
+  const contracts = CHAIN_ABI_MAPPING[env].contracts;
+  const asset = contracts[ContractType.DIMO_VEHICLE_ID].address;
+
+  const txData: KernelEncodeCallDataArgs = {
+    callType: "call",
+    to: contracts[ContractType.DIMO_SACD].address,
+    value: BigInt("0"),
+    data: encodeFunctionData({
+      abi: contracts[ContractType.DIMO_SACD].abi,
+      functionName: SET_PERMISSIONS_SACD,
+      args: [asset, args.tokenId, args.grantee, args.permissions, args.expiration, args.source],
+    }),
+  };
+
+  const resp = await executeTransaction(subOrganizationId, walletAddress, txData, passkeyStamper, chain, config);
+
+  return resp;
 };
 
 export const sendDIMOTransaction = async (

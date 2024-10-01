@@ -9,7 +9,7 @@ import { SetPermissionsSACD, SetVehiclePermissions } from ":core/types/args.js";
 export async function setVehiclePermissions(
   args: SetVehiclePermissions,
   client: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>,
-  environment: string = "prod"
+  environment: string = "dev"
 ): Promise<`0x${string}`> {
   const contracts = CHAIN_ABI_MAPPING[ENV_MAPPING.get(environment) ?? ENVIRONMENT.DEV].contracts;
   return await setPermissionsSACD(

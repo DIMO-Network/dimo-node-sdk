@@ -8,7 +8,7 @@ import { MintVehicleWithDeviceDefinition } from ":core/types/args.js";
 
 export const mintVehicleCallData = async (
   args: MintVehicleWithDeviceDefinition,
-  environment: string = "prod"
+  environment: string = "dev"
 ): Promise<`0x${string}`> => {
   const contracts = CHAIN_ABI_MAPPING[ENV_MAPPING.get(environment) ?? ENVIRONMENT.DEV].contracts;
   return encodeFunctionData({
@@ -21,7 +21,7 @@ export const mintVehicleCallData = async (
 export const mintVehicleWithDeviceDefinition = async (
   args: MintVehicleWithDeviceDefinition,
   client: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>,
-  environment: string = "prod"
+  environment: string = "dev"
 ): Promise<`0x${string}`> => {
   const contracts = CHAIN_ABI_MAPPING[ENV_MAPPING.get(environment) ?? ENVIRONMENT.DEV].contracts;
   return await client.account.encodeCallData({
