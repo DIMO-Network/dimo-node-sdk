@@ -1,6 +1,17 @@
+import { KERNEL_V2_VERSION_TYPE, KERNEL_V3_VERSION_TYPE } from "@zerodev/sdk/types";
 import { Abi } from "viem";
 import { Chain, polygon, polygonAmoy } from "viem/chains";
 export const SUPPORTED_CHAINS: Chain[] = [polygonAmoy, polygon];
+
+export type KernelSignerConfig = {
+  rpcURL: string;
+  bundlerUrl: string;
+  paymasterUrl: string;
+  turnkeyApiBaseUrl: string;
+  entryPoint: `0x${string}`;
+  kernelVersion: KERNEL_V3_VERSION_TYPE | KERNEL_V2_VERSION_TYPE;
+  environment: string;
+};
 
 export enum ContractType {
   DIMO_CREDIT,

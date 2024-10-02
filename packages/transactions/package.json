@@ -1,6 +1,6 @@
 {
   "name": "@dimo-network/transactions",
-  "version": "0.1.18",
+  "version": "0.1.20",
   "description": "DIMO Transactions SDK",
   "keywords": [
     "DIMO"
@@ -20,10 +20,12 @@
   },
   "dependencies": {
     "@turnkey/http": "^2.13.0",
-    "@turnkey/viem": "^0.4.30",
     "@turnkey/react-native-passkey-stamper": "^0.2.11",
+    "@turnkey/viem": "^0.4.30",
     "@zerodev/ecdsa-validator": "^5.3.2",
     "@zerodev/sdk": "^5.3.13",
+    "ethers": "^6.13.3",
+    "lodash": "^4.17.21",
     "permissionless": "^0.1.45",
     "viem": "^2.21.6"
   },
@@ -37,6 +39,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/preact": "^2.0.1",
     "@types/jest": "^27.5.2",
+    "@types/lodash": "^4.17.9",
     "@types/node": "^14.18.54",
     "@types/react": "^18.3.7",
     "@types/react-dom": "^18.3.0",

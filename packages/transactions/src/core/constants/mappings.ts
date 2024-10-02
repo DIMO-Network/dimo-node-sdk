@@ -1,6 +1,6 @@
 import { Chain, polygon, polygonAmoy } from "viem/chains";
 
-import { API_BY_ENV, AllChainInfos, ContractType, DIMO_APIs, ENVIRONMENT } from ":core/types/dimoTypes.js";
+import { API_BY_ENV, AllChainInfos, ContractType, DIMO_APIs, ENVIRONMENT } from ":core/types/dimo.js";
 import { abiVehicleId } from ":core/abis/DimoVehicleId.js";
 import { abiRegistry } from ":core/abis/DimoRegistry.js";
 import { abiCredits } from ":core/abis/DimoCredit.js";

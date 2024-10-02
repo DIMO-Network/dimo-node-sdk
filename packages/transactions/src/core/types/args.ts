@@ -23,9 +23,13 @@ export type SetPermissionsSACD = {
   source: string;
 };
 
+export type BurnVehicle = {
+  tokenId: BigInt;
+};
+
 export type SendDIMOTokens = {
-  to: `0x${string}`;
-  amount: BigInt;
+  recipient: `0x${string}`;
+  amount: bigint;
 };
 
 export type ClaimAftermarketdevice = {
@@ -57,4 +61,13 @@ export type ClientConfigDimo = {
   chainExplorerURL: string;
 
   environment: string;
+};
+
+export type SACD_PERMISSIONS = {
+  ALLTIME_NONLOCATION?: boolean;
+  COMMANDS?: boolean;
+  CURRENT_LOCATION?: boolean;
+  ALLTIME_LOCATION?: boolean;
+  VERIFIABLE_CREDENTIALS?: boolean;
+  STREAMS?: boolean;
 };

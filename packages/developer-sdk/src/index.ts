@@ -7,13 +7,13 @@
  * [__]==// .-. \\==`===========/==// .-. \\=[__]
  *   `-._|\ `-' /|___\_________/___|\ `-' /|_.'
  *         `---'                     `---'
- * 
- * 
+ *
+ *
  */
 
-export * from './api';
-export * from './environments';
-export * from './errors';
-export * from './graphql';
-export * from './constants';
-export * from './dimo';
+export * from "./api";
+export * from "./environments";
+export * from "./errors";
+export * from "./graphql";
+export * from "./constants";
+export * from "./dimo";

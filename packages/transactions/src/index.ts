@@ -1,40 +1,30 @@
-export type { ENVIRONMENT } from "./core/types/dimoTypes.js";
+export type { ENVIRONMENT } from "./core/types/dimo.js";
 export type { MintVehicleWithDeviceDefinition, SendDIMOTokens, SetVehiclePermissions } from "./core/types/args.js";
-export { ContractType } from "./core/types/dimoTypes.js";
-export type { VehicleNodeMintedWithDeviceDefinition } from "./core/types/eventLogs.js";
+export { ContractType } from "./core/types/dimo.js";
+export type { VehicleNodeMintedWithDeviceDefinition } from "./core/types/responses.js";
 export {
+  mintVehicleTransaction,
   mintVehicleWithDeviceDefinition,
   mintVehicleCallData,
 } from "./core/actions/mintVehicleWithDeviceDefinition.js";
-export { setVehiclePermissions, setPermissionsSACD } from "./core/actions/setPermissionsSACD.js";
-export { sendDIMOTokens, sendDIMOTokensCallData } from "./core/actions/sendDIMOTokens.js";
 export {
+  setVehiclePermissions,
+  setPermissionsSACD,
+  setVehiclePermissionsTransaction,
+} from "./core/actions/setPermissionsSACD.js";
+export { sendDIMOTokens, sendDIMOTokensCallData, sendDIMOTransaction } from "./core/actions/sendDIMOTokens.js";
+export {
+  claimAftermarketDeviceTransaction,
   claimAftermarketDeviceCallData,
-  pairAftermarketDeviceCallData,
   claimAftermarketDevice,
-  pairAftermarketDevice,
   claimAftermarketDeviceTypeHash,
-} from "./core/actions/claimAndPairAftermarketDevice.js";
+} from "./core/actions/claimAftermarketDevice.js";
+export {
+  pairAftermarketDeviceTransaction,
+  pairAftermarketDeviceCallData,
+  pairAftermarketDevice,
+} from "./core/actions/pairAftermarketDevice.js";
 export { kernelClientFromPasskey } from "./core/kernelClientFromSigner/kernelClientFromPasskey.js";
 export { kernelClientFromPrivateKey } from "./core/kernelClientFromSigner/kernelClientFromPrivateKey.js";
-export {
-  KernelSigner,
-  executeTransaction,
-  sendDIMOTransaction,
-  newKernelSignerConfig,
-  claimAftermarketDeviceTransaction,
-  pairAftermarketDeviceTransaction,
-  setVehiclePermissionsTransaction,
-} from "./KernelSigner.js";
-export {
-  SACD_DEFAULT_PERMISSIONS,
-  SACD_DEFAULT_EXPIRATION,
-  SACD_DEFAULT_SOURCE,
-  SACD_REMOVE_ALL_PERMISSIONS,
-  SACD_ALLTIME_NONLOCATION,
-  SACD_COMMANDS,
-  SACD_CURRENT_LOCATION,
-  SACD_ALLTIME_LOCATION,
-  SACD_VERIFIABLE_CREDENTIALS,
-  SACD_STREAMS,
-} from "./core/constants/sacd.js";
+export { newKernelSignerConfig, sacdPermissionValue } from "./core/utils/utils.js";
+export { KernelSigner } from "./KernelSigner.js";
