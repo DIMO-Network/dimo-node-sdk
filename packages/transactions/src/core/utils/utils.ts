@@ -1,8 +1,26 @@
 import { SACD_PERMISSIONS } from ":core/types/args.js";
-import { KernelSignerConfig } from ":core/types/dimo.js";
+import { KernelConfig, KernelSignerConfig } from ":core/types/dimo.js";
 import { KERNEL_V3_1 } from "@zerodev/sdk/constants";
 import { KERNEL_V2_VERSION_TYPE, KERNEL_V3_VERSION_TYPE } from "@zerodev/sdk/types";
 import { entryPoint07Address } from "viem/account-abstraction";
+
+export const newKernelConfig = (
+  rpcURL: string,
+  bundlerUrl: string,
+  paymasterUrl: string,
+  entryPoint: `0x${string}` = entryPoint07Address,
+  kernelVersion: KERNEL_V3_VERSION_TYPE | KERNEL_V2_VERSION_TYPE = KERNEL_V3_1,
+  environment: string = "dev"
+): KernelConfig => {
+  return {
+    rpcURL,
+    bundlerUrl,
+    paymasterUrl,
+    entryPoint,
+    kernelVersion,
+    environment,
+  };
+};
 
 export const newKernelSignerConfig = (
   rpcURL: string,

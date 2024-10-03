@@ -3,7 +3,26 @@ import { Abi } from "viem";
 import { Chain, polygon, polygonAmoy } from "viem/chains";
 export const SUPPORTED_CHAINS: Chain[] = [polygonAmoy, polygon];
 
+export type KernelConfig = {
+  rpcURL: string;
+  bundlerUrl: string;
+  paymasterUrl: string;
+  entryPoint: `0x${string}`;
+  kernelVersion: KERNEL_V3_VERSION_TYPE | KERNEL_V2_VERSION_TYPE;
+  environment: string;
+};
+
 export type KernelSignerConfig = {
+  rpcURL: string;
+  bundlerUrl: string;
+  paymasterUrl: string;
+  entryPoint: `0x${string}`;
+  turnkeyApiBaseUrl: string;
+  kernelVersion: KERNEL_V3_VERSION_TYPE | KERNEL_V2_VERSION_TYPE;
+  environment: string;
+};
+
+export type PasskeySignerConfig = {
   rpcURL: string;
   bundlerUrl: string;
   paymasterUrl: string;
@@ -11,6 +30,9 @@ export type KernelSignerConfig = {
   entryPoint: `0x${string}`;
   kernelVersion: KERNEL_V3_VERSION_TYPE | KERNEL_V2_VERSION_TYPE;
   environment: string;
+  subOrganizationId: string;
+  walletAddress: string;
+  rpId: string;
 };
 
 export enum ContractType {
@@ -19,6 +41,7 @@ export enum ContractType {
   DIMO_VEHICLE_ID,
   DIMO_SACD,
   DIMO_TOKEN,
+  DIMO_FORWARDER,
 }
 
 export enum SupportedNetworks {

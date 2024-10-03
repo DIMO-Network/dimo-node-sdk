@@ -1,14 +1,17 @@
-import { ContractToMapping, ENVIRONMENT, KernelSignerConfig } from ":core/types/dimo.js";
-import { KERNEL_V2_4 } from "@zerodev/sdk/constants";
-import { KERNEL_V2_VERSION_TYPE } from "@zerodev/sdk/types";
-import { Chain, PublicClient, Transport, createPublicClient, http } from "viem";
-import { KernelAccountClient, KernelSmartAccount } from "@zerodev/sdk";
+import { ContractToMapping, ENVIRONMENT, KernelConfig } from ":core/types/dimo.js";
+import { Chain, PublicClient, Transport, createPublicClient, createWalletClient, http } from "viem";
+import {
+  KernelAccountClient,
+  KernelSmartAccount,
+  createKernelAccount,
+  createKernelAccountClient,
+  createZeroDevPaymasterClient,
+} from "@zerodev/sdk";
 import { EntryPoint } from "permissionless/types";
 import { BundlerClient, GetUserOperationReceiptReturnType, createBundlerClient } from "permissionless";
 import { mintVehicleWithDeviceDefinition } from ":core/actions/mintVehicleWithDeviceDefinition.js";
 import { setVehiclePermissions } from ":core/actions/setPermissionsSACD.js";
 import { CHAIN_ABI_MAPPING, ENV_MAPPING, ENV_NETWORK_MAPPING } from ":core/constants/mappings.js";
-import { ENTRYPOINT } from ":core/constants/contractAddrs.js";
 import {
   BurnVehicle,
   ClaimAftermarketdevice,
@@ -18,24 +21,28 @@ import {
   SetVehiclePermissions,
 } from ":core/types/args.js";
 import { claimAftermarketDevice, claimAftermarketDeviceTypeHash } from ":core/actions/claimAftermarketDevice.js";
-import { kernelClientFromPasskey } from ":core/kernelClientFromSigner/kernelClientFromPasskey.js";
-import { kernelClientFromPrivateKey } from ":core/kernelClientFromSigner/kernelClientFromPrivateKey.js";
 import { TypeHashResponse } from ":core/types/responses.js";
 import { sendDIMOTokens } from ":core/actions/sendDIMOTokens.js";
 import { pairAftermarketDevice } from ":core/actions/pairAftermarketDevice.js";
 import { TurnkeyClient } from "@turnkey/http";
 import { polygonAmoy } from "viem/chains";
 import { burnVehicle } from ":core/actions/burnVehicle.js";
+import { createAccount } from "@turnkey/viem";
+import { PasskeyStamper } from "@turnkey/react-native-passkey-stamper";
+import { walletClientToSmartAccountSigner } from "permissionless/utils";
+import { signerToEcdsaValidator } from "@zerodev/ecdsa-validator";
+import { privateKeyToAccount } from "viem/accounts";
 
 export class KernelSigner {
-  config: KernelSignerConfig;
+  config: KernelConfig;
   publicClient: PublicClient;
   bundlerClient: BundlerClient<EntryPoint, Chain | undefined>;
   kernelClient: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>;
   contractMapping: ContractToMapping;
   chain: Chain;
+  kernelAddress: `0x${string}` | undefined;
 
-  constructor(config: KernelSignerConfig) {
+  constructor(config: KernelConfig) {
     this.config = config;
     this.chain = ENV_NETWORK_MAPPING.get(ENV_MAPPING.get(this.config.environment) ?? ENVIRONMENT.DEV) ?? polygonAmoy;
     this.contractMapping = CHAIN_ABI_MAPPING[ENV_MAPPING.get(this.config.environment) ?? ENVIRONMENT.DEV].contracts;
@@ -51,38 +58,112 @@ export class KernelSigner {
     });
   }
 
-  public async connectTurnkeyClient(subOrganizationId: string, address: `0x${string}`, tkClient: TurnkeyClient) {
-    this.kernelClient = await kernelClientFromPasskey(
-      subOrganizationId,
-      address,
-      tkClient,
-      this.config.bundlerUrl!,
-      this.publicClient,
-      this.config.paymasterUrl!
-    );
+  public async passkeyInit(
+    subOrganizationId: string,
+    walletAddress: `0x${string}`,
+    turnkeyApiBaseUrl: string,
+    rpID: string
+  ) {
+    const passkeyStamper = new PasskeyStamper({
+      rpId: rpID,
+    });
+
+    const turnkeyClient = new TurnkeyClient({ baseUrl: turnkeyApiBaseUrl }, passkeyStamper);
+
+    const localAccount = await createAccount({
+      // @ts-ignore
+      client: turnkeyClient,
+      organizationId: subOrganizationId,
+      signWith: walletAddress,
+      ethereumAddress: walletAddress,
+    });
+
+    const smartAccountClient = createWalletClient({
+      account: localAccount,
+      chain: this.chain,
+      transport: http(this.config.rpcURL),
+    });
+
+    const smartAccountSigner = walletClientToSmartAccountSigner(smartAccountClient);
+    const ecdsaValidator = await signerToEcdsaValidator(this.publicClient, {
+      signer: smartAccountSigner,
+      entryPoint: this.config.entryPoint,
+      // @ts-ignore
+      kernelVersion: this.config.kernelVersion,
+    });
+
+    const account = await createKernelAccount(this.publicClient, {
+      plugins: {
+        sudo: ecdsaValidator,
+      },
+      entryPoint: this.config.entryPoint,
+      // @ts-ignore
+      kernelVersion: this.config.kernelVersion,
+    });
+
+    this.kernelClient = createKernelAccountClient({
+      account,
+      chain: this.chain,
+      entryPoint: this.config.entryPoint,
+      bundlerTransport: http(this.config.bundlerUrl),
+      middleware: {
+        // @ts-ignore
+        sponsorUserOperation: async ({ userOperation }) => {
+          const zerodevPaymaster = createZeroDevPaymasterClient({
+            chain: this.chain,
+            entryPoint: this.config.entryPoint,
+            transport: http(this.config.paymasterUrl),
+          });
+          return zerodevPaymaster.sponsorUserOperation({
+            userOperation,
+            entryPoint: this.config.entryPoint,
+          });
+        },
+      },
+    });
+
+    this.kernelAddress = account.address;
   }
 
-  public async connectPrivateKey(
-    privateKey: `0x${string}`,
-    bundlrUrl: string,
-    paymasterUrl: string,
-    entryPoint: `0x${string}` = ENTRYPOINT,
-    kernelVersion: KERNEL_V2_VERSION_TYPE = KERNEL_V2_4
-  ) {
-    this.kernelClient = await kernelClientFromPrivateKey(
-      privateKey,
-      this.publicClient,
-      bundlrUrl,
-      paymasterUrl,
-      entryPoint,
-      kernelVersion
-    );
-
-    this.bundlerClient = createBundlerClient({
-      chain: this.chain,
-      transport: http(bundlrUrl),
-      entryPoint: entryPoint,
+  public async privateKeyInit(privateKey: `0x${string}`) {
+    const ecdsaValidator = await signerToEcdsaValidator(this.publicClient, {
+      signer: privateKeyToAccount(privateKey),
+      entryPoint: this.config.entryPoint,
+      // @ts-ignore
+      kernelVersion: this.config.kernelVersion,
     });
+
+    const account = await createKernelAccount(this.publicClient, {
+      plugins: {
+        sudo: ecdsaValidator,
+      },
+      entryPoint: this.config.entryPoint,
+      // @ts-ignore
+      kernelVersion: this.config.kernelVersion,
+    });
+
+    this.kernelClient = createKernelAccountClient({
+      account,
+      chain: this.chain,
+      entryPoint: this.config.entryPoint,
+      bundlerTransport: http(this.config.bundlerUrl),
+      middleware: {
+        // @ts-ignore
+        sponsorUserOperation: async ({ userOperation }) => {
+          const zerodevPaymaster = createZeroDevPaymasterClient({
+            chain: this.chain,
+            entryPoint: this.config.entryPoint,
+            transport: http(this.config.paymasterUrl),
+          });
+          return zerodevPaymaster.sponsorUserOperation({
+            userOperation,
+            entryPoint: this.config.entryPoint,
+          });
+        },
+      },
+    });
+
+    this.kernelAddress = account.address;
   }
 
   public async mintVehicleWithDeviceDefinition(
@@ -148,7 +229,7 @@ export class KernelSigner {
 
   public async claimAndPairAftermarketDevice(
     args: ClaimAftermarketdevice & PairAftermarketDevice
-  ): Promise<GetUserOperationReceiptReturnType[]> {
+  ): Promise<GetUserOperationReceiptReturnType> {
     const claimADCallData = await claimAftermarketDevice(args, this.kernelClient, this.config.environment);
     const claimADHash = await this.kernelClient.sendUserOperation({
       userOperation: {
@@ -158,7 +239,7 @@ export class KernelSigner {
     const claimADResult = await this.bundlerClient.waitForUserOperationReceipt({ hash: claimADHash });
 
     if (!claimADResult.success) {
-      return [claimADResult];
+      return claimADResult;
     }
 
     const pairADCallData = await pairAftermarketDevice(args, this.kernelClient, this.config.environment);
@@ -168,7 +249,7 @@ export class KernelSigner {
       },
     });
     const pairADResult = await this.bundlerClient.waitForUserOperationReceipt({ hash: pairADHash });
-    return [claimADResult, pairADResult];
+    return pairADResult;
   }
 
   public async burnVehicle(args: BurnVehicle): Promise<GetUserOperationReceiptReturnType> {

@@ -1,6 +1,7 @@
 import { Chain, polygon, polygonAmoy } from "viem/chains";
 
 import { API_BY_ENV, AllChainInfos, ContractType, DIMO_APIs, ENVIRONMENT } from ":core/types/dimo.js";
+import { abiForwarder } from ":core/abis/DimoForwarder.js";
 import { abiVehicleId } from ":core/abis/DimoVehicleId.js";
 import { abiRegistry } from ":core/abis/DimoRegistry.js";
 import { abiCredits } from ":core/abis/DimoCredit.js";
@@ -18,6 +19,7 @@ import {
   POLYGON_DIMO_CREDIT_ADDRESS,
   POLYGON_DIMO_REGISTRY_ADDRESS,
 } from ":core/constants/contractAddrs.js";
+import { Abi } from "viem";
 
 export const ENV_NETWORK_MAPPING = new Map<ENVIRONMENT, Chain>([
   [ENVIRONMENT.PROD, polygon],
@@ -73,7 +75,7 @@ export const CHAIN_ABI_MAPPING: AllChainInfos = {
         address: AMOY_DIMO_SACD_ADDRESS,
       },
       [ContractType.DIMO_CREDIT]: {
-        abi: abiCredits,
+        abi: abiCredits as Abi,
         address: AMOY_DIMO_CREDIT_ADDRESS,
       },
       [ContractType.DIMO_REGISTRY]: {
@@ -86,6 +88,10 @@ export const CHAIN_ABI_MAPPING: AllChainInfos = {
       },
       [ContractType.DIMO_TOKEN]: {
         abi: abiToken,
+        address: AMOY_DIMO_TOKEN_ADDRESS,
+      },
+      [ContractType.DIMO_FORWARDER]: {
+        abi: abiForwarder,
         address: AMOY_DIMO_TOKEN_ADDRESS,
       },
     },
@@ -111,6 +117,10 @@ export const CHAIN_ABI_MAPPING: AllChainInfos = {
       [ContractType.DIMO_TOKEN]: {
         abi: abiToken,
         address: POLYGON_DIMO_TOKEN_ADDRESS,
+      },
+      [ContractType.DIMO_FORWARDER]: {
+        abi: abiForwarder,
+        address: AMOY_DIMO_TOKEN_ADDRESS, //TODO-- update this once deployed on mainnet
       },
     },
   },

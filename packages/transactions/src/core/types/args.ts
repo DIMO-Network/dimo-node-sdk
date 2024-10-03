@@ -71,3 +71,9 @@ export type SACD_PERMISSIONS = {
   VERIFIABLE_CREDENTIALS?: boolean;
   STREAMS?: boolean;
 };
+
+export type TransferVehicleAndAftermarketDeviceIDs = {
+  vehicleIds: BigInt[];
+  aftermarketDeviceIds: BigInt[];
+  to: `0x${string}`;
+};

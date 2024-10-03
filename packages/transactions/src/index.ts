@@ -1,4 +1,4 @@
-export type { ENVIRONMENT } from "./core/types/dimo.js";
+export { ENVIRONMENT } from "./core/types/dimo.js";
 export type { MintVehicleWithDeviceDefinition, SendDIMOTokens, SetVehiclePermissions } from "./core/types/args.js";
 export { ContractType } from "./core/types/dimo.js";
 export type { VehicleNodeMintedWithDeviceDefinition } from "./core/types/responses.js";
@@ -12,6 +12,11 @@ export {
   setPermissionsSACD,
   setVehiclePermissionsTransaction,
 } from "./core/actions/setPermissionsSACD.js";
+export {
+  transferVehicleAndAftermarketDeviceIDsCallData,
+  transferVehicleAndAftermarketDeviceIDsTransaction,
+  transferVehicleAndAftermarketDeviceIDs,
+} from "./core/actions/transferVehicleAndADs.js";
 export { sendDIMOTokens, sendDIMOTokensCallData, sendDIMOTransaction } from "./core/actions/sendDIMOTokens.js";
 export {
   claimAftermarketDeviceTransaction,
@@ -26,5 +31,5 @@ export {
 } from "./core/actions/pairAftermarketDevice.js";
 export { kernelClientFromPasskey } from "./core/kernelClientFromSigner/kernelClientFromPasskey.js";
 export { kernelClientFromPrivateKey } from "./core/kernelClientFromSigner/kernelClientFromPrivateKey.js";
-export { newKernelSignerConfig, sacdPermissionValue } from "./core/utils/utils.js";
+export { newKernelSignerConfig, newKernelConfig, sacdPermissionValue } from "./core/utils/utils.js";
 export { KernelSigner } from "./KernelSigner.js";
