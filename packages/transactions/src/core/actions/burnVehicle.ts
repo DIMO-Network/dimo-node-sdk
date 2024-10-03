@@ -59,3 +59,6 @@ export async function burnVehicle(
     }),
   });
 }
+
+// Burn Vehicle-- cant burn if you still have AD attached
+// 0xc46a516800000000000000000000000000000000000000000000000000000000000000f6

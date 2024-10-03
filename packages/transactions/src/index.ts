@@ -13,6 +13,7 @@ export {
   setVehiclePermissionsTransaction,
 } from "./core/actions/setPermissionsSACD.js";
 export {
+  transferVehiclesAndAftermarketDeviceIDsTypeHash,
   transferVehicleAndAftermarketDeviceIDsCallData,
   transferVehicleAndAftermarketDeviceIDsTransaction,
   transferVehicleAndAftermarketDeviceIDs,

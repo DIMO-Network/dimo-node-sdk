@@ -19,6 +19,7 @@ import {
   PairAftermarketDevice,
   SendDIMOTokens,
   SetVehiclePermissions,
+  TransferVehicleAndAftermarketDeviceIDs,
 } from ":core/types/args.js";
 import { claimAftermarketDevice, claimAftermarketDeviceTypeHash } from ":core/actions/claimAftermarketDevice.js";
 import { TypeHashResponse } from ":core/types/responses.js";
@@ -32,6 +33,7 @@ import { PasskeyStamper } from "@turnkey/react-native-passkey-stamper";
 import { walletClientToSmartAccountSigner } from "permissionless/utils";
 import { signerToEcdsaValidator } from "@zerodev/ecdsa-validator";
 import { privateKeyToAccount } from "viem/accounts";
+import { transferVehicleAndAftermarketDeviceIDs } from ":core/actions/transferVehicleAndADs.js";
 
 export class KernelSigner {
   config: KernelConfig;
@@ -259,6 +261,25 @@ export class KernelSigner {
         callData: burnVehicleCallData as `0x${string}`,
       },
     });
+
+    const txResult = await this.bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
+    return txResult;
+  }
+
+  public async transferVehicleAndAftermarketDevices(
+    args: TransferVehicleAndAftermarketDeviceIDs
+  ): Promise<GetUserOperationReceiptReturnType> {
+    const burnVehicleCallData = await transferVehicleAndAftermarketDeviceIDs(
+      args,
+      this.kernelClient,
+      this.config.environment
+    );
+    const userOpHash = await this.kernelClient.sendUserOperation({
+      userOperation: {
+        callData: burnVehicleCallData as `0x${string}`,
+      },
+    });
+
     const txResult = await this.bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
     return txResult;
   }

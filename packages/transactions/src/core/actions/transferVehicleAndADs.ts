@@ -1,6 +1,6 @@
 import { Chain, Transport, encodeFunctionData } from "viem";
 import { ContractType, ENVIRONMENT, KernelSignerConfig } from ":core/types/dimo.js";
-import { CHAIN_ABI_MAPPING, ENV_MAPPING } from ":core/constants/mappings.js";
+import { CHAIN_ABI_MAPPING, ENV_MAPPING, ENV_NETWORK_MAPPING } from ":core/constants/mappings.js";
 import { KernelAccountClient, KernelSmartAccount } from "@zerodev/sdk";
 import { EntryPoint } from "permissionless/types";
 import { TRANSFER_VEHICLE_AND_AFTERMARKET_DEVICE_IDS } from ":core/constants/methods.js";
@@ -9,6 +9,44 @@ import { PasskeyStamper } from "@turnkey/react-native-passkey-stamper";
 import { GetUserOperationReceiptReturnType } from "permissionless";
 import { KernelEncodeCallDataArgs } from "@zerodev/sdk/types";
 import { executeTransaction } from ":core/transactions/execute.js";
+import { DIMODomain, DIMODomainVersion } from ":core/constants/dimo.js";
+import { polygonAmoy } from "viem/chains";
+
+export const transferVehiclesAndAftermarketDeviceIDsTypeHash = (
+  vehicleIds: BigInt[],
+  aftermarketDeviceIds: BigInt[],
+  to: `0x${string}`,
+  environment: string = "dev"
+): any[] => {
+  const env = ENV_MAPPING.get(environment) ?? ENVIRONMENT.DEV;
+  const chain = ENV_NETWORK_MAPPING.get(env) ?? polygonAmoy;
+  const contracts = CHAIN_ABI_MAPPING[ENV_MAPPING.get(environment) ?? ENVIRONMENT.DEV].contracts;
+
+  const domain = {
+    name: DIMODomain,
+    version: DIMODomainVersion,
+    chainId: chain.id,
+    verifyingContract: contracts[ContractType.DIMO_FORWARDER].address,
+  };
+
+  const types = {
+    ["transferVehicleAndAftermarketDeviceIds"]: [
+      { name: "vehicleIds", type: "uint256[]" },
+      { name: "aftermarketDeviceIds", type: "uint256[]" },
+      { name: "to", type: "address" },
+    ],
+  };
+
+  const message = {
+    vehicleIds: vehicleIds,
+    aftermarketDeviceIds: aftermarketDeviceIds,
+    to: to,
+  };
+
+  // const hash = ethers.TypedDataEncoder.hash(omit(domain, "salt"), omit(types, "EIP712Domain"), message);
+
+  return [domain, types, message];
+};
 
 export function transferVehicleAndAftermarketDeviceIDsCallData(
   args: TransferVehicleAndAftermarketDeviceIDs,
