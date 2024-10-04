@@ -1,4 +1,14 @@
-import { Chain, Transport, encodeFunctionData } from "viem";
+import {
+  Account,
+  Address,
+  Chain,
+  ParseAccount,
+  PublicClient,
+  RpcSchema,
+  Transport,
+  WalletClient,
+  encodeFunctionData,
+} from "viem";
 import { ContractType, ENVIRONMENT, KernelSignerConfig } from ":core/types/dimo.js";
 import { CHAIN_ABI_MAPPING, ENV_MAPPING, ENV_NETWORK_MAPPING } from ":core/constants/mappings.js";
 import { KernelAccountClient, KernelSmartAccount } from "@zerodev/sdk";
@@ -98,3 +108,23 @@ export const transferVehicleAndAftermarketDeviceIDs = async (
     }),
   });
 };
+
+export async function transferVehicleAndAftermarketDeviceIDsFromAccount(
+  args: TransferVehicleAndAftermarketDeviceIDs,
+  walletClient: WalletClient<Transport, Chain, ParseAccount<Account | Address>, RpcSchema>,
+  publicClient: PublicClient,
+  environment: string = "dev"
+): Promise<`0x${string}`> {
+  const contracts = CHAIN_ABI_MAPPING[ENV_MAPPING.get(environment) ?? ENVIRONMENT.DEV].contracts;
+
+  const { request } = await publicClient.simulateContract({
+    address: contracts[ContractType.DIMO_FORWARDER].address,
+    abi: contracts[ContractType.DIMO_FORWARDER].abi,
+    functionName: TRANSFER_VEHICLE_AND_AFTERMARKET_DEVICE_IDS,
+    args: [args.vehicleIds, args.aftermarketDeviceIds, args.to],
+    account: walletClient.account,
+  });
+
+  const txHash = await walletClient.writeContract(request);
+  return txHash;
+}

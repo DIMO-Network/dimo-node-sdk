@@ -17,8 +17,14 @@ export {
   transferVehicleAndAftermarketDeviceIDsCallData,
   transferVehicleAndAftermarketDeviceIDsTransaction,
   transferVehicleAndAftermarketDeviceIDs,
+  transferVehicleAndAftermarketDeviceIDsFromAccount,
 } from "./core/actions/transferVehicleAndADs.js";
-export { sendDIMOTokens, sendDIMOTokensCallData, sendDIMOTransaction } from "./core/actions/sendDIMOTokens.js";
+export {
+  sendDIMOTokens,
+  sendDIMOTokensCallData,
+  sendDIMOTransaction,
+  sendDIMOTokensFromAccount,
+} from "./core/actions/sendDIMOTokens.js";
 export {
   claimAftermarketDeviceTransaction,
   claimAftermarketDeviceCallData,
@@ -34,3 +40,4 @@ export { kernelClientFromPasskey } from "./core/kernelClientFromSigner/kernelCli
 export { kernelClientFromPrivateKey } from "./core/kernelClientFromSigner/kernelClientFromPrivateKey.js";
 export { newKernelSignerConfig, newKernelConfig, sacdPermissionValue } from "./core/utils/utils.js";
 export { KernelSigner } from "./KernelSigner.js";
+export { AccountSigner } from "./AccountSigner.js";

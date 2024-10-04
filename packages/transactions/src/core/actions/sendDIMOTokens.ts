@@ -1,4 +1,14 @@
-import { Chain, Transport, encodeFunctionData } from "viem";
+import {
+  Account,
+  Address,
+  Chain,
+  ParseAccount,
+  PublicClient,
+  RpcSchema,
+  Transport,
+  WalletClient,
+  encodeFunctionData,
+} from "viem";
 import { ContractType, ENVIRONMENT, KernelSignerConfig } from ":core/types/dimo.js";
 import { SEND_DIMO_TOKENS } from ":core/constants/methods.js";
 import { KernelAccountClient, KernelSmartAccount } from "@zerodev/sdk";
@@ -58,4 +68,24 @@ export async function sendDIMOTokens(
       args: [args.recipient, args.amount],
     }),
   });
+}
+
+export async function sendDIMOTokensFromAccount(
+  args: SendDIMOTokens,
+  walletClient: WalletClient<Transport, Chain, ParseAccount<Account | Address>, RpcSchema>,
+  publicClient: PublicClient,
+  environment: string = "dev"
+): Promise<`0x${string}`> {
+  const contracts = CHAIN_ABI_MAPPING[ENV_MAPPING.get(environment) ?? ENVIRONMENT.DEV].contracts;
+
+  const { request } = await publicClient.simulateContract({
+    address: contracts[ContractType.DIMO_TOKEN].address,
+    abi: contracts[ContractType.DIMO_TOKEN].abi,
+    functionName: SEND_DIMO_TOKENS,
+    args: [args.recipient, args.amount],
+    account: walletClient.account,
+  });
+
+  const txHash = await walletClient.writeContract(request);
+  return txHash;
 }

@@ -486,29 +486,6 @@ export const abiForwarder: Abi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "vehicleId",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "aftermarketDeviceId",
-        type: "uint256",
-      },
-      {
-        internalType: "address",
-        name: "to",
-        type: "address",
-      },
-    ],
-    name: "transferVehicleAndAftermarketDeviceIds",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "address",
         name: "newImplementation",
         type: "address",

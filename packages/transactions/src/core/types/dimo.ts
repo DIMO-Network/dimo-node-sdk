@@ -1,5 +1,5 @@
 import { KERNEL_V2_VERSION_TYPE, KERNEL_V3_VERSION_TYPE } from "@zerodev/sdk/types";
-import { Abi } from "viem";
+import { Abi, Account } from "viem";
 import { Chain, polygon, polygonAmoy } from "viem/chains";
 export const SUPPORTED_CHAINS: Chain[] = [polygonAmoy, polygon];
 
@@ -9,6 +9,12 @@ export type KernelConfig = {
   paymasterUrl: string;
   entryPoint: `0x${string}`;
   kernelVersion: KERNEL_V3_VERSION_TYPE | KERNEL_V2_VERSION_TYPE;
+  environment: string;
+};
+
+export type AccountConfig = {
+  rpcURL: string;
+  account: Account;
   environment: string;
 };
 

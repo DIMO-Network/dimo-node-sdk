@@ -3,7 +3,7 @@ export type MintVehicleWithDeviceDefinition = {
   owner: `0x${string}`;
   deviceDefinitionID: string;
   attributeInfo: { attribute: string; info: string }[];
-  sacdInput?: { grantee: `0x${string}`; permissions: BigInt; expiration: BigInt; source: string };
+  sacdInput: { grantee: `0x${string}`; permissions: BigInt; expiration: BigInt; source: string };
 };
 
 export type SetVehiclePermissions = {
