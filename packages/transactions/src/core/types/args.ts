@@ -42,6 +42,11 @@ export type PairAftermarketDevice = {
   aftermarketDeviceNode: BigInt;
 };
 
+export type UnPairAftermarketDevice = {
+  vehicleNode: BigInt;
+  aftermarketDeviceNode: BigInt;
+};
+
 export type ConnectPrivateKeyParams = {
   privateKey: `0x${string}`;
 };

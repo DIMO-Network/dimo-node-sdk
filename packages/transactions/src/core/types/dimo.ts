@@ -7,6 +7,7 @@ export type KernelConfig = {
   rpcURL: string;
   bundlerUrl: string;
   paymasterUrl: string;
+  turnkeyApiBaseUrl: string;
   entryPoint: `0x${string}`;
   kernelVersion: KERNEL_V3_VERSION_TYPE | KERNEL_V2_VERSION_TYPE;
   environment: string;
@@ -15,16 +16,6 @@ export type KernelConfig = {
 export type AccountConfig = {
   rpcURL: string;
   account: Account;
-  environment: string;
-};
-
-export type KernelSignerConfig = {
-  rpcURL: string;
-  bundlerUrl: string;
-  paymasterUrl: string;
-  entryPoint: `0x${string}`;
-  turnkeyApiBaseUrl: string;
-  kernelVersion: KERNEL_V3_VERSION_TYPE | KERNEL_V2_VERSION_TYPE;
   environment: string;
 };
 

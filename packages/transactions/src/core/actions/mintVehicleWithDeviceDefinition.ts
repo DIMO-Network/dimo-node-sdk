@@ -1,5 +1,5 @@
 import { Chain, Transport, encodeFunctionData } from "viem";
-import { ContractType, ENVIRONMENT, KernelSignerConfig } from ":core/types/dimo.js";
+import { ContractType, ENVIRONMENT, KernelConfig } from ":core/types/dimo.js";
 import { CHAIN_ABI_MAPPING, ENV_MAPPING } from ":core/constants/mappings.js";
 import { KernelAccountClient, KernelSmartAccount } from "@zerodev/sdk";
 import { EntryPoint } from "permissionless/types";
@@ -10,7 +10,10 @@ import { GetUserOperationReceiptReturnType } from "permissionless";
 import { KernelEncodeCallDataArgs } from "@zerodev/sdk/types";
 import { executeTransaction } from ":core/transactions/execute.js";
 
-export function mintVehicleCallData(args: MintVehicleWithDeviceDefinition, environment: string = "dev"): `0x${string}` {
+export function mintVehicleCallData(
+  args: MintVehicleWithDeviceDefinition,
+  environment: string = "prod"
+): `0x${string}` {
   const contracts = CHAIN_ABI_MAPPING[ENV_MAPPING.get(environment) ?? ENVIRONMENT.DEV].contracts;
   return encodeFunctionData({
     abi: contracts[ContractType.DIMO_REGISTRY].abi,
@@ -24,7 +27,7 @@ export const mintVehicleTransaction = async (
   subOrganizationId: string,
   walletAddress: string,
   passkeyStamper: PasskeyStamper,
-  config: KernelSignerConfig
+  config: KernelConfig
 ): Promise<GetUserOperationReceiptReturnType> => {
   const env = ENV_MAPPING.get(config.environment) ?? ENVIRONMENT.DEV;
   const contracts = CHAIN_ABI_MAPPING[env].contracts;
@@ -46,7 +49,7 @@ export const mintVehicleTransaction = async (
 export const mintVehicleWithDeviceDefinition = async (
   args: MintVehicleWithDeviceDefinition,
   client: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>,
-  environment: string = "dev"
+  environment: string = "prod"
 ): Promise<`0x${string}`> => {
   const contracts = CHAIN_ABI_MAPPING[ENV_MAPPING.get(environment) ?? ENVIRONMENT.DEV].contracts;
   return await client.account.encodeCallData({

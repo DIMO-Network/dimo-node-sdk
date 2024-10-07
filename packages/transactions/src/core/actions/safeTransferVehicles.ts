@@ -10,7 +10,7 @@ export async function safeTransferVehicleID(
   },
   walletClient: WalletClient<Transport, Chain, ParseAccount<Account | Address>, RpcSchema>,
   publicClient: PublicClient,
-  environment: string = "dev"
+  environment: string = "prod"
 ): Promise<`0x${string}`> {
   const contracts = CHAIN_ABI_MAPPING[ENV_MAPPING.get(environment) ?? ENVIRONMENT.DEV].contracts;
 

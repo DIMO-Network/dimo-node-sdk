@@ -36,8 +36,6 @@ export {
   pairAftermarketDeviceCallData,
   pairAftermarketDevice,
 } from "./core/actions/pairAftermarketDevice.js";
-export { kernelClientFromPasskey } from "./core/kernelClientFromSigner/kernelClientFromPasskey.js";
-export { kernelClientFromPrivateKey } from "./core/kernelClientFromSigner/kernelClientFromPrivateKey.js";
-export { newKernelSignerConfig, newKernelConfig, sacdPermissionValue } from "./core/utils/utils.js";
+export { newAccountConfig, newKernelConfig, sacdPermissionValue } from "./core/utils/utils.js";
 export { KernelSigner } from "./KernelSigner.js";
 export { AccountSigner } from "./AccountSigner.js";

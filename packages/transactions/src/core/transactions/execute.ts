@@ -1,4 +1,4 @@
-import { ENVIRONMENT, KernelSignerConfig } from ":core/types/dimo.js";
+import { ENVIRONMENT, KernelConfig } from ":core/types/dimo.js";
 import { createPublicClient, http } from "viem";
 import { GetUserOperationReceiptReturnType, createBundlerClient } from "permissionless";
 import { ENV_MAPPING, ENV_NETWORK_MAPPING } from ":core/constants/mappings.js";
@@ -17,7 +17,7 @@ export const executeTransaction = async (
   walletAddress: string,
   transactionData: KernelEncodeCallDataArgs,
   passkeyStamper: PasskeyStamper,
-  config: KernelSignerConfig
+  config: KernelConfig
 ): Promise<GetUserOperationReceiptReturnType> => {
   const env = ENV_MAPPING.get(config.environment) ?? ENVIRONMENT.DEV;
   const chain = ENV_NETWORK_MAPPING.get(env) ?? polygonAmoy;

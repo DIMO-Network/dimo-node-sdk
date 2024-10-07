@@ -1,5 +1,5 @@
 import { Chain, Transport, encodeFunctionData } from "viem";
-import { ContractToMapping, ContractType, ENVIRONMENT, KernelSignerConfig } from ":core/types/dimo.js";
+import { ContractToMapping, ContractType, ENVIRONMENT, KernelConfig } from ":core/types/dimo.js";
 import { KernelAccountClient, KernelSmartAccount } from "@zerodev/sdk";
 import { EntryPoint } from "permissionless/types";
 import { CHAIN_ABI_MAPPING, ENV_MAPPING } from ":core/constants/mappings.js";
@@ -13,7 +13,7 @@ import { executeTransaction } from ":core/transactions/execute.js";
 export async function setVehiclePermissions(
   args: SetVehiclePermissions,
   client: KernelAccountClient<EntryPoint, Transport, Chain, KernelSmartAccount<EntryPoint, Transport, Chain>>,
-  environment: string = "dev"
+  environment: string = "prod"
 ): Promise<`0x${string}`> {
   const contracts = CHAIN_ABI_MAPPING[ENV_MAPPING.get(environment) ?? ENVIRONMENT.DEV].contracts;
   return await setPermissionsSACD(
@@ -46,7 +46,7 @@ export async function setPermissionsSACD(
   });
 }
 
-export function sacdCallData(args: SetPermissionsSACD, environment: string = "dev"): `0x${string}` {
+export function sacdCallData(args: SetPermissionsSACD, environment: string = "prod"): `0x${string}` {
   const contracts = CHAIN_ABI_MAPPING[ENV_MAPPING.get(environment) ?? ENVIRONMENT.DEV].contracts;
   return encodeFunctionData({
     abi: contracts[ContractType.DIMO_SACD].abi,
@@ -60,7 +60,7 @@ export const setVehiclePermissionsTransaction = async (
   subOrganizationId: string,
   walletAddress: string,
   passkeyStamper: PasskeyStamper,
-  config: KernelSignerConfig
+  config: KernelConfig
 ): Promise<GetUserOperationReceiptReturnType> => {
   const env = ENV_MAPPING.get(config.environment) ?? ENVIRONMENT.DEV;
   const contracts = CHAIN_ABI_MAPPING[env].contracts;
