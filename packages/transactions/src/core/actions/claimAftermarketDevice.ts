@@ -6,7 +6,6 @@ import { EntryPoint } from "permissionless/types";
 import { CLAIM_AFTERMARKET_DEVICE } from ":core/constants/methods.js";
 import { ClaimAftermarketdevice } from ":core/types/args.js";
 import { polygonAmoy } from "viem/chains";
-import { omit } from "lodash";
 import { ethers } from "ethers";
 import { TypeHashResponse } from ":core/types/responses.js";
 import {
@@ -51,7 +50,7 @@ export const claimAftermarketDeviceTypeHash = (
     owner: owner,
   };
 
-  const hash = ethers.TypedDataEncoder.hash(omit(domain, "salt"), omit(types, "EIP712Domain"), message);
+  const hash = ethers.TypedDataEncoder.hash(domain, types, message);
 
   return { hash, payload: { domain, types, message } };
 };

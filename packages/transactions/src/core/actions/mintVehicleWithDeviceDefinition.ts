@@ -1,4 +1,14 @@
-import { Chain, Transport, encodeFunctionData } from "viem";
+import {
+  Account,
+  Address,
+  Chain,
+  ParseAccount,
+  PublicClient,
+  RpcSchema,
+  Transport,
+  WalletClient,
+  encodeFunctionData,
+} from "viem";
 import { ContractType, ENVIRONMENT, KernelConfig } from ":core/types/dimo.js";
 import { CHAIN_ABI_MAPPING, ENV_MAPPING } from ":core/constants/mappings.js";
 import { KernelAccountClient, KernelSmartAccount } from "@zerodev/sdk";
@@ -61,4 +71,24 @@ export const mintVehicleWithDeviceDefinition = async (
       args: [args.manufacturerNode, args.owner, args.deviceDefinitionID, args.attributeInfo, args.sacdInput],
     }),
   });
+};
+
+export const mintVehicleWithDeviceDefinitionFromAccount = async (
+  args: MintVehicleWithDeviceDefinition,
+  walletClient: WalletClient<Transport, Chain, ParseAccount<Account | Address>, RpcSchema>,
+  publicClient: PublicClient,
+  environment: string = "prod"
+): Promise<`0x${string}`> => {
+  const contracts = CHAIN_ABI_MAPPING[ENV_MAPPING.get(environment) ?? ENVIRONMENT.DEV].contracts;
+
+  const { request } = await publicClient.simulateContract({
+    address: contracts[ContractType.DIMO_REGISTRY].address,
+    abi: contracts[ContractType.DIMO_REGISTRY].abi,
+    functionName: MINT_VEHICLE_WITH_DEVICE_DEFINITION,
+    args: [args.manufacturerNode, args.owner, args.deviceDefinitionID, args.attributeInfo, args.sacdInput],
+    account: walletClient.account,
+  });
+
+  const txHash = await walletClient.writeContract(request);
+  return txHash;
 };

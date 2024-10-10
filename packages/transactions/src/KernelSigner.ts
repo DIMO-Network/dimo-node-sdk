@@ -171,8 +171,7 @@ export class KernelSigner {
   }
 
   public async mintVehicleWithDeviceDefinition(
-    args: MintVehicleWithDeviceDefinition,
-    waitForReceipt: boolean = true
+    args: MintVehicleWithDeviceDefinition
   ): Promise<GetUserOperationReceiptReturnType> {
     const mintVehicleCallData = await mintVehicleWithDeviceDefinition(args, this.kernelClient, this.config.environment);
     const userOpHash = await this.kernelClient.sendUserOperation({
@@ -180,13 +179,8 @@ export class KernelSigner {
         callData: mintVehicleCallData as `0x${string}`,
       },
     });
-
-    if (waitForReceipt) {
-      const txResult = await this.bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
-      return txResult;
-    }
-
-    return userOpHash;
+    const txResult = await this.bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
+    return txResult;
   }
 
   public async setVehiclePermissions(args: SetVehiclePermissions): Promise<GetUserOperationReceiptReturnType> {

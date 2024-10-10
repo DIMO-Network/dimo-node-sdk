@@ -36,6 +36,11 @@ export {
   pairAftermarketDeviceCallData,
   pairAftermarketDevice,
 } from "./core/actions/pairAftermarketDevice.js";
+export {
+  unpairAftermarketDeviceTransaction,
+  unpairAftermarketDeviceCallData,
+  unpairAftermarketDevice,
+} from "./core/actions/unpairAftermarketDevice.js";
 export { newAccountConfig, newKernelConfig, sacdPermissionValue } from "./core/utils/utils.js";
 export { KernelSigner } from "./KernelSigner.js";
 export { AccountSigner } from "./AccountSigner.js";
